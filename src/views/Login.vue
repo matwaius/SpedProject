@@ -1,6 +1,7 @@
 <template>
       <div class="container">    
         <div class="content">
+          <Message :msg="msg" v-show="msg"/> 
           <div id="header">
             <div class="formheadertext">
                 <label>Login</label>
@@ -9,13 +10,13 @@
           <div class="form">
                 <form id="login-form">
                   <div class="input-container">
-                    <input class="form-control" name="usuario" placeholder="Usuário" type="text" autofocus="" required="">
+                    <input class="form-control" name="usuario" placeholder="Usuário" type="text" autofocus="" required="" v-model="login">
                   </div>
                   <div class="input-container">
-                    <input class="form-control" name="senha" placeholder="Senha" type="password" required="">
+                    <input class="form-control" name="senha" placeholder="Senha" type="password" required="" v-model="senha">
                   </div>
                   <div class="input-container">
-                    <input class="submit-btn" type="submit" value="Entrar">
+                    <input @click="getUser()" class="submit-btn" type="submit" value="Entrar">
                   </div>
                   <div class="register">
                     <router-link to="/register">Cadastrar</router-link>
@@ -27,14 +28,43 @@
       </div>  
 </template>
 
-
-
 <script>
 import Footer from '../components/Footer.vue';
+import Message from '@/components/Message.vue';
+import api from '@/services/api.ts';
 export default{
   name:"Login",
+  data(){
+    return{
+      msg: null,
+      login: '',
+      senha: ''
+    }
+  },
   components: {
-    Footer
+    Footer,
+    Message
+  },
+  methods:{
+      async getUser(){
+      api.get("/Users/?login="+this.login+"&senha="+this.senha)
+      .then(function (response) {
+          if (response.data.length == 0){
+            console.log('aaa')
+          }
+          else
+          {
+            console.log(response.data[0].Login)
+          }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+      this.msg = `Usuário não Encontrato!`;
+      setTimeout(() => this.msg="", 3000);
+      
+      event.preventDefault();
+    }
   }
 }
 </script>

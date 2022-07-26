@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Pichau\\Google Drive\\Projeto\\dotnet-api\\dotnet-api.csproj": {}
+    "C:\\Users\\Pichau\\Desktop\\Projeto\\dotnet-api\\dotnet-api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Pichau\\Google Drive\\Projeto\\dotnet-api\\dotnet-api.csproj": {
+    "C:\\Users\\Pichau\\Desktop\\Projeto\\dotnet-api\\dotnet-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Pichau\\Google Drive\\Projeto\\dotnet-api\\dotnet-api.csproj",
+        "projectUniqueName": "C:\\Users\\Pichau\\Desktop\\Projeto\\dotnet-api\\dotnet-api.csproj",
         "projectName": "dotnet-api",
-        "projectPath": "C:\\Users\\Pichau\\Google Drive\\Projeto\\dotnet-api\\dotnet-api.csproj",
+        "projectPath": "C:\\Users\\Pichau\\Desktop\\Projeto\\dotnet-api\\dotnet-api.csproj",
         "packagesPath": "C:\\Users\\Pichau\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Pichau\\Google Drive\\Projeto\\dotnet-api\\obj\\",
+        "outputPath": "C:\\Users\\Pichau\\Desktop\\Projeto\\dotnet-api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

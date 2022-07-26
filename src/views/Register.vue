@@ -1,6 +1,7 @@
 <template>
       <div class="container">
-        <div class="content">  
+        <div class="content"> 
+          <Message :msg="msg" v-show="msg"/> 
           <div id="header">
             <div class="formheadertext">
                 <label>Cadastrar</label>
@@ -29,30 +30,44 @@
 
 <script>
 import Footer from '../components/Footer.vue';
+import Message from '../components/Message.vue';
 import axios from 'axios';
 export default{
   name:"Register",
   data(){
     return{
+      msg: null,
       formData:{
         Login: '',
         Senha: '',
-        Email: '',
+        Email: ''
       },
     }
   },
   components: {
-    Footer
+    Footer,
+    Message
   },
   methods:{
     createUser(){
       console.log(this.formData)
         axios.post("https://localhost:7258/api/Users",this.formData)
-        .then((response)=>{
-            console.log(response);
+        .then(() => {
+            console.log('Usuário Cadastrado com Sucesso')
         })
-        
-      event.preventDefault();
+        .catch((error) => {
+            console.log(error.response);
+        });
+      
+
+        //COLOCAR UMA MENSAGEM DE SISTEMA
+        this.msg = `Usuário Cadastrado com Sucesso!`;
+        setTimeout(() => this.msg="", 3000);
+        this.formData.Login = "";
+        this.formData.Senha ="";
+        this.formData.Email="";
+
+        event.preventDefault();
     }
   }
 }

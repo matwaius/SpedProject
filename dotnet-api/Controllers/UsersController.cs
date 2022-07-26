@@ -23,11 +23,12 @@ namespace dotnet_api.Controllers
 
         #region GET - USERS
         [HttpGet]
-        public JsonResult Get()
+        public JsonResult Get(string login, string senha)
         {
             string query = @"
                             select PK_Cod_Usuario, Login, Email from
                             dbo.Usuarios_Cad
+                            where Login=@Login and Senha=@Senha
                             ";
 
             DataTable table = new DataTable();
@@ -38,6 +39,8 @@ namespace dotnet_api.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    myCommand.Parameters.AddWithValue("@Login", login);
+                    myCommand.Parameters.AddWithValue("@Senha", senha);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -75,7 +78,6 @@ namespace dotnet_api.Controllers
                     myCon.Close();
                 }
             }
-
             return new JsonResult("Added Successfully");
         }
         #endregion
