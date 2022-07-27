@@ -10,13 +10,13 @@
           <div class="form">
                 <form id="login-form">
                   <div class="input-container">
-                    <input class="form-control" name="usuario" placeholder="Usuário" type="text" autofocus="" required="" v-model="login">
+                    <input class="form-control" name="user_login" placeholder="Usuário" type="text" autofocus="" required="" v-model="formData.user_login">
                   </div>
                   <div class="input-container">
-                    <input class="form-control" name="senha" placeholder="Senha" type="password" required="" v-model="senha">
+                    <input class="form-control" name="password" placeholder="Senha" type="password" required="" v-model="formData.password" @click="getUser()">
                   </div>
                   <div class="input-container">
-                    <input @click="getUser()" class="submit-btn" type="submit" value="Entrar">
+                    <input class="submit-btn" type="submit" value="Entrar"  >
                   </div>
                   <div class="register">
                     <router-link to="/register">Cadastrar</router-link>
@@ -33,12 +33,17 @@ import Footer from '../components/Footer.vue';
 import Message from '@/components/Message.vue';
 import api from '@/services/api.ts';
 export default{
-  name:"Login",
+  name:"Signin",
   data(){
     return{
       msg: null,
-      login: '',
-      senha: ''
+      formData:{
+        user_login: '',
+        password: '',
+        email:''
+      },
+      users: [],
+      errors: []
     }
   },
   components: {
@@ -46,23 +51,16 @@ export default{
     Message
   },
   methods:{
-      async getUser(){
-      api.get("/Users/?login="+this.login+"&senha="+this.senha)
-      .then(function (response) {
-          if (response.data.length == 0){
-            console.log('aaa')
-          }
-          else
-          {
-            console.log(response.data[0].Login)
-          }
-      })
-      .catch((error) => {
-          console.log(error);
-      });
-      this.msg = `Usuário não Encontrato!`;
-      setTimeout(() => this.msg="", 3000);
-      
+      getUser(){
+        console.log(this.formData)
+      api.post("/Signin",this.formData)
+      .then((response) => {
+            console.log(response.data)
+        })
+        .catch((error) => {
+            console.log(error.response);
+        });
+
       event.preventDefault();
     }
   }

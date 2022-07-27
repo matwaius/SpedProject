@@ -23,12 +23,11 @@ namespace dotnet_api.Controllers
 
         #region GET - USERS
         [HttpGet]
-        public JsonResult Get(string login, string senha)
+        public JsonResult Get()
         {
             string query = @"
-                            select PK_Cod_Usuario, Login, Email from
-                            dbo.Usuarios_Cad
-                            where Login=@Login and Senha=@Senha
+                            select id_user, user_login, email from
+                            dbo.Users
                             ";
 
             DataTable table = new DataTable();
@@ -39,8 +38,6 @@ namespace dotnet_api.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@Login", login);
-                    myCommand.Parameters.AddWithValue("@Senha", senha);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -57,8 +54,8 @@ namespace dotnet_api.Controllers
         public JsonResult Post(Users user)
         {
             string query = @"
-                           insert into dbo.Usuarios_Cad
-                           values (@Login, @Senha, @Email)
+                           insert into dbo.Users
+                           values (@user_login, @password, @email)
                             ";
 
             DataTable table = new DataTable();
@@ -69,9 +66,9 @@ namespace dotnet_api.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@Login", user.Login);
-                    myCommand.Parameters.AddWithValue("@Senha", user.Senha);
-                    myCommand.Parameters.AddWithValue("@Email", user.Email);
+                    myCommand.Parameters.AddWithValue("@user_login", user.user_login);
+                    myCommand.Parameters.AddWithValue("@password", user.password);
+                    myCommand.Parameters.AddWithValue("@email", user.email);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -87,9 +84,9 @@ namespace dotnet_api.Controllers
         public JsonResult Put(Users user)
         {
             string query = @"
-                           update dbo.Usuarios_Cad
-                           set Login= @Login, Senha = @Senha, Email = @Email
-                            where PK_Cod_Usuario=@PK_Cod_Usuario
+                           update dbo.Users
+                           set user_login= @user_login, password = @password, email = @email
+                            where id_user=@id_user
                             ";
 
             DataTable table = new DataTable();
@@ -100,10 +97,10 @@ namespace dotnet_api.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@PK_Cod_Usuario", user.PK_Cod_Usuario);
-                    myCommand.Parameters.AddWithValue("@Login", user.Login);
-                    myCommand.Parameters.AddWithValue("@Senha", user.Senha);
-                    myCommand.Parameters.AddWithValue("@Email", user.Email);
+                    myCommand.Parameters.AddWithValue("@id_user", user.id_user);
+                    myCommand.Parameters.AddWithValue("@user_login", user.user_login);
+                    myCommand.Parameters.AddWithValue("@password", user.password);
+                    myCommand.Parameters.AddWithValue("@email", user.email);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -120,8 +117,8 @@ namespace dotnet_api.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                           delete from dbo.Usuarios_Cad
-                            where PK_Cod_Usuario=@PK_Cod_Usuario
+                           delete from dbo.Users
+                            where id_user=@id_user
                             ";
 
             DataTable table = new DataTable();
@@ -132,7 +129,7 @@ namespace dotnet_api.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@PK_Cod_Usuario", id);
+                    myCommand.Parameters.AddWithValue("@id_user", id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);

@@ -10,16 +10,16 @@
           <div class="form">
                 <form id="login-form">
                   <div class="input-container">
-                    <input class="form-control" name="usuario" placeholder="Usuário" type="text" autofocus="" required="" v-model="formData.Login">
+                    <input class="form-control" name="user_login" placeholder="Usuário" type="text" autofocus="" required="" v-model="formData.user_login">
                   </div>
                   <div class="input-container">
-                    <input class="form-control" name="senha" placeholder="Senha" type="password" required="" v-model="formData.Senha">
+                    <input class="form-control" name="password" placeholder="Senha" type="password" required="" v-model="formData.password">
                   </div>
                   <div class="input-container">
-                    <input class="form-control" name="email" placeholder="email@email.com" type="text" required="" v-model="formData.Email">
+                    <input class="form-control" name="email" placeholder="email@email.com" type="text" required="" v-model="formData.email">
                   </div>
                   <div class="input-container">
-                    <input @click="createUser()" class="submit-btn" type="submit" value="Criar">
+                    <input class="submit-btn" type="submit" value="Criar" @click="createUser()">
                   </div>
                 </form> 
           </div>	
@@ -31,16 +31,16 @@
 <script>
 import Footer from '../components/Footer.vue';
 import Message from '../components/Message.vue';
-import axios from 'axios';
+import api from '@/services/api.ts';
 export default{
   name:"Register",
   data(){
     return{
       msg: null,
       formData:{
-        Login: '',
-        Senha: '',
-        Email: ''
+        user_login: '',
+        password: '',
+        email: ''
       },
     }
   },
@@ -50,24 +50,20 @@ export default{
   },
   methods:{
     createUser(){
-      console.log(this.formData)
-        axios.post("https://localhost:7258/api/Users",this.formData)
+        console.log(this.formData)
+        api.post("/Users",this.formData)
         .then(() => {
             console.log('Usuário Cadastrado com Sucesso')
         })
         .catch((error) => {
             console.log(error.response);
         });
-      
-
         //COLOCAR UMA MENSAGEM DE SISTEMA
         this.msg = `Usuário Cadastrado com Sucesso!`;
         setTimeout(() => this.msg="", 3000);
-        this.formData.Login = "";
-        this.formData.Senha ="";
-        this.formData.Email="";
-
-        event.preventDefault();
+        this.formData.Login = '';
+        this.formData.Senha ='';
+        this.formData.Email='';
     }
   }
 }
