@@ -7,13 +7,14 @@
                 <label>Login</label>
             </div>
           </div>
-          <div class="form">
-                <form id="login-form">
+          <div class="box">
+                <form @submit.prevent="getUser()">
                   <div class="input-container">
-                    <input class="form-control" name="user_login" placeholder="Usuário" type="text" autofocus="" required="" v-model="formData.user_login">
+                    <div class="img"></div>
+                    <input class="form-control" name="user_login" minlength="4" maxlength="10" autocomplete="off" placeholder="Login" type="text" autofocus="" required="" v-model="formData.user_login">
                   </div>
                   <div class="input-container">
-                    <input class="form-control" name="password" placeholder="Senha" type="password" required="" v-model="formData.password" @click="getUser()">
+                    <input class="form-control" name="password" minlength="4" maxlength="10" placeholder="Senha" type="password" required="" v-model="formData.password">
                   </div>
                   <div class="input-container">
                     <input class="submit-btn" type="submit" value="Entrar"  >
@@ -56,6 +57,7 @@ export default{
       api.post("/Signin",this.formData)
       .then((response) => {
             console.log(response.data)
+            this.$router.push('/home');
         })
         .catch((error) => {
             console.log(error.response);
@@ -128,12 +130,13 @@ export default{
         align-items: flex-end;
         margin-bottom: 10px;
     }
-  .form .input-container input[type="text"]{
+    
+  .box .input-container  input[type="text"]{
     background: #FFF url(../../public/img/img_login_usuario.png) no-repeat left;
     padding: 5px 12px 5px 49px;
     position: relative;
   }
-  .form .input-container input[type="password"]{
+  .box .input-container input[type="password"]{
     background: #FFF url(../../public/img/img_login_senha.png) no-repeat left;
     padding: 5px 12px 5px 49px;
     position: relative;

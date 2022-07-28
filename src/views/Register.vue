@@ -7,19 +7,19 @@
                 <label>Cadastrar</label>
             </div>
           </div>
-          <div class="form">
-                <form id="login-form">
+          <div class="box">
+                <form  @submit.prevent="createUser()">
                   <div class="input-container">
-                    <input class="form-control" name="user_login" placeholder="Usuário" type="text" autofocus="" required="" v-model="formData.user_login">
+                    <input class="form-control" name="user_login" minlength="4" maxlength="10" autocomplete="off" placeholder="Digite seu Login" type="text" autofocus="" required="" v-model="formData.user_login">
                   </div>
                   <div class="input-container">
-                    <input class="form-control" name="password" placeholder="Senha" type="password" required="" v-model="formData.password">
+                    <input class="form-control" name="password" minlength="4" maxlength="10" placeholder="Digite sua Senha" type="password" required="" v-model="formData.password">
                   </div>
                   <div class="input-container">
-                    <input class="form-control" name="email" placeholder="email@email.com" type="text" required="" v-model="formData.email">
+                    <input class="form-control" name="email" minlength="8" maxlength="50" autocomplete="off" placeholder="Digite seu Email" type="email" required="" v-model="formData.email">
                   </div>
                   <div class="input-container">
-                    <input class="submit-btn" type="submit" value="Criar" @click="createUser()">
+                    <input class="submit-btn" type="submit" value="Criar">
                   </div>
                 </form> 
           </div>	
@@ -133,15 +133,18 @@ export default{
         margin-bottom: 10px;
     }
 
-  .form .input-container input[type="text"]{
+  .box .input-container input[type="text"]{
     background: #FFF url(../../public/img/img_login_usuario.png) no-repeat left;
     padding: 5px 12px 5px 49px;
-    position: relative;
   }
-  .form .input-container input[type="password"]{
+  
+  .box .input-container input[type="password"]{
     background: #FFF url(../../public/img/img_login_senha.png) no-repeat left;
     padding: 5px 12px 5px 49px;
-    position: relative;
+  }
+   .box .input-container input[type="email"]{
+    background: #FFF url(../../public/img/img_login_usuario.png) no-repeat left;
+    padding: 5px 12px 5px 49px;
   }
  
   .input-container .submit-btn{ 
