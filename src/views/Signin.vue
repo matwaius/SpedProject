@@ -20,7 +20,7 @@
                     <input class="submit-btn" type="submit" value="Entrar"  >
                   </div>
                   <div class="register">
-                    <router-link to="/register">Cadastrar</router-link>
+                    <router-link to="/registrar">Cadastrar</router-link>
                   </div>
                 </form> 
           </div>	
@@ -52,7 +52,7 @@ export default{
     Message
   },
   methods:{
-      getUser(){
+      async getUser(){
         console.log(this.formData)
       api.post("/Signin",this.formData)
       .then((response) => {

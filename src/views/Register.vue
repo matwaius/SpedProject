@@ -49,7 +49,7 @@ export default{
     Message
   },
   methods:{
-    createUser(){
+    async createUser(){
         console.log(this.formData)
         api.post("/Users",this.formData)
         .then(() => {
