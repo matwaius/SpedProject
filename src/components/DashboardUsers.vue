@@ -4,18 +4,24 @@
         <div>
             <div id="users-table-heading">
                 <div class="order-id">#:</div>
-                <div>Cód Usuário:</div>
                 <div>Login:</div>
                 <div>Email:</div>
             </div>
         </div>
         <div id="users-table-rows">
-            <div class="users-table-row" v-for="user in users" :key="user.id">
-                <div class="order-number">{{ user.id}}</div>
-                <div>{{ user.login }}</div> 
+            <div class="users-table-row" v-for="user in users" :key="user.id_user">
+                <div class="order-number">{{ user.id_user}}</div>
+                <div>{{ user.user_login }}</div> 
                 <div>{{ user.email }}</div> 
+                <div>
+                    <button class="update-btn" @click="updateUser()">Alterar</button>
+                </div>
+                <div>
+                    <button class="delete-btn" @click="deleteUser()">Delete</button>
+                </div>
             </div>
         </div>
+
         <div>
             <button class="insert-btn" @click="insertUser()">Cadastrar</button>
         </div>

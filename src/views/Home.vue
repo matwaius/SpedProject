@@ -15,7 +15,9 @@
         </aside>
         <main>
             <section>
+                <label>Selecione o Arquivo</label>
                 <input class="input-file" type="file" accept=".txt">
+                <button>Alterar</button>
             </section>
             <section>
               <DashboardUsers></DashboardUsers>
@@ -29,7 +31,6 @@
 import Footer from '../components/Footer.vue';
 import Message from '../components/Message.vue';
 import DashboardUsers from '../components/DashboardUsers.vue';
-import api from '@/services/api.ts';
 
 export default{
   name:"Home",
@@ -61,7 +62,7 @@ export default{
   aside {
     display: flex;
     border: 2px solid green;
-    width: 300px;
+    width: 250px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
