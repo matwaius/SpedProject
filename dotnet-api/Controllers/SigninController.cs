@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using dotnet_api.Models;
+using dotnet_api.Models.Entities;
+using dotnet_api.Repository.Interfaces;
+using AutoMapper;
 
 namespace dotnet_api.Controllers
 {
@@ -15,43 +17,31 @@ namespace dotnet_api.Controllers
     [ApiController]
     public class SigninController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        public SigninController(IConfiguration configuration)
+        private readonly IUsersRepository _repository;
+        private readonly IMapper _mapper;
+
+        public SigninController(IUsersRepository repository, IMapper mapper)
         {
-            _configuration = configuration;
+            _repository = repository;
+            _mapper = mapper;
         }
+
 
         #region POST - Signin 
-        [HttpPost]
-        public JsonResult Post(Users user)
+        /*[HttpPost]
+        public async Task<IActionResult> Post(SigninDto user)
         {
-            string query = @"
-                           select top 1 user_login, email from dbo.Users
-                           where user_login = @user_login and password = @password";
+            if (user == null) return BadRequest("Dados Inválidos");
 
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("UsersAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@user_login", user.user_login);
-                    myCommand.Parameters.AddWithValue("@password", user.password);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
+            var userInsert = _mapper.Map<User>(user);
 
-                if (table.Rows.Count > 0)
-                {
-                    return new JsonResult("User Logged.");
-                }
-            }
-            return new JsonResult("User Not Found.");
-        }
+            _repository.Add(userInsert);
+
+            return await _repository.SaveChangesAsync()
+                ? Ok("Usuário adicionado com Sucesso.")
+                : BadRequest("Erro ao salvar o Usuário.");
+
+        }*/
         #endregion
 
     }

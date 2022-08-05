@@ -56,6 +56,11 @@ export default {
                     console.log(error.response);
                 });
 
+        },
+        async updateUser(){
+        },
+
+        async deleteUser(){
         }
     },
     mounted() {

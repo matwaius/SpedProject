@@ -19,10 +19,10 @@
                   <div class="input-container">
                     <input class="submit-btn" type="submit" value="Entrar"  >
                   </div>
-                  <div class="register">
-                    <router-link to="/registrar">Cadastrar</router-link>
-                  </div>
                 </form> 
+                <div class="register">
+                  <router-link to="/registrar">Cadastrar</router-link>
+                </div>
           </div>	
         </div>
         <Footer></Footer>

@@ -7,140 +7,93 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using dotnet_api.Models;
+using dotnet_api.Models.Entities;
+using AutoMapper;
+using dotnet_api.Repository.Interfaces;
+using dotnet_api.Models.Dtos;
 
 namespace dotnet_api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        public UsersController(IConfiguration configuration)
+        private readonly IUsersRepository _repository;
+        private readonly IMapper _mapper;
+
+        public UsersController(IUsersRepository repository, IMapper mapper)
         {
-            _configuration = configuration;
+            _repository = repository;
+            _mapper = mapper;
         }
 
-        #region GET - USERS
         [HttpGet]
-        public JsonResult Get()
+        public async Task<IActionResult> Get()
         {
-            string query = @"
-                            select id_user, user_login, email from
-                            dbo.Users
-                            ";
+            var users = await _repository.GetUsersAsync();
 
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("UsersAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-
-            return new JsonResult(table);
+            return users.Any()
+                    ? Ok(users)
+                    : BadRequest("Usuário não encontrado.");
         }
-        #endregion
 
-        #region POST - USERS 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var user = await _repository.GetUsersByIdAsync(id);
+
+            var userRet = _mapper.Map<UsersDto>(user);
+
+            return userRet != null
+                ? Ok(userRet)
+                : BadRequest("Usuário não encontrado.");
+        }
+
         [HttpPost]
-        public JsonResult Post(Users user)
+        public async Task<IActionResult> Post(UsersInsertDto user)
         {
-            string query = @"
-                           insert into dbo.Users
-                           values (@user_login, @password, @email)
-                            ";
+            if (user == null) return BadRequest("Dados Inválidos");
 
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("UsersAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@user_login", user.user_login);
-                    myCommand.Parameters.AddWithValue("@password", user.password);
-                    myCommand.Parameters.AddWithValue("@email", user.email);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-            return new JsonResult("Added Successfully");
+            var userInsert= _mapper.Map<Users>(user);
+
+            _repository.Add(userInsert);
+
+            return await _repository.SaveChangesAsync()
+                ? Ok("Usuário adicionado com Sucesso.")
+                : BadRequest("Erro ao salvar o Usuário.");
+
         }
-        #endregion
 
-        #region PUT - USERS
-        [HttpPut]
-        public JsonResult Put(Users user)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, UsersUpdateDto user)
         {
-            string query = @"
-                           update dbo.Users
-                           set user_login= @user_login, password = @password, email = @email
-                            where id_user=@id_user
-                            ";
+            if (id <= 0) return BadRequest("Usuário não informado");
 
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("UsersAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@id_user", user.id_user);
-                    myCommand.Parameters.AddWithValue("@user_login", user.user_login);
-                    myCommand.Parameters.AddWithValue("@password", user.password);
-                    myCommand.Parameters.AddWithValue("@email", user.email);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
+            var userBanco = await _repository.GetUsersByIdAsync(id);
 
-            return new JsonResult("Updated Successfully");
+            var userUpdate = _mapper.Map(user, userBanco);
+
+            _repository.Update(userUpdate);
+
+            return await _repository.SaveChangesAsync()
+                 ? Ok("Usuário atualizado com Sucesso.")
+                 : BadRequest("Erro ao atualizar o Usuário.");
         }
-        #endregion
 
-        #region DELETE - USERS
         [HttpDelete("{id}")]
-        public JsonResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            string query = @"
-                           delete from dbo.Users
-                            where id_user=@id_user
-                            ";
+            if (id <= 0) return BadRequest("Usuário inválido");
 
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("UsersAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@id_user", id);
+            var userDelete = await _repository.GetUsersByIdAsync(id);
 
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
+            if (userDelete == null) return NotFound("Usuário não encontrado");
 
-            return new JsonResult("Deleted Successfully");
+            _repository.Delete(userDelete);
+
+            return await _repository.SaveChangesAsync()
+                 ? Ok("Usuário deletado com Sucesso.")
+                 : BadRequest("Erro ao deletar o Usuário.");
         }
-        #endregion
-
     }
 }

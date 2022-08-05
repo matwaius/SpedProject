@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "eWS1iqo0EbSyL2XuZwujOFngFaMCEVtUMJib+ORq/ZwMD21LcS1sORKECYuqEqHfEE+A+DzBjUB+pP/CfkFZgw==",
+  "dgSpecHash": "d1KafBVubgYYn7wF35v//Rk2XVA5BINaaOkm+dmvfBun/2bE9LNFK57rOU0gRgE7QWcsW3lq9W8q26BOrrWLcg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Pichau\\Desktop\\Projeto\\dotnet-api\\dotnet-api.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Pichau\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",
+    "C:\\Users\\Pichau\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\Pichau\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
+    "C:\\Users\\Pichau\\.nuget\\packages\\fluentassertions\\6.7.0\\fluentassertions.6.7.0.nupkg.sha512",
     "C:\\Users\\Pichau\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Pichau\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.7\\microsoft.aspnetcore.jsonpatch.6.0.7.nupkg.sha512",
     "C:\\Users\\Pichau\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\6.0.7\\microsoft.aspnetcore.mvc.newtonsoftjson.6.0.7.nupkg.sha512",
