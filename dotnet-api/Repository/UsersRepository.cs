@@ -24,10 +24,17 @@ namespace dotnet_api.Repository
                 .ToListAsync();
         }
 
-        public async Task<Users> GetUsersByIdAsync(int Id)
+        public async Task<UsersDto> GetUsersByIdAsync(int Id)
         {
             return await _context.Users
+                        .Select(x => new UsersDto { Id = x.Id, Login = x.Login })
                         .Where(x => x.Id == Id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Users> GetUsersByLoginPasswordAsync(string Login, string Password)
+        {
+            return await _context.Users
+                        .Where(x => x.Login == Login && x.Password == Password).FirstOrDefaultAsync(); ;
         }
     }
 }

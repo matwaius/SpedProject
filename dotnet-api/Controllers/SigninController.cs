@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using dotnet_api.Models.Entities;
 using dotnet_api.Repository.Interfaces;
 using AutoMapper;
+using dotnet_api.Models.Dtos;
 
 namespace dotnet_api.Controllers
 {
@@ -28,20 +29,22 @@ namespace dotnet_api.Controllers
 
 
         #region POST - Signin 
-        /*[HttpPost]
-        public async Task<IActionResult> Post(SigninDto user)
+        [HttpPost("{Login},{Password}")]
+        public async Task<IActionResult> Post(string Login, string Password)
         {
-            if (user == null) return BadRequest("Dados Inválidos");
+            if (Login == null || Login == "") return BadRequest("Login Inválido");
 
-            var userInsert = _mapper.Map<User>(user);
+            if (Password == null || Password == "") return BadRequest("Senha Inválida");
 
-            _repository.Add(userInsert);
+            var user = await _repository.GetUsersByLoginPasswordAsync(Login, Password);
 
-            return await _repository.SaveChangesAsync()
-                ? Ok("Usuário adicionado com Sucesso.")
-                : BadRequest("Erro ao salvar o Usuário.");
+            var ok = "Usuário Encontrado";
 
-        }*/
+            return user != null
+                ? Ok(ok)
+                : BadRequest("Usuário não encontrado.");
+
+        }
         #endregion
 
     }

@@ -13,8 +13,8 @@ namespace dotnet_api.Helpers
         {
 
             CreateMap<Users, UsersDto> ();
-            CreateMap<Users, UsersInsertDto>();
-            CreateMap<Users, UsersUpdateDto>()
+            CreateMap<UsersInsertDto, Users>();
+            CreateMap<UsersUpdateDto, Users>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
 

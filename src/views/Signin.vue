@@ -11,7 +11,7 @@
                   >
                   
                     <v-text-field
-                      v-model="formData.userlogin"
+                      v-model="formData.Login"
                       outlined
                       :rules="loginRules"
                       label="Login"
@@ -19,7 +19,7 @@
                     ></v-text-field>
 
                     <v-text-field
-                      v-model="formData.password"
+                      v-model="formData.Password"
                       outlined
                       :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                       :type="show1 ? 'text' : 'password'"
@@ -32,8 +32,8 @@
 
                       <v-row justify='end'>
                       <v-col class="text-right">
-                        <v-btn color="primary" class="mr-3" @click="getUser()">Entrar</v-btn>
-                        <v-btn color="error" class="mr-0" @click="Limpar">Limpar</v-btn>
+                        <v-btn color="primary" class="mr-3" @click="getUser">Entrar</v-btn>
+                        <v-btn color="error" class="mr-0" @click="cleanForm">Limpar</v-btn>
                       </v-col>
                     </v-row>
 
@@ -51,10 +51,10 @@ export default {
   name: 'Signin',
 
   data: () => ({
+      valid: true,
       formData:{
-        userlogin: '',
-        password: '',
-        email:''
+        Login: '',
+        Password: ''
       },
         show1: false,
         password: 'Password',
@@ -65,28 +65,29 @@ export default {
         ],
         rules: {
           required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          emailMatch: () => (`The email and password you entered don't match`),
+          min: v => v.length >= 4 || 'Min 4 characters',
         },
   }),
-  methods: {
-      Limpar() {
-        this.$refs.form.reset()
-      }
-    },
-    async getUser(){
-      console.log(this.formData)
-      api.post("/Signin",this.formData)
-      .then((response) => {
-            console.log(response.data)
-            this.$router.push('/home');
-        })
-        .catch((error) => {
-            console.log(error.response);
-        });
+  methods:{
+    cleanForm() {
+        this.formData.Login="";
+        this.formData.Password="";
+      },
+      async getUser(){
+        this.$router.push('/home');
+        /*console.log(this.formData)
+        api.post("/Signin",this.formData)
+        .then((response) => {
+              console.log(response.data)
+              this.$router.push('/home');
+          })
+          .catch((error) => {
+              console.log(error.response);
+          });
 
-      event.preventDefault();
+          event.preventDefault();*/
     }
+  }
 }
 </script>
 

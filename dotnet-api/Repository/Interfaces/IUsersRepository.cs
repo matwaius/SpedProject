@@ -7,6 +7,7 @@ namespace dotnet_api.Repository.Interfaces
     public interface IUsersRepository : IBaseRepository
     {
         Task<IEnumerable<UsersDto>> GetUsersAsync();
-        Task<Users> GetUsersByIdAsync(int id);
+        Task<UsersDto> GetUsersByIdAsync(int id);
+        Task<Users> GetUsersByLoginPasswordAsync(string login, string password);
     }
 }
