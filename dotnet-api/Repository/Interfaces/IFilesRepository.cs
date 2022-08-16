@@ -6,7 +6,7 @@ namespace dotnet_api.Repository.Interfaces
 {
     public interface IFilesRepository : IBaseRepository
     {
-        Task<IEnumerable<Files>> GetFilesAsync();
-        Task<Files> GetFilesByIdAsync(int id);
+        Task<IEnumerable<FilesDto>> GetFilesAsync();
+        Task<FilesDto> GetFilesByIdAsync(int id);
     }
 }

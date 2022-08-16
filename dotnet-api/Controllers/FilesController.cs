@@ -61,7 +61,7 @@ namespace dotnet_api.Controllers
                         objfiles.DataFiles = target.ToArray();
                     }
 
-                    var fileInsert = _mapper.Map<Files>(files);
+                    var fileInsert = _mapper.Map<Files>(objfiles);
 
                     _repository.Add(fileInsert);
                 }

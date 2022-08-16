@@ -18,15 +18,17 @@ namespace dotnet_api.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Files>> GetFilesAsync()
+        public async Task<IEnumerable<FilesDto>> GetFilesAsync()
         {
             return await _context.Files
+                .Select(x => new FilesDto { Id = x.Id})
                 .ToListAsync();
         }
 
-        public async Task<Files> GetFilesByIdAsync(int Id)
+        public async Task<FilesDto> GetFilesByIdAsync(int Id)
         {
             return await _context.Files
+                        .Select(x => new FilesDto { Id = x.Id })
                         .Where(x => x.Id == Id).FirstOrDefaultAsync();
         }
     }
