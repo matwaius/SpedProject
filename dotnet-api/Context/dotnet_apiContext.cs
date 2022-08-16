@@ -9,6 +9,8 @@ namespace dotnet_api.Context
         { }
         public DbSet<Users> Users { get; set; }
 
+        public DbSet<Files> Files { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

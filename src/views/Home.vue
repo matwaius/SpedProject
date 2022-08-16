@@ -5,17 +5,12 @@
                 <v-card class="ml-12 mr-12" ref="form">
                   <v-card-text>
                     <template>
-                      <v-file-input
-                        label="File input"
-                        outlined
-                        dense
-                        accept=".txt"
-                      ></v-file-input>
+                      <input type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
                     </template>
 
                       <v-row justify='end'>
                       <v-col class="text-right">
-                        <v-btn color="primary" class="mr-0">Carregar</v-btn>
+                        <v-btn color="primary" class="mr-0" @click="submitForm">Carregar</v-btn>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -26,17 +21,41 @@
 </template>
 
 <script>
-
+import api from '@/services/api.ts';
 export default{
   name:"Home",
   data(){
     return{
-      msg: null
+      msg: null,
+      file:''
     }
   },
   components: {
   },
   methods:{
+    submitForm(){
+      console.log(this.file);
+            let formData = new FormData();
+            formData.append('file', this.file);
+  
+            api.post("/File",
+                formData,
+                {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              }
+            ).then(function(data){
+              console.log(data.data);
+            })
+            .catch(function(){
+              console.log('Falha ao Carregar o Arquivo!');
+            });
+      },
+  
+      onChangeFileUpload(){
+        this.file = this.$refs.file.files[0];
+      }
   }
 }
 </script>
