@@ -38,7 +38,7 @@ export default{
             let formData = new FormData();
             formData.append('file', this.file);
   
-            api.post("/File",
+            api.post("/Files",
                 formData,
                 {
                 headers: {

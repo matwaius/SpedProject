@@ -11,7 +11,7 @@ namespace dotnet_api.Helpers
     {
         public MapperProfile()
         {
-
+            CreateMap<Files, FilesDto>();
             CreateMap<Users, UsersDto> ();
             CreateMap<UsersInsertDto, Users>();
             CreateMap<UsersUpdateDto, Users>()

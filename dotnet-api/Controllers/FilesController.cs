@@ -11,7 +11,6 @@ using dotnet_api.Models.Entities;
 using dotnet_api.Repository.Interfaces;
 using AutoMapper;
 using dotnet_api.Models.Dtos;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace dotnet_api.Controllers
 {
@@ -19,31 +18,23 @@ namespace dotnet_api.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
-
-        IHostingEnvironment _appEnvironment;
-        public FilesController(IHostingEnvironment env)
-        {
-            _appEnvironment = env;
-        }
-
-        private readonly IUsersRepository _repository;
+        private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
 
-        public FilesController(IUsersRepository repository, IMapper mapper)
+        public FilesController(IFilesRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
 
-        #region POST - Files 
         [HttpPost]
         public async Task<IActionResult> Post(IFormFile files)
         {
             bool invalido = false;
 
             //file lines
-            //var file2 = System.IO.File.ReadAllText(@"C:\Users\Pichau\AppData\Local\Temp\tmp46A4.tmp");
+            //var file2 = System.IO.File.ReadAllText(@"C:\Users\zzzz.tmp");
 
             if (files != null)
             {
@@ -94,7 +85,28 @@ namespace dotnet_api.Controllers
                             : BadRequest("Erro ao salvar o Arquivo.");
         }
 
-        #endregion
+
+        /*[HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var files = await _repository.GetFilesAsync();
+
+            return files.Any()
+                    ? Ok(files)
+                    : BadRequest("Arquivo não encontrado.");
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var file = await _repository.GetFilesByIdAsync(id);
+
+            var fileRet = _mapper.Map<FilesDto>(file);
+
+            return fileRet != null
+                ? Ok(fileRet)
+                : BadRequest("Arquivo não encontrado.");
+        }*/
 
     }
 }
