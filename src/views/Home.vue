@@ -5,7 +5,7 @@
                 <v-card class="ml-12 mr-12" ref="form">
                   <v-card-text>
                     <template>
-                      <input type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+                      <input type="file" id="file" ref="file" accept=".txt" v-on:change="onChangeFileUpload()"/>
                     </template>
 
                       <v-row justify='end'>

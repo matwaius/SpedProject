@@ -27,8 +27,6 @@ namespace dotnet_api.Controllers
             _mapper = mapper;
         }
 
-
-        #region POST - Signin 
         [HttpPost("{Login},{Password}")]
         public async Task<IActionResult> Post(string Login, string Password)
         {
@@ -45,7 +43,6 @@ namespace dotnet_api.Controllers
                 : BadRequest("Usuário não encontrado.");
 
         }
-        #endregion
 
     }
 }

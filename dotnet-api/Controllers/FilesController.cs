@@ -11,6 +11,7 @@ using dotnet_api.Models.Entities;
 using dotnet_api.Repository.Interfaces;
 using AutoMapper;
 using dotnet_api.Models.Dtos;
+using System.Text;
 
 namespace dotnet_api.Controllers
 {
@@ -32,14 +33,23 @@ namespace dotnet_api.Controllers
         public async Task<IActionResult> Post(IFormFile files)
         {
             bool invalido = false;
-
-            //file lines
-            //var file2 = System.IO.File.ReadAllText(@"C:\Users\zzzz.tmp");
-
             if (files != null)
             {
                 if (files.Length > 0) //tamanhoArquivo
                 {
+                    var result = new StringBuilder();
+                    using (var reader = new StreamReader(files.OpenReadStream()))
+                    {
+                        while (reader.Peek() >= 0)
+                            result.AppendLine(reader.ReadLine());
+                    }
+
+                    //Verifica Arquivo
+                    if (!result.ToString().Contains("|"))
+                    {
+                        return BadRequest("Arquivo Inválido!");
+                    }
+
                     //Getting FileName
                     var fileName = Path.GetFileName(files.FileName);
                     //Getting file Extension
@@ -75,9 +85,9 @@ namespace dotnet_api.Controllers
                 invalido = true;
             }
 
-            if(invalido == true)
+            if (invalido == true)
             {
-                return BadRequest("Dados Inválidos");
+                return BadRequest("Dados Inválidos!");
             }
 
             return await _repository.SaveChangesAsync()
@@ -86,14 +96,14 @@ namespace dotnet_api.Controllers
         }
 
 
-        /*[HttpGet]
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             var files = await _repository.GetFilesAsync();
 
             return files.Any()
                     ? Ok(files)
-                    : BadRequest("Arquivo não encontrado.");
+                    : BadRequest("Arquivos não encontrados.");
         }
 
         [HttpGet("{id}")]
@@ -106,7 +116,37 @@ namespace dotnet_api.Controllers
             return fileRet != null
                 ? Ok(fileRet)
                 : BadRequest("Arquivo não encontrado.");
-        }*/
+        }
+
+        [HttpDelete]
+        private async Task<IActionResult> Delete()
+        {
+            var filesDelete = await _repository.GetFilesAsync();
+
+            if (filesDelete == null) return NotFound("Arquivos não encontrado");
+
+            _repository.Delete(filesDelete);
+
+            return await _repository.SaveChangesAsync()
+                 ? Ok("Arquivos deletados com Sucesso.")
+                 : BadRequest("Erro ao deletar o Arquivos.");
+        }
+
+        [HttpDelete("{id}")]
+        private async Task<IActionResult> Delete(int id)
+        {
+            if (id <= 0) return BadRequest("Arquivo não encontrado.");
+
+            var filesDelete = await _repository.GetFilesByIdAsync(id);
+
+            if (filesDelete == null) return NotFound("Arquivo não encontrado");
+
+            _repository.Delete(filesDelete);
+
+            return await _repository.SaveChangesAsync()
+                 ? Ok("Arquivo deletado com Sucesso.")
+                 : BadRequest("Erro ao deletar o Arquivo.");
+        }
 
     }
 }
