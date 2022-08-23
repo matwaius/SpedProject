@@ -13,17 +13,20 @@ using SqlCommand = System.Data.SqlClient.SqlCommand;
 using Microsoft.Extensions.Configuration;
 using dotnet_api.Models.Dtos;
 using Newtonsoft.Json;
+using dotnet_api.Metodos.Classes;
+using dotnet_api.Metodos;
+using System.Globalization;
 
 namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportsController : ControllerBase
+    public class ReportNFSaidaController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportsController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportNFSaidaController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -31,14 +34,14 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(int parTipoRel)
+        public async Task<IActionResult> Post()
         {
             bool invalido = false;
             string retRel = "";
 
             SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("UsersAppCon"));
             conn.Open();
-            string query = "SELECT DataFiles FROM Files";
+            string query = "SELECT top 1 DataFiles FROM Files ORDER BY id Desc";
             SqlCommand cmd = new SqlCommand(query, conn);
 
             DataTable dt = new DataTable();
@@ -52,14 +55,41 @@ namespace dotnet_api.Controllers
 
             //Le o Arquivo do Banco
             string Arquivo = Encoding.Default.GetString(buffer);
+            if (Arquivo.Contains("|") == false)
+            {
+                return BadRequest("Arquivo Invalido!");
+            }
 
-            //System.IO.File.WriteAllBytes(@"c:\Teste\DataFiles.txt", buffer);
+            DataSet dsRet = new DataSet();
+            List<C100> list = new List<C100>();
+            foreach (string linha in Arquivo.Split('\n'))
+            {
+                if (linha != "")
+                {
+                    string[] dados = linha.Split("|");
+                    try
+                    {
+                        //C100 //1-IND OPER => NOTAS DE SAIDA
+                        if (dados[1] == "C100" && dados[2] == "1")
+                        {
+                            C100 c100 = new C100();
+                            list.Add(c100.MontaDadosC100(dados));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        int ERRO = 0;
+                        throw;
+                    }
+                }
+            }
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable data = converter.ToDataTable(list);
 
             conn.Close();
 
             //Exemplo Relatorio
-            if(parTipoRel == 1)//Classificar por Tipos?
-            {
+
                 //Gera Classe e Atribui
 
                 /*results result = new results();
@@ -67,7 +97,6 @@ namespace dotnet_api.Controllers
                 result.value = "ABC";
                 result.info = "ABC";
                 retRel = JsonConvert.SerializeObject(result);*/
-            }
 
             //Validação Caso Necessite Usar
             if (invalido == true)
