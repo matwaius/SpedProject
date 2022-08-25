@@ -39,6 +39,11 @@ namespace dotnet_api.Controllers
             string retRel = "";
             try
             {
+                if (dateEnd < dateStart || dateStart > dateEnd)
+                {
+                    return BadRequest("Data Invalida!");
+                }
+
                 //Le o Arquivo do Banco
                 string Arquivo = Library.CarregarArquivo(_configuration);
                 if (Arquivo.Contains("|") == false || Arquivo.Trim().Length == 0)
