@@ -34,39 +34,39 @@ namespace dotnet_api.Metodos.Classes
         public decimal VL_PIS_ST { get; set; }
         public decimal VL_COFINS_ST { get; set; }
 
-        public C100 MountDataC100(string[] dados)
+        public C100 MountDataC100(string[] data)
         {
             C100 c100 = new C100();
 
-            c100.REG = Metodos.Library.GetString(dados[1]);
-            c100.IND_OPER = Metodos.Library.GetInt16(dados[2]);
-            c100.IND_EMIT = Metodos.Library.GetString(dados[3]);
-            c100.COD_PART = Metodos.Library.GetString(dados[4]);
-            c100.COD_MOD = Metodos.Library.GetString(dados[5]);
-            c100.COD_SIT = Metodos.Library.GetInt32(dados[6]);
-            c100.SER = Metodos.Library.GetString(dados[7]);
-            c100.NUM_DOC = Metodos.Library.GetInt64(dados[8]);
-            c100.CHV_NFE = Metodos.Library.GetString(dados[9]);
-            c100.DT_DOC = Metodos.Library.ToDateTime(dados[10], "ddMMyyyy");
-            c100.DT_E_S = Metodos.Library.ToDateTime(dados[11], "ddMMyyyy");
-            c100.VL_DOC = Metodos.Library.GetDecimal(dados[12]);
-            c100.IND_PGTO = Metodos.Library.GetInt16(dados[13]);
-            c100.VL_DESC = Metodos.Library.GetDecimal(dados[14]);
-            c100.VL_ABAT_NT = Metodos.Library.GetDecimal(dados[15]);
-            c100.VL_MERC = Metodos.Library.GetDecimal(dados[16]);
-            c100.IND_FRT = Metodos.Library.GetInt16(dados[17]);
-            c100.VL_FRT = Metodos.Library.GetDecimal(dados[18]);
-            c100.VL_SEG = Metodos.Library.GetDecimal(dados[19]);
-            c100.VL_OUT_DA = Metodos.Library.GetDecimal(dados[20]);
-            c100.VL_BC_ICMS = Metodos.Library.GetDecimal(dados[21]);
-            c100.VL_ICMS = Metodos.Library.GetDecimal(dados[22]);
-            c100.VL_BC_ICMS_ST = Metodos.Library.GetDecimal(dados[23]);
-            c100.VL_ICMS_ST = Metodos.Library.GetDecimal(dados[24]);
-            c100.VL_IPI = Metodos.Library.GetDecimal(dados[25]);
-            c100.VL_PIS = Metodos.Library.GetDecimal(dados[26]);
-            c100.VL_COFINS = Metodos.Library.GetDecimal(dados[26]);
-            c100.VL_PIS_ST = Metodos.Library.GetDecimal(dados[27]);
-            c100.VL_COFINS_ST = Metodos.Library.GetDecimal(dados[28]);
+            c100.REG = Metodos.Library.GetString(data[1]);
+            c100.IND_OPER = Metodos.Library.GetInt16(data[2]);
+            c100.IND_EMIT = Metodos.Library.GetString(data[3]);
+            c100.COD_PART = Metodos.Library.GetString(data[4]);
+            c100.COD_MOD = Metodos.Library.GetString(data[5]);
+            c100.COD_SIT = Metodos.Library.GetInt32(data[6]);
+            c100.SER = Metodos.Library.GetString(data[7]);
+            c100.NUM_DOC = Metodos.Library.GetInt64(data[8]);
+            c100.CHV_NFE = Metodos.Library.GetString(data[9]);
+            c100.DT_DOC = Metodos.Library.ToDateTime(data[10], "ddMMyyyy");
+            c100.DT_E_S = Metodos.Library.ToDateTime(data[11], "ddMMyyyy");
+            c100.VL_DOC = Metodos.Library.GetDecimal(data[12]);
+            c100.IND_PGTO = Metodos.Library.GetInt16(data[13]);
+            c100.VL_DESC = Metodos.Library.GetDecimal(data[14]);
+            c100.VL_ABAT_NT = Metodos.Library.GetDecimal(data[15]);
+            c100.VL_MERC = Metodos.Library.GetDecimal(data[16]);
+            c100.IND_FRT = Metodos.Library.GetInt16(data[17]);
+            c100.VL_FRT = Metodos.Library.GetDecimal(data[18]);
+            c100.VL_SEG = Metodos.Library.GetDecimal(data[19]);
+            c100.VL_OUT_DA = Metodos.Library.GetDecimal(data[20]);
+            c100.VL_BC_ICMS = Metodos.Library.GetDecimal(data[21]);
+            c100.VL_ICMS = Metodos.Library.GetDecimal(data[22]);
+            c100.VL_BC_ICMS_ST = Metodos.Library.GetDecimal(data[23]);
+            c100.VL_ICMS_ST = Metodos.Library.GetDecimal(data[24]);
+            c100.VL_IPI = Metodos.Library.GetDecimal(data[25]);
+            c100.VL_PIS = Metodos.Library.GetDecimal(data[26]);
+            c100.VL_COFINS = Metodos.Library.GetDecimal(data[26]);
+            c100.VL_PIS_ST = Metodos.Library.GetDecimal(data[27]);
+            c100.VL_COFINS_ST = Metodos.Library.GetDecimal(data[28]);
 
             return c100;
         }

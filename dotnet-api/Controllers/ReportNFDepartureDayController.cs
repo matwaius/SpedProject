@@ -45,24 +45,24 @@ namespace dotnet_api.Controllers
                 }
 
                 //Le o Arquivo do Banco
-                string Arquivo = Library.DownFile(_configuration);
-                if (Arquivo.Contains("|") == false || Arquivo.Trim().Length == 0)
+                string file = Library.DownFile(_configuration);
+                if (file.Contains("|") == false || file.Trim().Length == 0)
                 {
                     return BadRequest("Arquivo Invalido!");
                 }
 
                 List<C100> list = new List<C100>();
-                foreach (string linha in Arquivo.Split('\n'))
+                foreach (string line in file.Split('\n'))
                 {
-                    if (linha != "")
+                    if (line != "")
                     {
-                        string[] dados = linha.Split("|");
+                        string[] data = line.Split("|");
 
                         //C100 
-                        if (dados[1] == "C100")
+                        if (data[1] == "C100")
                         {
                             C100 c100 = new C100();
-                            list.Add(c100.MountDataC100(dados));
+                            list.Add(c100.MountDataC100(data));
                         }
                     }
                 }

@@ -2,6 +2,6 @@
 {
     public interface IC100
     {
-        public C100 MontaDadosC100(string[] dados);
+        public C100 MountDataC100(string[] dados);
     }
 }
