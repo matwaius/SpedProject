@@ -2,7 +2,7 @@
 
 namespace dotnet_api.Metodos.Classes
 {
-    public partial class C100 : IMontaC100
+    public partial class C100 : IC100
     {
         public string REG { get; set; }
         public Int16 IND_OPER { get; set; }
