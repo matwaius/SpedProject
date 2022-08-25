@@ -45,7 +45,7 @@ namespace dotnet_api.Controllers
                 }
 
                 //Le o Arquivo do Banco
-                string Arquivo = Library.CarregarArquivo(_configuration);
+                string Arquivo = Library.DownFile(_configuration);
                 if (Arquivo.Contains("|") == false || Arquivo.Trim().Length == 0)
                 {
                     return BadRequest("Arquivo Invalido!");
@@ -62,7 +62,7 @@ namespace dotnet_api.Controllers
                         if (dados[1] == "C100")
                         {
                             C100 c100 = new C100();
-                            list.Add(c100.MontaDadosC100(dados));
+                            list.Add(c100.MountDataC100(dados));
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace dotnet_api.Controllers
                 {
                     DataTable data = Library.ToDataTable(list);
 
-                    var dataFormat = data
+                    var dateFormat = data
                                         .Select()
                                         .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == 1 && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) //1-IND OPER => NOTAS DE SAIDA
                                         .GroupBy(g => new
@@ -88,7 +88,7 @@ namespace dotnet_api.Controllers
                                             VL_DOC = s.Sum(ss => Library.GetDecimal(ss["VL_DOC"].ToString()))
                                         }).ToList();
 
-                    retRel = JsonConvert.SerializeObject(dataFormat);
+                    retRel = JsonConvert.SerializeObject(dateFormat);
                 }
             }
             catch

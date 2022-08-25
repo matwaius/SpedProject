@@ -34,7 +34,7 @@ namespace dotnet_api.Metodos.Classes
         public decimal VL_PIS_ST { get; set; }
         public decimal VL_COFINS_ST { get; set; }
 
-        public C100 MontaDadosC100(string[] dados)
+        public C100 MountDataC100(string[] dados)
         {
             C100 c100 = new C100();
 

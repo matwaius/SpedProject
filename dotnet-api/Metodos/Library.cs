@@ -55,7 +55,7 @@ namespace dotnet_api.Metodos
                 parMetodo = "";
 
             }
-            parMetodo = SoNumeros(parMetodo);
+            parMetodo = OnlyNumbers(parMetodo);
             if (parMetodo.Length == 0)
             {
                 ret = valorRetorno;
@@ -75,7 +75,7 @@ namespace dotnet_api.Metodos
                 parMetodo = "";
 
             }
-            parMetodo = SoNumeros(parMetodo);
+            parMetodo = OnlyNumbers(parMetodo);
             if (parMetodo.Length == 0)
             {
                 ret = valorRetorno;
@@ -95,7 +95,7 @@ namespace dotnet_api.Metodos
                 parMetodo = "";
 
             }
-            parMetodo = SoNumeros(parMetodo);
+            parMetodo = OnlyNumbers(parMetodo);
             if (parMetodo.Length == 0)
             {
                 ret = valorRetorno;
@@ -108,7 +108,7 @@ namespace dotnet_api.Metodos
         }
 
 
-        public static string SoNumeros(string strNumero)
+        public static string OnlyNumbers(string strNumero)
         {
             if (string.IsNullOrEmpty(strNumero) || strNumero.Trim().Length == 0)
                 return "";
@@ -174,7 +174,7 @@ namespace dotnet_api.Metodos
                 mes = (parInverteDiaMes == false) ? tmp.Substring(2, 2) : tmp.Substring(0, 2);
                 ano = tmp.Substring(4, 4);
 
-                if (Library.VerificaDataValida(Convert.ToInt32(dia), Convert.ToInt32(mes), Convert.ToInt32(ano)) == false)
+                if (Library.CheckDate(Convert.ToInt32(dia), Convert.ToInt32(mes), Convert.ToInt32(ano)) == false)
                 {
                     ret = "01/01/2000".ToDateTime(); 
                 }
@@ -188,7 +188,7 @@ namespace dotnet_api.Metodos
             return ret;
         }
 
-        public static bool VerificaDataValida(int dia, int mes, int ano)
+        public static bool CheckDate(int dia, int mes, int ano)
         {
             int ultimoDiaMes = DateTime.DaysInMonth(ano, mes);
             if (dia > ultimoDiaMes || dia < 1)
@@ -241,7 +241,7 @@ namespace dotnet_api.Metodos
 
         }
 
-        public static string CarregarArquivo(IConfiguration config)
+        public static string DownFile(IConfiguration config)
         {
             string Retorno = "";
 
