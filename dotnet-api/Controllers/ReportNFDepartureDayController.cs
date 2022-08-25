@@ -13,8 +13,8 @@ using SqlCommand = System.Data.SqlClient.SqlCommand;
 using Microsoft.Extensions.Configuration;
 using dotnet_api.Models.Dtos;
 using Newtonsoft.Json;
-using dotnet_api.Metodos.Classes;
-using dotnet_api.Metodos;
+using dotnet_api.Methods.Classes;
+using dotnet_api.Methods;
 using System.Globalization;
 
 namespace dotnet_api.Controllers

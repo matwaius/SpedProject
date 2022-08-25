@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace dotnet_api.Metodos
+namespace dotnet_api.Methods
 {
     public static class Library
     {

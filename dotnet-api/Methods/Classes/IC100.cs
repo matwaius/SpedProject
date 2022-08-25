@@ -1,4 +1,4 @@
-﻿namespace dotnet_api.Metodos.Classes
+﻿namespace dotnet_api.Methods.Classes
 {
     public interface IC100
     {
