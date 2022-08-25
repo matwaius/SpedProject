@@ -46,7 +46,6 @@ namespace dotnet_api.Controllers
                     return BadRequest("Arquivo Invalido!");
                 }
 
-                DataSet dsRet = new DataSet();
                 List<C100> list = new List<C100>();
                 foreach (string linha in Arquivo.Split('\n'))
                 {
@@ -73,10 +72,10 @@ namespace dotnet_api.Controllers
 
                     var dataFormat = data
                                         .Select()
-                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == 1 && Library.GetDateTime(x["DT_E_S"].ToString()) >= dateStart && Library.GetDateTime(x["DT_E_S"].ToString()) <= dateEnd) //1-IND OPER => NOTAS DE SAIDA
+                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == 1 && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) //1-IND OPER => NOTAS DE SAIDA
                                         .GroupBy(g => new
                                         {
-                                            grp_data = g["DT_E_S"]
+                                            grp_data = g["DT_DOC"]
                                         })
                                         .Select(s => new
                                         {
