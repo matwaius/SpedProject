@@ -27,14 +27,14 @@ namespace dotnet_api.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("{Login},{Password}")]
-        public async Task<IActionResult> Post(string Login, string Password)
+        [HttpPost("{User},{Password}")]
+        public async Task<IActionResult> Post(string User, string Password)
         {
-            if (Login == null || Login == "") return BadRequest("Login Inválido");
+            if (User == null || User == "") return BadRequest("Login Inválido");
 
             if (Password == null || Password == "") return BadRequest("Senha Inválida");
 
-            var user = await _repository.GetUsersByLoginPasswordAsync(Login, Password);
+            var user = await _repository.GetUsersByLoginPasswordAsync(User, Password);
 
             var ok = "Usuário Encontrado";
 

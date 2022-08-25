@@ -33,7 +33,7 @@ namespace dotnet_api.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("{dataInicio},{dataFinal}")]
+        [HttpPost("{dateStart},{dateEnd}")]
         public async Task<IActionResult> Post(DateTime dateStart, DateTime dateEnd)
         {
             string retRel = "";
