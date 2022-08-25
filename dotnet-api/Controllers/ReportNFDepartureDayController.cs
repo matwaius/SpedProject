@@ -84,7 +84,7 @@ namespace dotnet_api.Controllers
                                         })
                                         .Select(s => new
                                         {
-                                            DT_E_S = s.Key.grp_data,
+                                            DT_DOC = s.Key.grp_data,
                                             VL_DOC = s.Sum(ss => Library.GetDecimal(ss["VL_DOC"].ToString()))
                                         }).ToList();
 
