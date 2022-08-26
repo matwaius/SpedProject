@@ -289,5 +289,159 @@ namespace dotnet_api.Methods
             //put a breakpoint here and check datatable
             return dataTable;
         }
+
+        public static DataTable dataUF()
+        {
+            DataTable dtUF = new DataTable();
+            DataColumn column;
+            DataRow row;
+
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Int32");
+            column.ColumnName = "id";
+            dtUF.Columns.Add(column);
+
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.String");
+            column.ColumnName = "UF";
+            dtUF.Columns.Add(column);
+            
+            row = dtUF.NewRow();
+            row["id"] = 11;
+            row["UF"] = "RO";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 12;
+            row["UF"] = "AC";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 13;
+            row["UF"] = "AM";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 14;
+            row["UF"] = "RR";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 15;
+            row["UF"] = "PA";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 16;
+            row["UF"] = "AP";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 17;
+            row["UF"] = "TO";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 21;
+            row["UF"] = "MA";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 22;
+            row["UF"] = "PI";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 23;
+            row["UF"] = "CE";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 24;
+            row["UF"] = "RN";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 25;
+            row["UF"] = "PB";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 26;
+            row["UF"] = "PE";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 27;
+            row["UF"] = "AL";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 28;
+            row["UF"] = "SE";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 29;
+            row["UF"] = "BA";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 31;
+            row["UF"] = "MG";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 32;
+            row["UF"] = "ES";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 33;
+            row["UF"] = "RJ";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 35;
+            row["UF"] = "SP";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 41;
+            row["UF"] = "PR";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 42;
+            row["UF"] = "SC";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 43;
+            row["UF"] = "RS";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 50;
+            row["UF"] = "MS";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 51;
+            row["UF"] = "MT";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 52;
+            row["UF"] = "GO";
+            dtUF.Rows.Add(row);
+
+            row = dtUF.NewRow();
+            row["id"] = 53;
+            row["UF"] = "DF";
+            dtUF.Rows.Add(row);
+
+            return dtUF;
+        }
     }
 }
