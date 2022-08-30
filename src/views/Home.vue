@@ -1,4 +1,5 @@
 <template>
+<app name="home">
   <sidebar-layout-vue>
     <v-container class="fill-height" fluid>
             <v-row justify="center">
@@ -22,48 +23,52 @@
               </v-col>
             </v-row>
         </v-container>
-  </sidebar-layout-vue>
+      </sidebar-layout-vue>
+  <footer-layout-vue></footer-layout-vue>
+</app>
 </template>
 
 <script>
-import api from '@/services/api.ts';
-import SidebarLayoutVue from '@/layouts/SidebarLayout.vue';
+import api from '@/services/api.ts'
+import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
+import FooterLayoutVue from '@/layouts/FooterLayout.vue'
 
-export default{
-  name:"Home",
-  data(){
-    return{
+export default {
+  name: "home",
+  data() {
+    return {
       msg: null,
-      file:''
+      file: ''
     }
   },
   components: {
-    SidebarLayoutVue
+    SidebarLayoutVue,
+    FooterLayoutVue
   },
-  methods:{
-    submitForm(){
-      console.log(this.file);
-            let formData = new FormData();
-            formData.append('file', this.file);
+  methods: {
+    submitForm() {
+      console.log(this.file)
+      let formData = new FormData()
+      formData.append('file', this.file)
 
-            api.post("/Files",
-                formData,
-                {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-              }
-            ).then(function(data){
-              console.log(data.data);
-            })
-            .catch(function(){
-              console.log('Falha ao Carregar o Arquivo!');
-            });
-      },
+      api.post("/Files",
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      ).then(function(data) {
+        console.log(data.data)
+      })
+        .catch(function() {
+          console.log('Falha ao Carregar o Arquivo!')
+        })
+    },
 
-      onChangeFileUpload(){
-        this.file = this.$refs.file.files[0];
-      }
+    onChangeFileUpload() {
+      this.file = this.$refs.file.files[0]
+    }
   }
 }
 </script>

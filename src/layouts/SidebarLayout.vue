@@ -1,11 +1,11 @@
 <template>
-  <v-app>
+  <v-app id="sidebar">
     <v-navigation-drawer  v-model="drawer"
       app>
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="text-h6">
-              Menu
+              SPED
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -45,25 +45,30 @@
     </v-app-bar>
 
     <v-main></v-main>
-      <slot/>
-    </v-main>
+    <slot></slot>
   </v-app>
 </template>
 
 <script>
-  import api from '@/services/api.ts';
-  export default {
-    data: () => ({
-      drawer: false,
-      items: [
-          { title: 'Dashboard', icon: 'mdi-monitor-dashboard', to: '/dashboard' },
-          { title: 'Sobre', icon: 'mdi-information-outline', to: '/sobre' }
-        ]
-      }),
-    methods:{
-      Disconnect(){
+import api from '@/services/api.ts'
+export default {
+  data: () => ({
+    drawer: false,
+    items: [
+      { title: 'Carregar Arquivo', icon: 'mdi-archive', to: '/home' },
+      { title: 'Dashboard', icon: 'mdi-monitor-dashboard', to: '/dashboard' },
+      { title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/usuarios' },
+      { title: 'Sobre', icon: 'mdi-information-outline', to: '/sobre' }
+    ]
+  }),
+  methods: {
+    Disconnect () {
       this.$router.push('/login')
     }
-    }
   }
+}
 </script>
+
+<style scoped>
+
+</style>

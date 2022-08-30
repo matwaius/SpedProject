@@ -60,34 +60,34 @@ export default {
   name: 'Signin',
 
   data: () => ({
-      valid: true,
-      formData:{
-        Login: '',
-        Password: ''
-      },
-        show1: false,
-        password: 'Password',
-        loginRules: [
-          v => v.length >= 4 || 'Min 4 characters',
-          v => !!v || 'Login is required',
-          v => (v && v.length <= 10) || 'Login must be less than 10 characters',
-        ],
-        rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 4 || 'Min 4 characters',
-        },
+    valid: true,
+    formData: {
+      Login: '',
+      Password: ''
+    },
+    show1: false,
+    password: 'Password',
+    loginRules: [
+      v => v.length >= 4 || 'Min 4 characters',
+      v => !!v || 'Login is required',
+      v => (v && v.length <= 10) || 'Login must be less than 10 characters'
+    ],
+    rules: {
+      required: value => !!value || 'Required.',
+      min: v => v.length >= 4 || 'Min 4 characters'
+    }
   }),
-  methods:{
-    cleanForm() {
-        this.formData.Login="";
-        this.formData.Password="";
-      },
-      async getUser(){
-        this.$router.push('/home');
-        /*console.log(this.formData)
-        api.post("/Signin",this.formData)
-        .then((response) => {
-              console.log(response.data)
+  methods: {
+    cleanForm () {
+      this.formData.Login = ""
+      this.formData.Password = ""
+    },
+    async getUser () {
+      this.$router.push('/home');
+      /*console.log(this.formData)
+      api.post("/Signin",this.formData)
+      .then((response) => {
+            console.log(response.data)
               this.$router.push('/home');
           })
           .catch((error) => {
@@ -96,7 +96,7 @@ export default {
 
           event.preventDefault();*/
     },
-    SignUp(){
+    SignUp () {
       this.$router.push('/registrar')
     }
   }

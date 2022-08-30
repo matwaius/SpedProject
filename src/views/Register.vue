@@ -38,7 +38,7 @@
                     ></v-text-field>
 
                     <v-text-field
-                      v-model="formData.RepeatPassword"
+                      v-model="formData.ConfirmPassword"
                       outlined
                       :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                       :type="show2 ? 'text' : 'password'"
@@ -86,54 +86,55 @@ export default {
   name: 'Register',
 
   data: () => ({
-      valid: true,
-      msg: "",
-      formData:{
-        Login: '',
-        Password: '',
-        RepeatPassword: '',
-        Email:''
-      },
-        show1: false,
-        show2: false,
-        password: 'Password',
-        repeatPassword: 'RepeatPassword',
-        rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 4 || 'Min 4 characters',
-        },
-        loginRules: [
-          v => v.length >= 4 || 'Min 4 characters',
-          v => !!v || 'Login is required',
-          v => (v && v.length <= 10) || 'Login must be less than 10 characters',
-        ],
-        emailRules: [
-          v => !!v || 'E-mail is required',
-          v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-        ]
+    valid: true,
+    msg: "",
+    formData: {
+      Login: '',
+      Password: '',
+      ConfirmPassword: '',
+      Email: ''
+    },
+    show1: false,
+    show2: false,
+    password: 'Password',
+    confirmPassword: 'ConfirmPassword',
+    rules: {
+      required: value => !!value || 'Required.',
+      min: v => v.length >= 4 || 'Min 4 characters'
+    },
+    loginRules: [
+      v => v.length >= 4 || 'Min 4 characters',
+      v => !!v || 'Login is required',
+      v => (v && v.length <= 10) || 'Login must be less than 10 characters'
+    ],
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+    ]
   }),
   components: {
     Message
   },
-  methods:{
-          cleanForm() {
-            this.formData.Login="";
-            this.formData.Password="";
-            this.formData.Email="";
-          },
-          async createUser(){
-              api.post("/Users",this.formData)
-                      .then((response) => {
-                          this.msg = response.data;
-                      })
-                      .catch((error) => {
-                          console.log(error.response);
-                      });
+  methods: {
+    cleanForm () {
+      this.formData.Login = "";
+      this.formData.Password = "";
+      this.formData.ConfirmPassword = "";
+      this.formData.Email = "";
+    },
+    async createUser () {
+      api.post("/Users",this.formData)
+        .then((response) => {
+          this.msg = response.data
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
 
-                      setTimeout(() => this.msg="", 3000);
-                      //quando criado, rotear para /login
-          }
-      }
+      setTimeout(() => this.msg="", 3000);
+      // quando criado, rotear para /login
+    }
+  }
 }
 </script>
 
