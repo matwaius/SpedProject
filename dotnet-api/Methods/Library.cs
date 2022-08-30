@@ -55,8 +55,8 @@ namespace dotnet_api.Methods
                 parMetodo = "";
 
             }
-            parMetodo = OnlyNumbers(parMetodo);
-            if (parMetodo.Length == 0)
+            string value = OnlyNumbers(parMetodo);
+            if (value.Length == 0)
             {
                 ret = valorRetorno;
             }
@@ -75,8 +75,8 @@ namespace dotnet_api.Methods
                 parMetodo = "";
 
             }
-            parMetodo = OnlyNumbers(parMetodo);
-            if (parMetodo.Length == 0)
+            string value = OnlyNumbers(parMetodo);
+            if (value.Length == 0)
             {
                 ret = valorRetorno;
             }
@@ -95,8 +95,8 @@ namespace dotnet_api.Methods
                 parMetodo = "";
 
             }
-            parMetodo = OnlyNumbers(parMetodo);
-            if (parMetodo.Length == 0)
+            string value = OnlyNumbers(parMetodo);
+            if (value.Length == 0)
             {
                 ret = valorRetorno;
             }

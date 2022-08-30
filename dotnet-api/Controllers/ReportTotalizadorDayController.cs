@@ -51,8 +51,10 @@ namespace dotnet_api.Controllers
                     return BadRequest("Arquivo Invalido!");
                 }
 
-                List<object> list = new List<object>();
+                List<C405B> list = new List<C405B>();
 
+                C405B c405B = new C405B();
+                int cont = 0;
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
@@ -62,15 +64,25 @@ namespace dotnet_api.Controllers
                         //C405 
                         if (data[1] == "C405")
                         {
-                            C405 c405 = new C405();
-                            list.Add(c405.MountDataC405(data));
+                            cont = 0;
+                            if (cont == 0 && c405B.VL_BRT > 0)
+                            {
+                                list.Add(c405B);
+                            }
+                            c405B = new C405B();
+                            c405B.DT_DOC = Library.ToDateTime(data[2], "ddMMyyyy");
+                            c405B.VL_BRT = Library.GetDecimal(data[7]);
+                            c405B.Itens = new List<C420B>();
+                            cont++;
                         }
 
                         //C420 
                         if (data[1] == "C420")
                         {
-                            C420 c420 = new C420();
-                            list.Add(c420.MountDataC420(data));
+                            C420B c420B = new C420B();
+                            c420B.COD_TOT_PAR = Library.GetString(data[2]);
+                            c420B.VLR_ACUM_TOT = Library.GetDecimal(data[3]);
+                            c405B.Itens.Add(c420B);
                         }
                     }
                 }
@@ -81,11 +93,7 @@ namespace dotnet_api.Controllers
                 }
                 else
                 {
-                    /*var x = (from item in list
-                     select new { item., item.Name }).ToList();
-                    var xx = list.Select(x => new C405() { REG }).ToList();*/
-
-                    retRel = JsonConvert.SerializeObject(list);
+                    retRel = JsonConvert.SerializeObject(list.Where(w => Library.GetDateTime(w.DT_DOC.ToString()) >= dateStart && Library.GetDateTime(w.DT_DOC.ToString()) <= dateEnd));
                 }
             }
             catch
