@@ -38,8 +38,7 @@ export default{
     }
   },
   components: {
-    SidebarLayoutVue,
-    Footer
+    SidebarLayoutVue
   },
   methods:{
     submitForm(){
