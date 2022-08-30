@@ -21,12 +21,12 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportNFDepartureDayController : ControllerBase
+    public class ReportTotalizadorDayController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportNFDepartureDayController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportTotalizadorDayController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -51,18 +51,26 @@ namespace dotnet_api.Controllers
                     return BadRequest("Arquivo Invalido!");
                 }
 
-                List<C100> list = new List<C100>();
+                List<object> list = new List<object>();
+
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
                     {
                         string[] data = line.Split("|");
 
-                        //C100 
-                        if (data[1] == "C100")
+                        //C405 
+                        if (data[1] == "C405")
                         {
-                            C100 c100 = new C100();
-                            list.Add(c100.MountDataC100(data));
+                            C405 c405 = new C405();
+                            list.Add(c405.MountDataC405(data));
+                        }
+
+                        //C420 
+                        if (data[1] == "C420")
+                        {
+                            C420 c420 = new C420();
+                            list.Add(c420.MountDataC420(data));
                         }
                     }
                 }
@@ -73,22 +81,11 @@ namespace dotnet_api.Controllers
                 }
                 else
                 {
-                    DataTable data = Library.ToDataTable(list);
+                    /*var x = (from item in list
+                     select new { item., item.Name }).ToList();
+                    var xx = list.Select(x => new C405() { REG }).ToList();*/
 
-                    var dateFormat = data
-                                        .Select()
-                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == 1 && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) //1-IND OPER => NOTAS DE SAIDA
-                                        .GroupBy(g => new
-                                        {
-                                            grp_date = g["DT_DOC"]
-                                        })
-                                        .Select(s => new
-                                        {
-                                            DT_DOC = s.Key.grp_date,
-                                            VL_DOC = s.Sum(ss => Library.GetDecimal(ss["VL_DOC"].ToString()))
-                                        }).ToList();
-
-                    retRel = JsonConvert.SerializeObject(dateFormat);
+                    retRel = JsonConvert.SerializeObject(list);
                 }
             }
             catch
