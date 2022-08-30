@@ -9,7 +9,7 @@
       </div>
 
       <div class="d-flex">
-
+        <FaturamentoTeste/>
       </div>
 
     </sidebar-layout-vue>
@@ -22,7 +22,7 @@ import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
 import FooterLayoutVue from '@/layouts/FooterLayout.vue'
 import FaturamentoPorDia from '../reports/FaturamentoPorDia.vue'
 import VendasPorDiatesteVue from '@/reports/VendasPorDiateste.vue'
-/*import BarChart from  '@/reports/Teste.vue'*/
+import FaturamentoTeste from '@/reports/Teste.vue'
 
 export default {
   name: 'Dashboard',
@@ -30,7 +30,8 @@ export default {
     SidebarLayoutVue,
     FooterLayoutVue,
     FaturamentoPorDia,
-    VendasPorDiatesteVue
+    VendasPorDiatesteVue,
+    FaturamentoTeste
   }
 }
 </script>

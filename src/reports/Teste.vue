@@ -28,7 +28,7 @@ import {
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
-  name: 'BarChart',
+  name: 'FaturamentoTeste',
   components: {
     Bar
   },
