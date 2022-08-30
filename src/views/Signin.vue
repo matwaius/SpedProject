@@ -4,12 +4,16 @@
           <v-col cols="12" sm="8" md="4">
             <v-card class="ml-12 mr-12" ref="form">
               <v-card-text>
+
+                <h1 class="bold">Login</h1>
+                <br/>
+
                 <v-form
                     ref="form"
                     v-model="valid"
                     lazy-validation
                   >
-                  
+
                     <v-text-field
                       v-model="formData.Login"
                       outlined
@@ -31,6 +35,11 @@
                     ></v-text-field>
 
                       <v-row justify='end'>
+
+                        <v-col class="text-left">
+                        <v-btn color="primary" class="mr-3" @click="SignUp">Registrar</v-btn>
+                      </v-col>
+
                       <v-col class="text-right">
                         <v-btn color="primary" class="mr-3" @click="getUser">Entrar</v-btn>
                         <v-btn color="error" class="mr-0" @click="cleanForm">Limpar</v-btn>
@@ -86,6 +95,9 @@ export default {
           });
 
           event.preventDefault();*/
+    },
+    SignUp(){
+      this.$router.push('/registrar')
     }
   }
 }
@@ -93,4 +105,7 @@ export default {
 
 <style scoped>
 
+bold {
+  font-weight: bold;
+}
 </style>
