@@ -254,6 +254,11 @@ namespace dotnet_api.Methods
             dt.Load(cmd.ExecuteReader());
             conn.Close();
 
+            if(dt.Rows.Count == 0 || dt == null)
+            {
+                return Retorno;
+            }
+
             byte[] buffer = dt.AsEnumerable().Select(c => c.Field<byte[]>("DataFiles")).SingleOrDefault();
 
             if (buffer == null)

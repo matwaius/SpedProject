@@ -27,8 +27,8 @@ namespace dotnet_api.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("{User}&{Password}")]
-        public async Task<IActionResult> Post(string User, string Password)
+        [HttpPost()]
+        public async Task<IActionResult> Post([FromQuery]string User, [FromQuery]string Password)
         {
             if (User == null || User == "") return BadRequest("Login Inválido");
 

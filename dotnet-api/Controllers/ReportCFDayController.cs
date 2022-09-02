@@ -21,20 +21,20 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportTotalizadorDayController : ControllerBase
+    public class ReportCFDayController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportTotalizadorDayController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportCFDayController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
             _configuration = configuration;
         }
 
-        [HttpPost("{dateStart}&{dateEnd}")]
-        public async Task<IActionResult> Post(DateTime dateStart, DateTime dateEnd)
+        [HttpPost()]
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
         {
             string retRel = "";
             try
@@ -51,38 +51,18 @@ namespace dotnet_api.Controllers
                     return BadRequest("Arquivo Invalido!");
                 }
 
-                List<C405B> list = new List<C405B>();
-
-                C405B c405B = new C405B();
-                int cont = 0;
+                List<C460> list = new List<C460>();
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
                     {
                         string[] data = line.Split("|");
 
-                        //C405 
-                        if (data[1] == "C405")
+                        //C100 
+                        if (data[1] == "C460")
                         {
-                            cont = 0;
-                            if (cont == 0 && c405B.VL_BRT > 0)
-                            {
-                                list.Add(c405B);
-                            }
-                            c405B = new C405B();
-                            c405B.DT_DOC = Library.ToDateTime(data[2], "ddMMyyyy");
-                            c405B.VL_BRT = Library.GetDecimal(data[7]);
-                            c405B.Itens = new List<C420B>();
-                            cont++;
-                        }
-
-                        //C420 
-                        if (data[1] == "C420")
-                        {
-                            C420B c420B = new C420B();
-                            c420B.COD_TOT_PAR = Library.GetString(data[2]);
-                            c420B.VLR_ACUM_TOT = Library.GetDecimal(data[3]);
-                            c405B.Itens.Add(c420B);
+                            C460 c460 = new C460();
+                            list.Add(c460.MountDataC460(data));
                         }
                     }
                 }
@@ -93,7 +73,22 @@ namespace dotnet_api.Controllers
                 }
                 else
                 {
-                    retRel = JsonConvert.SerializeObject(list.Where(w => Library.GetDateTime(w.DT_DOC.ToString()) >= dateStart && Library.GetDateTime(w.DT_DOC.ToString()) <= dateEnd));
+                    DataTable data = Library.ToDataTable(list);
+
+                    var dateFormat = data
+                                        .Select()
+                                        .Where(x => Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) 
+                                        .GroupBy(g => new
+                                        {
+                                            grp_date = g["DT_DOC"]
+                                        })
+                                        .Select(s => new
+                                        {
+                                            DT_DOC = s.Key.grp_date,
+                                            VL_DOC = s.Sum(ss => Library.GetDecimal(ss["VL_DOC"].ToString()))
+                                        }).ToList();
+
+                    retRel = JsonConvert.SerializeObject(dateFormat);
                 }
             }
             catch

@@ -21,20 +21,20 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportNFDepartureDayController : ControllerBase
+    public class ReportNFQtdDayController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportNFDepartureDayController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportNFQtdDayController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
             _configuration = configuration;
         }
 
-        [HttpPost("{dateStart}&{dateEnd}")]
-        public async Task<IActionResult> Post(DateTime dateStart, DateTime dateEnd)
+        [HttpPost()]
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int16 indOperacao)
         {
             string retRel = "";
             try
@@ -77,7 +77,7 @@ namespace dotnet_api.Controllers
 
                     var dateFormat = data
                                         .Select()
-                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == 1 && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) //1-IND OPER => NOTAS DE SAIDA
+                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) //0-IND OPER => NOTAS DE ENTRADA 1-IND OPER => NOTAS DE SAIDA 
                                         .GroupBy(g => new
                                         {
                                             grp_date = g["DT_DOC"]
@@ -85,7 +85,7 @@ namespace dotnet_api.Controllers
                                         .Select(s => new
                                         {
                                             DT_DOC = s.Key.grp_date,
-                                            VL_DOC = s.Sum(ss => Library.GetDecimal(ss["VL_DOC"].ToString()))
+                                            QTD = s.Count()
                                         }).ToList();
 
                     retRel = JsonConvert.SerializeObject(dateFormat);
