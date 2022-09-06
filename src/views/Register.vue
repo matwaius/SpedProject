@@ -22,6 +22,7 @@
                       outlined
                       :rules="loginRules"
                       label="Login"
+                      :value="formData.Login = (formData.Login == null) ? formData.Login : formData.Login.toUpperCase()"
                       required
                     ></v-text-field>
 
@@ -34,6 +35,7 @@
                       @click:append="show1 = !show1"
                       hint="At least 8 characters"
                       label="Senha"
+                      :value="formData.Password = (formData.Password == null) ? formData.Password : formData.Password.toUpperCase()"
                       required
                     ></v-text-field>
 
@@ -46,6 +48,7 @@
                       hint="At least 8 characters"
                       @click:append="show2 = !show2"
                       label="Repetir Senha"
+                      :value="formData.ConfirmPassword = (formData.ConfirmPassword == null) ? formData.ConfirmPassword : formData.ConfirmPassword.toUpperCase()"
                       required
                     ></v-text-field>
 
@@ -54,6 +57,7 @@
                       outlined
                       :rules="emailRules"
                       label="E-mail"
+                      :value="formData.Email = (formData.Email == null) ? formData.Email : formData.Email.toUpperCase()"
                       required
                     ></v-text-field>
                     <v-row justify='end'>
@@ -123,16 +127,20 @@ export default {
       this.formData.Email = "";
     },
     async createUser () {
-      api.post("/Users",this.formData)
+      await api.post("/Users",this.formData)
         .then((response) => {
           this.msg = response.data
         })
         .catch((error) => {
           console.log(error.response)
         })
-
+        
       setTimeout(() => this.msg="", 3000);
       // quando criado, rotear para /login
+      exit();
+    },
+    exit() {
+      this.$route.go(-1);
     }
   }
 }

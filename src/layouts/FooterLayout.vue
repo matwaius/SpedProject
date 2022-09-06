@@ -33,3 +33,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+.blue lighten-1 text-center{
+  margin: 10 auto;
+}
+</style>

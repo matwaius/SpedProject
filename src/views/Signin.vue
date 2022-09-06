@@ -20,6 +20,7 @@
                       :rules="loginRules"
                       label="Login"
                       required
+                      :value="formData.Login = (formData.Login == null) ? formData.Login : formData.Login.toUpperCase()"
                     ></v-text-field>
 
                     <v-text-field
@@ -31,6 +32,7 @@
                       hint="At least 8 characters"
                       @click:append="show1 = !show1"
                       label="Senha"
+                      :value="formData.Password = (formData.Password == null) ? formData.Password : formData.Password.toUpperCase()"
                       required
                     ></v-text-field>
 
