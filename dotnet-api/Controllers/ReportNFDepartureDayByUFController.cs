@@ -21,12 +21,12 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportNFQtdDayByUFController : ControllerBase
+    public class ReportNFDepartureDayByUFController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportNFQtdDayByUFController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportNFDepartureDayByUFController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery]DateTime dateStart, [FromQuery]DateTime dateEnd, [FromQuery] Int16 indOperacao)
+        public async Task<IActionResult> Post([FromQuery]DateTime dateStart, [FromQuery]DateTime dateEnd)
         {
             string retRel = "";
             try
@@ -89,7 +89,7 @@ namespace dotnet_api.Controllers
                     var results = from t0150 in data0150.AsEnumerable()
                                   join tC100 in dataC100.AsEnumerable() on Library.GetString(t0150["COD_PART"].ToString()) equals Library.GetString(tC100["COD_PART"].ToString())
                                   join tUF in dataUF.AsEnumerable() on Library.GetInt32(t0150["COD_MUN"].ToString().Substring(0, 2)) equals Library.GetInt32(tUF["id"].ToString())
-                                  where Library.GetInt16(tC100["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(tC100["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(tC100["DT_DOC"].ToString()) <= dateEnd
+                                  where Library.GetInt16(tC100["IND_OPER"].ToString()) == 1 && Library.GetDateTime(tC100["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(tC100["DT_DOC"].ToString()) <= dateEnd
                                   select new
                                   {
                                       UF = tUF["UF"].ToString(),
@@ -103,7 +103,7 @@ namespace dotnet_api.Controllers
                                   select new
                                   {
                                       UF = xGroup.Key.UF,
-                                      QTD = xGroup.Count()
+                                      VL_DOC = xGroup.Sum(temp => temp.VL_DOC)
                                   };
 
                     retRel = JsonConvert.SerializeObject(results);

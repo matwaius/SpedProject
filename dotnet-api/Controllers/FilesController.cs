@@ -32,64 +32,82 @@ namespace dotnet_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(IFormFile files)
         {
-            bool invalido = false;
-            if (files != null)
+            try
             {
-                if (files.Length > 0) //tamanhoArquivo
+                bool invalido = false;
+                if (files != null)
                 {
-                    var result = new StringBuilder();
-                    using (var reader = new StreamReader(files.OpenReadStream()))
+                    if (files.Length > 0) //tamanhoArquivo
                     {
-                        while (reader.Peek() >= 0)
-                            result.AppendLine(reader.ReadLine());
+                        var result = new StringBuilder();
+                        using (var reader = new StreamReader(files.OpenReadStream()))
+                        {
+                            while (reader.Peek() >= 0)
+                                result.AppendLine(reader.ReadLine());
+                        }
+
+                        //Verifica Arquivo
+                        if (!result.ToString().Contains("|"))
+                        {
+                            invalido = true;
+                        }
+                        else
+                        {
+                            SqlConnection conn = new SqlConnection();
+                            conn.ConnectionString = "Data Source=localhost;Initial Catalog=Base;User Id=sa;password=projetounisul";
+                            SqlCommand cmd = new SqlCommand();
+                            cmd.Connection = conn;
+
+                            cmd.CommandText = "DELETE FROM Files";
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                            conn.Close();
+
+                            //Getting FileName
+                            var fileName = Path.GetFileName(files.FileName);
+                            //Getting file Extension
+                            var fileExtension = Path.GetExtension(fileName);
+                            // concatenating  FileName + FileExtension
+                            var newFileName = String.Concat(Convert.ToString(Guid.NewGuid()), fileExtension);
+
+                            var objfiles = new Files()
+                            {
+                                Id = 0,
+                                Name = newFileName,
+                                FileType = fileExtension,
+                                CreatedOn = DateTime.Now
+                            };
+
+                            using (var target = new MemoryStream())
+                            {
+                                files.CopyTo(target);
+                                objfiles.DataFiles = target.ToArray();
+                            }
+
+                            var fileInsert = _mapper.Map<Files>(objfiles);
+
+                            _repository.Add(fileInsert);
+                        }
                     }
-
-                    //Verifica Arquivo
-                    if (!result.ToString().Contains("|"))
+                    else
                     {
-                        return BadRequest("Arquivo Inválido!");
+                        invalido = true;
                     }
-
-                    //Getting FileName
-                    var fileName = Path.GetFileName(files.FileName);
-                    //Getting file Extension
-                    var fileExtension = Path.GetExtension(fileName);
-                    // concatenating  FileName + FileExtension
-                    var newFileName = String.Concat(Convert.ToString(Guid.NewGuid()), fileExtension);
-
-                    var objfiles = new Files()
-                    {
-                        Id = 0,
-                        Name = newFileName,
-                        FileType = fileExtension,
-                        CreatedOn = DateTime.Now
-                    };
-
-                    using (var target = new MemoryStream())
-                    {
-                        files.CopyTo(target);
-                        objfiles.DataFiles = target.ToArray();
-                    }
-
-                    var fileInsert = _mapper.Map<Files>(objfiles);
-
-                    _repository.Add(fileInsert);
                 }
                 else
                 {
                     invalido = true;
                 }
-            }
-            else
-            {
-                invalido = true;
-            }
 
-            if (invalido == true)
-            {
-                return BadRequest("Dados Inválidos!");
+                if (invalido == true)
+                {
+                    return BadRequest("Arquivo Inválido!");
+                }
             }
-
+            catch
+            {
+                return BadRequest("Erro ao Carregar Arquivo.");
+            }
             return await _repository.SaveChangesAsync()
                             ? Ok("Arquivo Salvo com Sucesso.")
                             : BadRequest("Erro ao salvar o Arquivo.");
@@ -97,7 +115,7 @@ namespace dotnet_api.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        private async Task<IActionResult> Get()
         {
             var files = await _repository.GetFilesAsync();
 
@@ -107,7 +125,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        private async Task<IActionResult> GetById(int id)
         {
             var file = await _repository.GetFilesByIdAsync(id);
 

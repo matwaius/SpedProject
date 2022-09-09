@@ -21,14 +21,14 @@ namespace dotnet_api.Repository
         public async Task<IEnumerable<FilesDto>> GetFilesAsync()
         {
             return await _context.Files
-                .Select(x => new FilesDto { Id = x.Id})
+                .Select(x => new FilesDto { Id = x.Id, Name = x.Name, FileType = x.FileType, DataFiles = x.DataFiles, CreatedOn = x.CreatedOn })
                 .ToListAsync();
         }
 
         public async Task<FilesDto> GetFilesByIdAsync(int Id)
         {
             return await _context.Files
-                        .Select(x => new FilesDto { Id = x.Id })
+                        .Select(x => new FilesDto { Id = x.Id, Name = x.Name, FileType = x.FileType, DataFiles = x.DataFiles, CreatedOn = x.CreatedOn })
                         .Where(x => x.Id == Id).FirstOrDefaultAsync();
         }
     }
