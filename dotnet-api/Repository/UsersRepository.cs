@@ -20,14 +20,14 @@ namespace dotnet_api.Repository
         public async Task<IEnumerable<UsersDto>> GetUsersAsync()
         {
             return await _context.Users
-                .Select(x => new UsersDto { Id = x.Id, Login = x.Login })
+                .Select(x => new UsersDto { Id = x.Id, Login = x.Login, Email = x.Email })
                 .ToListAsync();
         }
 
-        public async Task<UsersDto> GetUsersByIdAsync(int Id)
+        public async Task<Users> GetUsersByIdAsync(int Id)
         {
             return await _context.Users
-                        .Select(x => new UsersDto { Id = x.Id, Login = x.Login })
+                        .Select(x => new Users { Id = x.Id, Login = x.Login, Email = x.Email })
                         .Where(x => x.Id == Id).FirstOrDefaultAsync();
         }
 

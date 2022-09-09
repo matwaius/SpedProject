@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 namespace dotnet_api.Repository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
@@ -18,17 +19,24 @@ namespace dotnet_api.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<FilesDto>> GetFilesAsync()
+        public async Task<IEnumerable<Models.Entities.Files>> GetFilesAsync()
         {
             return await _context.Files
-                .Select(x => new FilesDto { Id = x.Id, Name = x.Name, FileType = x.FileType, DataFiles = x.DataFiles, CreatedOn = x.CreatedOn })
+                .Select(x => new Models.Entities.Files { Id = x.Id, Name = x.Name, FileType = x.FileType, DataFiles = x.DataFiles, CreatedOn = x.CreatedOn })
                 .ToListAsync();
         }
 
-        public async Task<FilesDto> GetFilesByIdAsync(int Id)
+        public async Task<Models.Entities.Files> GetFileAsync()
+        {
+            return await _context.Files.FirstOrDefaultAsync();
+        }
+
+        
+
+        public async Task<Models.Entities.Files> GetFilesByIdAsync(int Id)
         {
             return await _context.Files
-                        .Select(x => new FilesDto { Id = x.Id, Name = x.Name, FileType = x.FileType, DataFiles = x.DataFiles, CreatedOn = x.CreatedOn })
+                        .Select(x => new Models.Entities.Files { Id = x.Id, Name = x.Name, FileType = x.FileType, DataFiles = x.DataFiles, CreatedOn = x.CreatedOn })
                         .Where(x => x.Id == Id).FirstOrDefaultAsync();
         }
     }

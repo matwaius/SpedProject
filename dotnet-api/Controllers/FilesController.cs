@@ -53,15 +53,12 @@ namespace dotnet_api.Controllers
                         }
                         else
                         {
-                            SqlConnection conn = new SqlConnection();
-                            conn.ConnectionString = "Data Source=localhost;Initial Catalog=Base;User Id=sa;password=projetounisul";
-                            SqlCommand cmd = new SqlCommand();
-                            cmd.Connection = conn;
-
-                            cmd.CommandText = "DELETE FROM Files";
-                            conn.Open();
-                            cmd.ExecuteNonQuery();
-                            conn.Close();
+                            //DELETA ARQUIVO EXISTENTE
+                            var file = await _repository.GetFileAsync();
+                            if (file !=  null)
+                            {
+                                _repository.Delete(file);
+                            }
 
                             //Getting FileName
                             var fileName = Path.GetFileName(files.FileName);
