@@ -39,10 +39,50 @@ const routes = [
     component: () => import('../views/Users.vue')
   },
   {
-    path: '/usuarios-registrar',
-    name: 'Users-Registration',
-    component: () => import('../views/Users-Register.vue')
+    path: '/ReportCFDay',
+    name: 'ReportCFDay',
+    component: () => import('../reports/ReportCFDay.vue')
   },
+  {
+    path: '/ReportNFDay',
+    name: 'ReportNFDay',
+    component: () => import('../reports/ReportNFDay.vue')
+  },
+  {
+    path: '/ReportNFDayByICMS',
+    name: 'ReportNFDayByICMS',
+    component: () => import('../reports/ReportNFDayByICMS.vue')
+  },
+  {
+    path: '/ReportNFDayByICMSST',
+    name: 'ReportNFDayByICMSST',
+    component: () => import('../reports/ReportNFDayByICMSST.vue')
+  },
+  {
+    path: '/ReportNFDepartureDayByRedZ',
+    name: 'ReportNFDepartureDayByRedZ',
+    component: () => import('../reports/ReportNFDepartureDayByRedZ.vue')
+  },
+  {
+    path: '/ReportNFDepartureDayByUF',
+    name: 'ReportNFDepartureDayByUF',
+    component: () => import('../reports/ReportNFDepartureDayByUF.vue')
+  },
+  {
+    path: '/ReportNFQtdDay',
+    name: 'ReportNFQtdDay',
+    component: () => import('../reports/ReportNFQtdDay.vue')
+  },
+  {
+    path: '/ReportNFQtdDayByUF',
+    name: 'ReportNFQtdDayByUF',
+    component: () => import('../reports/ReportNFQtdDayByUF.vue')
+  },
+  {
+    path: '/ReportTotalizersDay',
+    name: 'ReportTotalizersDay',
+    component: () => import('../reports/ReportTotalizersDay.vue')
+  }
 ]
 
 const router = new VueRouter({

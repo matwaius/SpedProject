@@ -1,5 +1,5 @@
 <template>
-  <FormList 
+  <FormList
       title="Cadastro de Usuários"
       routerInsert="usuarios-registrar"
       :tableHeader="tableheader"
@@ -31,19 +31,19 @@ export default {
       tableitems:[]
     }
   },
-  mounted(){
-    this.GetUser();
+  mounted () {
+    this.GetUser()
   },
   methods:{
     async GetUser () {
-        await api.get("/Users")
-          .then((response) => {
-            this.tableitems = response.data;
-          })
-          .catch((error) => {
-            console.log(error.response)
-          });
-      }
+      await api.get("/Users")
+        .then((response) => {
+          this.tableitems = response.data;
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
     }
+  }
 }
 </script>
