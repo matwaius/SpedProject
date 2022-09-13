@@ -8,14 +8,35 @@
           outilined
           elevation="3">
           <v-container>
+            <!--CABEÇALHO-->
             <v-row dense>
-              <v-col cols="12">
+              <v-col cols="11">
                 <v-toolbar flat
                         rounded
                         dense
                         class="blue-grey lighten-4">
-                  <v-toolbar-title class="font-weight-medium">{{title}}</v-toolbar-title>
+                  <v-toolbar-title class="font-weight-medium">{{title}}</v-toolbar-title> 
                 </v-toolbar>
+              </v-col>
+              <v-col cols="1">
+                <v-toolbar flat
+                        rounded
+                        dense
+                        class="blue-grey lighten-4">
+                  <v-tooltip bottom color="primary">
+                        <template v-slot:activator="{on, attrs}">
+                          <v-btn icon
+                              color="primary"
+                              v-bind="attrs"
+                              v-on="on"
+                              :disabled="false"
+                              @click="onInsertItem">
+                              <v-icon>mdi-file-plus</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Incluir</span>
+                  </v-tooltip>
+                  </v-toolbar>
               </v-col>
               <v-col cols="12">
                   <v-text-field :label="searchlabel"
@@ -30,6 +51,7 @@
                   </v-text-field>
               </v-col>
             </v-row>
+            <!--ITEMS-->
             <v-row dense>
               <v-col>
                 <v-data-table no-data-text="Nenhum Registro Disponível"
@@ -38,7 +60,7 @@
                               fixed-header
                               height="352px"
                               class="elevation-3"
-                              item-key="id"
+                              item-key="Id"
                               single-select
                               hide-default-footer
                               :headers="tableHeader"
@@ -51,11 +73,25 @@
                               color="primary"
                               v-bind="attrs"
                               v-on="on"
-                              class="mr-2">
+                              class="mr-2"
+                              :disabled="false">
                               mdi-pencil
                           </v-icon>
                         </template>
                         <span>Alterar</span>
+                      </v-tooltip>
+                      <v-tooltip bottom color="primary">
+                        <template v-slot:activator="{on, attrs}">
+                          <v-icon small
+                              color="primary"
+                              v-bind="attrs"
+                              v-on="on"
+                              class="mr-2"
+                              :disabled="false">
+                              mdi-delete
+                          </v-icon>
+                        </template>
+                        <span>Excluir</span>
                       </v-tooltip>
                   </template>
                 </v-data-table>
@@ -78,7 +114,6 @@
 <script>
 import SidebarLayoutVue from "@/layouts/SidebarLayout.vue";
 
-
 export default {
   name:"FormList",
   components: {
@@ -86,6 +121,7 @@ export default {
   },
   props: {
       title: String,
+      routerInsert:"",
       tableHeader: [],
       tableItems: [],
       fieldSearch: ""
@@ -97,6 +133,18 @@ export default {
       searchlabel:"Pesquisar",
     }
   },
+  methods:{
+    onInsertItem(){
+      console.log(this.routerInsert);
+      this.$router.push('/'+this.routerInsert);
+    },
+    onEditItem(){
+      this.$router.push('/'+this.routerInsert);
+    },
+    onDeleteItem(){
+      this.$router.push('/'+this.routerInsert);
+    }
+  }
 }
 
 </script>

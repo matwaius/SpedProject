@@ -37,7 +37,12 @@ const routes = [
     path: '/usuarios',
     name: 'Users',
     component: () => import('../views/Users.vue')
-  }
+  },
+  {
+    path: '/usuarios-registrar',
+    name: 'Users-Registration',
+    component: () => import('../views/Users-Register.vue')
+  },
 ]
 
 const router = new VueRouter({

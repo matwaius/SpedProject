@@ -17,6 +17,7 @@ namespace dotnet_api.Repository
         {
             _context = context;
         }
+
         public async Task<IEnumerable<UsersDto>> GetUsersAsync()
         {
             return await _context.Users

@@ -50,7 +50,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(UsersInsertDto user)
+        public async Task<IActionResult> Post(Users user)
         {
             if (user == null) return BadRequest("Dados Inválidos");
 
@@ -65,7 +65,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, UsersUpdateDto user)
+        public async Task<IActionResult> Put(int id, Users user)
         {
             if (id <= 0) return BadRequest("Usuário não informado");
 
