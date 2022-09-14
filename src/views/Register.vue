@@ -65,6 +65,7 @@
                         <v-btn
                             color="primary"
                             class="mr-3"
+                            type="submit"
                             @click="createUser">
                             Cadastrar</v-btn>
                         <v-btn
@@ -127,6 +128,7 @@ export default {
       this.formData.Email = "";
     },
     async createUser () {
+      
       await api.post("/Users",this.formData)
         .then((response) => {
           this.msg = response.data

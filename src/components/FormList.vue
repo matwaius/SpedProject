@@ -135,7 +135,6 @@ export default {
   },
   methods:{
     onInsertItem(){
-      console.log(this.routerInsert);
       this.$router.push('/'+this.routerInsert);
     },
     onEditItem(){

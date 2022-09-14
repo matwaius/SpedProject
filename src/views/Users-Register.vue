@@ -1,8 +1,12 @@
 <template>
   <FormUpdate 
-      title="Inserir Usuário">
+      title="Inserir Usuário"
+      :width="800"
+      :maxHeight="350"
+      @onSave="save"
+      >
       <template slot="body">
-         <!--CONTEUDO-->
+        <!--CONTEUDO-->
         <v-row>
           <v-col>
             <v-form ref="formUsuarios"
@@ -12,15 +16,57 @@
                 <v-row>
                   <v-col cols="4"
                         style="display: inline-block">
-                    <v-text-field label="Login do Usuários"
-                                  v-model="field_login"
-                                  counter="10"
-                                  max-length="10"
-                                  autofocus>
-
-                    </v-text-field>
+                        <v-text-field
+                        v-model="formData.Login"
+                        :rules="loginRules"
+                        label="Login"
+                        :value="formData.Login= (formData.Login == null) ? formData.Login : formData.Login.toUpperCase()"
+                        required
+                      ></v-text-field>
                   </v-col>
-                </v-row>  
+                  <v-col cols="4"
+                        style="display: inline-block">
+                        <v-text-field
+                          v-model="formData.Password"
+                          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                          :type="show1 ? 'text' : 'password'"
+                          :rules="[rules.required, rules.min]"
+                          @click:append="show1 = !show1"
+                          hint="Min. 4 Caracteres"
+                          label="Senha"
+                          :value="formData.Password = (formData.Password == null) ? formData.Password : formData.Password.toUpperCase()"
+                          required
+                        ></v-text-field>
+                  </v-col>
+                  <v-col cols="4"
+                        style="display: inline-block">
+                        <v-text-field
+                          v-model="formData.ConfirmPassword "
+                          :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                          :type="show2 ? 'text' : 'password'"
+                          :rules="[rules.required, rules.min,rules.equal]"
+                          @click:append="show2 = !show2"
+                          hint="Min. 4 Caracteres"
+                          label="Confirmar Senha"
+                          :value="formData.ConfirmPassword  = (formData.ConfirmPassword  == null) ? formData.ConfirmPassword  : formData.ConfirmPassword .toUpperCase()"
+                          required
+                        ></v-text-field>
+                  </v-col>
+                </v-row> 
+                <v-row>
+                  <v-col cols="12"
+                        style="display: inline-block">
+                        <v-text-field
+                      v-model="formData.Email"
+                      :rules="emailRules"
+                      label="E-mail"
+                      :value="formData.Email = (formData.Email== null) ? formData.Email : formData.Email.toUpperCase()"
+                      required
+                    ></v-text-field>
+                    
+                  </v-col>
+                  
+                </v-row>
               </v-container>
             </v-form>
           </v-col>
@@ -35,16 +81,97 @@ import api from '@/services/api.ts';
 
 export default {
   name:"users",
+  props: {
+      id: Number
+  },
   components: {
-    FormUpdate
+    FormUpdate,
   },
-  data() {
-    return {
-    }
-  },
+  data: () => ({
+    editing: false,
+    show1: false,
+    show2: false,
+    formData: {
+      Id: 0,
+      Login: "",
+      Password: "",
+      ConfirmPassword: "",
+      Email: ""
+    },
+    loginRules: [
+      v => v.length >= 4 || 'Min. 4 Caracteres',
+      v => !!v || 'Login é Obrigatório',
+      v => (v && v.length <= 10) || 'Min. 10 Caracteres'
+    ],
+    rules: {
+      required: value => !!value || 'Senha é Obrigatória.',
+      min: v => v.length >= 4 || 'Min. 4 Caracteres',
+      equal: value => value != this.formData.Password || 'Senha é Obrigatória.',
+    },
+    emailRules: [
+      v => !!v || 'E-mail é Obrigatório.',
+      v => /.+@.+\..+/.test(v) || 'E-mail Invalido',
+    ]
+  }),
   mounted(){
+    if(this.id > 0){
+        this.editing= true;
+        this.formData.Id = this.id;
+
+    }
   },
   methods:{
+    cleanForm () {
+      this.formData.Login = "";
+      this.formData.Password = "";
+      this.formData.ConfirmPassword = "";
+      this.formData.Email = "";
+    },
+    validacao() {
+      let retorno =true;
+      if(this.formData.Login.length == 0 || 
+          this.formData.Password.length == 0 || 
+          this.formData.ConfirmPassword.length == 0 ||
+          this.formData.Email.length == 0){
+          retorno= false;
+      }
+      return retorno;
+    },
+    save() {
+      this.onSave();
+    },
+    async onSave () {
+      if(this.validacao() == true ){
+        if(this.editing == true){
+          await api.put("/Users",this.formData)
+            .then((response) => {
+              this.msg = response.data
+            })
+            .catch((error) => {
+              console.log(error.response)
+            })
+        }else{
+          await api.post("/Users",this.formData)
+            .then((response) => {
+              this.msg = response.data
+            })
+            .catch((error) => {
+              console.log(error.response)
+            })
+        }
+        setTimeout(() => this.msg="", 3000);
+        this.$router.go(-1);
+      }
+    },
+    async getUser(){
+      await api.get("/Users",this.formData)
+            .then((response) => {
+              this.msg = response.data
+            })
+            .catch((error) => {
+              console.log(error.response)
+            })
     }
+  }
 }
 </script>
