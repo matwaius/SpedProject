@@ -1,6 +1,7 @@
 <template>
   <app name="ReportCFDay">
     <div>
+      <h1>Relatório - AJUSTAR</h1>
 
     <v-container   fluid >
       <v-btn color="error" dark @click="Return">Retornar</v-btn>
@@ -23,7 +24,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="dateFormatted"
-                label="Date"
+                label="Data Inicial"
                 persistent-hint
                 prepend-icon="mdi-calendar"
                 v-bind="attrs"
@@ -54,7 +55,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="dateFormatted2"
-                label="Date"
+                label="Data Final"
                 persistent-hint
                 prepend-icon="mdi-calendar"
                 v-bind="attrs"
@@ -105,7 +106,7 @@ import axios from 'axios'
 import moment from 'moment'
 
 export default {
-  name: 'ReportMain',
+  name: 'ReportCFDay',
   data: vm => ({
     list: undefined,
     list2: [],

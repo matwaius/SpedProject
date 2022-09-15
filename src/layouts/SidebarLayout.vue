@@ -56,8 +56,6 @@ export default {
     items: [
       { title: 'Carregar Arquivo', icon: 'mdi-archive', to: '/home' },
       { title: 'Relatórios', icon: 'mdi-monitor-dashboard', to: '/reports' },
-      { title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/usuarios' },
-      { title: 'Relatórios', icon: 'mdi-monitor-dashboard', to: '/dashboard' },
       { title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/Users' },
       { title: 'Sobre', icon: 'mdi-information-outline', to: '/sobre' }
     ]
