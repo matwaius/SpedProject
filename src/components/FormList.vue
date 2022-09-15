@@ -74,7 +74,8 @@
                               v-bind="attrs"
                               v-on="on"
                               class="mr-2"
-                              :disabled="false">
+                              :disabled="false"
+                              @click="onEditItem(item)">
                               mdi-pencil
                           </v-icon>
                         </template>
@@ -87,7 +88,8 @@
                               v-bind="attrs"
                               v-on="on"
                               class="mr-2"
-                              :disabled="false">
+                              :disabled="false"
+                              @click="onDeleteItem(item)">
                               mdi-delete
                           </v-icon>
                         </template>
@@ -113,6 +115,7 @@
 
 <script>
 import SidebarLayoutVue from "@/layouts/SidebarLayout.vue";
+import api from '@/services/api.ts';
 
 export default {
   name:"FormList",
@@ -122,8 +125,11 @@ export default {
   props: {
       title: String,
       routerInsert:"",
+      routerUpdate:"",
+      tabela:"",
       tableHeader: [],
       tableItems: [],
+      itemDelete:null,
       fieldSearch: ""
   },
   data() {
@@ -135,16 +141,31 @@ export default {
   },
   methods:{
     onInsertItem(){
-      console.log(this.routerInsert);
       this.$router.push('/'+this.routerInsert);
     },
-    onEditItem(){
-      this.$router.push('/'+this.routerInsert);
+    onEditItem(item){
+      console.log('/'+this.routerUpdate+'/'+item.Id);
+        this.$router.push({
+          path:'/'+this.routerUpdate+'/'+item.Id,
+          name: "Users-Editar",
+          params:{
+            id:item.id
+          }
+      })
     },
-    onDeleteItem(){
-      this.$router.push('/'+this.routerInsert);
+    async onDeleteItem(item){
+      await api.delete(`/${this.tabela}/${item.Id}`)
+            .then((response) => {
+            })
+            .catch((error) => {
+              console.log(error.response)
+            })
+      this.tableItems.splice(this.tableItems.findIndex(f => f==item),1);      
     }
-  }
+    
+    },
+  
+
 }
 
 </script>

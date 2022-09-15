@@ -1,9 +1,9 @@
 <template>
   <sidebar-layout-vue>
     <v-container class="fill-height flex-column">
-        <v-card :width="800"
+        <v-card :width="width"
           height="100%"
-          max-height="480"
+          :max-height="maxHeight"
           class="mx-auto"
           outilined
           elevation="3">
@@ -65,7 +65,6 @@
                   </v-btn>
             </v-row>
           </v-container>
-
         </v-card>
     </v-container>
   </sidebar-layout-vue>
@@ -81,6 +80,8 @@ export default {
   },
   props: {
       title: String,
+      width: Number,
+      maxHeight: Number,
   },
   data() {
     return {
@@ -88,10 +89,10 @@ export default {
   },
   methods:{
     onSave(){
-      console.log(this.routerInsert);
+      this.$emit('onSave')
     },
     onCancel(){
-      console.log(this.routerInsert);
+      this.$router.go(-1);
     }
   }
 }

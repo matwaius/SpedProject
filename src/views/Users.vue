@@ -1,7 +1,9 @@
 <template>
   <FormList
       title="Cadastro de Usuários"
-      routerInsert="usuarios-registrar"
+      routerInsert="Users-Insert"
+      routerUpdate="Users-Edit"
+      tabela="Users"
       :tableHeader="tableheader"
       :tableItems="tableitems"
       >
@@ -14,7 +16,7 @@ import Register from "./Register.vue";
 import api from '@/services/api.ts';
 
 export default {
-  name:"users",
+  name:"Users",
   components: {
     FormList,
     Register
