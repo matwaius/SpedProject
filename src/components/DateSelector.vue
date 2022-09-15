@@ -1,8 +1,7 @@
 <template>
-  <app name="dashboard">
-    <sidebar-layout-vue>
-
-  <v-container  class="fill-height" fluid v-if="show">
+  <app name="dateSelector">
+<template>
+  <v-container>
     <v-row>
       <v-col
         cols="12"
@@ -21,7 +20,6 @@
             <v-text-field
               v-model="dateFormatted"
               label="Date"
-              hint="YYYY-MM-DD format"
               persistent-hint
               prepend-icon="mdi-calendar"
               v-bind="attrs"
@@ -54,7 +52,6 @@
             <v-text-field
               v-model="dateFormatted2"
               label="Date"
-              hint="YYYY-MM-DD format"
               persistent-hint
               prepend-icon="mdi-calendar"
               v-bind="attrs"
@@ -71,63 +68,15 @@
       </v-col>
     </v-row>
   </v-container>
-
-  <v-btn color="warning" dark @click="Filter">Filtrar</v-btn>
-
-      <br/>
-<v-card
-    class="mx-auto"
-    max-width="500"
-    tile
-  >
-    <v-list dense>
-      <v-subheader>Relatórios</v-subheader>
-      <v-list-item-group
-        v-model="selectedItem"
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon v-text="item.icon"></v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.text"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
-  </v-card>
-    </sidebar-layout-vue>
-    <footer-layout-vue></footer-layout-vue>
+</template>
   </app>
 </template>
 
 <script>
-import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
-import FooterLayoutVue from '@/layouts/FooterLayout.vue'
-
-import reports from '@/services/reports.ts'
 
 export default {
-  name: 'ReportMain',
-  show: false,
+  name: 'DateSelector',
   data: vm => ({
-    items: [
-      { text: 'ReportCFDay', icon: 'mdi-clock', to: '/ReportCFDay' },
-      { text: 'ReportNFDay', icon: 'mdi-account', to: '/ReportNFDay' },
-      { text: 'ReportNFDayByICMS', icon: 'mdi-flag', to: '/ReportNFDayByICMS' },
-      { text: 'ReportNFDayByICMSST', icon: 'mdi-flag', to: '/ReportNFDayByICMSST' },
-      { text: 'ReportNFDepartureDayByRedZ', icon: 'mdi-flag', to: '/ReportNFDepartureDayByRedZ' },
-      { text: 'ReportNFDepartureDayByUF', icon: 'mdi-flag', to: '/ReportNFDepartureDayByUF' },
-      { text: 'ReportNFQtdDay', icon: 'mdi-flag', to: '/ReportNFQtdDay' },
-      { text: 'ReportNFQtdDayByUF', icon: 'mdi-flag', to: '/ReportNFQtdDayByUF' },
-      { text: 'ReportTotalizersDay', icon: 'mdi-flag', to: '/ReportTotalizersDay' }
-    ],
     date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
     date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
     dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
@@ -135,10 +84,6 @@ export default {
     menu1: false,
     menu2: false
   }),
-  components: {
-    SidebarLayoutVue,
-    FooterLayoutVue
-  },
   computed: {
     computedDateFormatted () {
       return this.formatDate(this.date)
@@ -155,23 +100,13 @@ export default {
   methods: {
     formatDate (date) {
       if (!date) return null
-
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
     parseDate (date) {
       if (!date) return null
-
       const [day, month, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-    },
-    Filter () {
-      reports.ReportNFDepartureDayByUF(this.date, this.date2).then(response => {
-        console.log(response.data)
-        this.Ufs = response.data
-          .catch(error => console.log(error))
-      })
-        .catch(error => console.log(error))
     }
   }
 }

@@ -1,14 +1,17 @@
 <template>
+  <div>
   <FormUpdate 
-      title="Inserir Usuário"
+      :title="this.title"
       :width="800"
       :maxHeight="350"
-      @onSave="save"
+      @onSave="onSave"
       >
       <template slot="body">
+        
         <!--CONTEUDO-->
         <v-row>
           <v-col>
+            
             <v-form ref="formUsuarios"
                     @submit.prevent="onSave"
                     autocomplete="off">
@@ -69,15 +72,20 @@
                 </v-row>
               </v-container>
             </v-form>
+            
           </v-col>
+          <!--<Message :msg="msg" v-show="msg"/>-->
         </v-row>
       </template>
   </FormUpdate>
+  </div>
+  
 </template>
 
 <script>
 import FormUpdate from "@/components/FormUpdate.vue";
 import api from '@/services/api.ts';
+import * as validations from '@/services/validation.ts';
 
 export default {
   name:"users",
@@ -85,9 +93,11 @@ export default {
       id: Number
   },
   components: {
-    FormUpdate,
+    FormUpdate
   },
   data: () => ({
+    title: "",
+    msg: "",
     editing: false,
     show1: false,
     show2: false,
@@ -114,10 +124,14 @@ export default {
     ]
   }),
   mounted(){
+    console.log(this.id);
+    this.title = "Inserir Usuário";
     if(this.id > 0){
-        this.editing= true;
-        this.formData.Id = this.id;
-
+      this.title="Alterar Usuário";
+      console.log('bbbb');
+      this.editing= true;
+      this.formData.Id = this.id;
+      getUser();
     }
   },
   methods:{
@@ -134,11 +148,10 @@ export default {
           this.formData.ConfirmPassword.length == 0 ||
           this.formData.Email.length == 0){
           retorno= false;
+          this.msg = "Dados Incorretos!";
+          setTimeout(() => this.msg="", 3000);
       }
       return retorno;
-    },
-    save() {
-      this.onSave();
     },
     async onSave () {
       if(this.validacao() == true ){
@@ -164,9 +177,13 @@ export default {
       }
     },
     async getUser(){
-      await api.get("/Users",this.formData)
+      await api.get("/Users/"+this.id)
             .then((response) => {
-              this.msg = response.data
+              this.formData.Id = response.data.Id;
+              this.formData.Login = response.data.Login;
+              this.formData.Password = response.data.Password;
+              this.formData.Email = response.data.Email;
+              console.log(response.data);
             })
             .catch((error) => {
               console.log(error.response)

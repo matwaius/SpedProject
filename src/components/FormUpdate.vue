@@ -65,7 +65,6 @@
                   </v-btn>
             </v-row>
           </v-container>
-
         </v-card>
     </v-container>
   </sidebar-layout-vue>

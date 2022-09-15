@@ -1,7 +1,9 @@
 <template>
-  <FormList 
+  <FormList
       title="Cadastro de Usuários"
-      routerInsert="usuarios-registrar"
+      routerInsert="Users-Insert"
+      routerUpdate="Users-Edit"
+      tabela="Users"
       :tableHeader="tableheader"
       :tableItems="tableitems"
       >
@@ -14,7 +16,7 @@ import Register from "./Register.vue";
 import api from '@/services/api.ts';
 
 export default {
-  name:"users",
+  name:"Users",
   components: {
     FormList,
     Register
@@ -31,19 +33,19 @@ export default {
       tableitems:[]
     }
   },
-  mounted(){
-    this.GetUser();
+  mounted () {
+    this.GetUser()
   },
   methods:{
     async GetUser () {
-        await api.get("/Users")
-          .then((response) => {
-            this.tableitems = response.data;
-          })
-          .catch((error) => {
-            console.log(error.response)
-          });
-      }
+      await api.get("/Users")
+        .then((response) => {
+          this.tableitems = response.data;
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
     }
+  }
 }
 </script>
