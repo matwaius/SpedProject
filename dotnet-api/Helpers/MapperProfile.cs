@@ -16,6 +16,7 @@ namespace dotnet_api.Helpers
             CreateMap<Users, Users>();
             CreateMap<Users, Users>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            //
         }
 
     }

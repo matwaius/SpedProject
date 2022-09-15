@@ -44,7 +44,7 @@ const routes = [
     component: () => import('../views/Users-Register.vue')
   },
   {
-    path:`/Users-Editar/:id`,
+    path: `/Users-Editar/:id`,
     name: "Users-Editar",
     component: () => import('@/views/Users-Register.vue')
   },
