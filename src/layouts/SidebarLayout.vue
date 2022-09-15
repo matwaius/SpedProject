@@ -55,8 +55,11 @@ export default {
     drawer: false,
     items: [
       { title: 'Carregar Arquivo', icon: 'mdi-archive', to: '/home' },
+<<<<<<< HEAD
       { title: 'Relatórios', icon: 'mdi-monitor-dashboard', to: '/reports' },
       { title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/usuarios' },
+=======
+>>>>>>> ceb96f4c8a30533aeb102fa4993cfad14609dbef
       { title: 'Relatórios', icon: 'mdi-monitor-dashboard', to: '/dashboard' },
       { title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/Users' },
       { title: 'Sobre', icon: 'mdi-information-outline', to: '/sobre' }
