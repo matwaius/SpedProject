@@ -1,44 +1,153 @@
 <template>
-  <div class="container">
-    <Bar v-if="loaded" :chart-data="chartData" />
+  <div>
+    <h1>Relatório - Relatório de ICMS</h1>
+
+    <v-col
+          cols="12"
+          sm="6"
+        >
+          <v-text-field
+            v-model="dateStart"
+            label="dateStart"
+            outlined
+            clearable
+          ></v-text-field>
+        </v-col>
+
+        <v-col
+          cols="12"
+          sm="6"
+        >
+          <v-text-field
+            v-model="dateEnd"
+            label="dateEnd"
+            outlined
+            clearable
+          ></v-text-field>
+        </v-col>
+
+        <v-container  class="fill-height" fluid v-if="show">
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-menu
+          ref="menu1"
+          v-model="menu1"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          max-width="290px"
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="dateFormatted"
+              label="Date"
+              hint="YYYY-MM-DD format"
+              persistent-hint
+              prepend-icon="mdi-calendar"
+              v-bind="attrs"
+              @blur="date = parseDate(dateFormatted)"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="date"
+            no-title
+            @input="menu1 = false"
+          ></v-date-picker>
+        </v-menu>
+      </v-col>
+
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-menu
+          ref="menu2"
+          v-model="menu2"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          max-width="290px"
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="dateFormatted2"
+              label="Date"
+              hint="YYYY-MM-DD format"
+              persistent-hint
+              prepend-icon="mdi-calendar"
+              v-bind="attrs"
+              @blur="date2 = parseDate(dateFormatted2)"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="date2"
+            no-title
+            @input="menu2 = false"
+          ></v-date-picker>
+        </v-menu>
+      </v-col>
+    </v-row>
+  </v-container>
+
+
+
+
+    <v-btn color="warning" dark @click="Filter">Filtrar</v-btn>
+    <h2>{{dateStart}}</h2>
+    <h2>{{dateEnd}}</h2>
+    <table border = '1px'>
+      <tr>
+        <td>Data</td>
+        <td>Valor</td>
+      </tr>
+      <tr v-for="item in this.list" v-bind:key="item.DT_DOC">
+        <td>{{item.DT_DOC}}</td>
+        <td>{{item.VL_DOC}}</td>
+      </tr>
+    </table>
+
   </div>
 </template>
 
 <script>
-import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+import reports from '@/services/reports.ts'
+import axios from 'axios'
 
 export default {
-  name: 'BarChart',
-  components: { Bar },
+  name: 'ReportCFDay',
   data () {
     return {
-      loaded: false,
-      chartData: {
-        labels: [ 'January', 'February', 'March'],
-        datasets: [
-          {
-            label: 'Data One',
-            backgroundColor: '#f87979',
-            data: [40, 20, 12]
-          }
-        ]
-      }
+      list: undefined,
+      dateStart: '',
+      dateEnd: '',
+      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      dateFormatted: formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+      dateFormatted2: formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+      menu1: false,
+      menu2: false
     }
   },
-  async mounted () {
-    this.loaded = true
+  components: {
 
-    /*try {
-      const { userlist } = await fetch('/api/userlist')
-      this.chartdata = userlist
-
-      this.loaded = true
-    } catch (e) {
-      console.error(e)
-    }*/
+  },
+  methods: {
+    Filter () {
+      axios
+        .post('https://localhost:7258/api/ReportCFDay?dateStart=' + this.dateStart + '&dateEnd=' + this.dateEnd).then(response => {
+          this.list = response.data
+          console.log(response.data) })
+    }
+  },
+  mounted () {
   }
 }
 </script>

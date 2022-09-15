@@ -50,13 +50,12 @@
 </template>
 
 <script>
-import api from '@/services/api.ts'
 export default {
   data: () => ({
     drawer: false,
     items: [
       { title: 'Carregar Arquivo', icon: 'mdi-archive', to: '/home' },
-      { title: 'Relatórios', icon: 'mdi-monitor-dashboard', to: '/dashboard' },
+      { title: 'Relatórios', icon: 'mdi-monitor-dashboard', to: '/reports' },
       { title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/usuarios' },
       { title: 'Sobre', icon: 'mdi-information-outline', to: '/sobre' }
     ]
@@ -69,6 +68,3 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>

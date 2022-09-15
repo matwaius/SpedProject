@@ -1,79 +1,196 @@
 <template>
-  <div>
-    <h1>Relatório - Relatório de ICMS</h1>
+  <app name="ReportCFDay">
+    <div>
 
-    <v-col
-          cols="12"
-          sm="6"
-        >
-          <v-text-field
-            v-model="dateStart"
-            label="dateStart"
-            outlined
-            clearable
-          ></v-text-field>
-        </v-col>
-
+    <v-container   fluid >
+      <v-btn color="error" dark @click="Return">Retornar</v-btn>
+      <br/>
+      <br/>
+      <v-row>
         <v-col
-          cols="12"
-          sm="6"
+          cols="3"
+          lg="3"
         >
-          <v-text-field
-            v-model="dateEnd"
-            label="dateEnd"
-            outlined
-            clearable
-          ></v-text-field>
+          <v-menu
+            ref="menu1"
+            v-model="menu1"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="dateFormatted"
+                label="Date"
+                persistent-hint
+                prepend-icon="mdi-calendar"
+                v-bind="attrs"
+                @blur="date = parseDate(dateFormatted)"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="date"
+              no-title
+              @input="menu1 = false"
+            ></v-date-picker>
+          </v-menu>
         </v-col>
+        <v-col
+          cols="6"
+          lg="3"
+        >
+          <v-menu
+            ref="menu2"
+            v-model="menu2"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="dateFormatted2"
+                label="Date"
+                persistent-hint
+                prepend-icon="mdi-calendar"
+                v-bind="attrs"
+                @blur="date2 = parseDate(dateFormatted2)"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="date2"
+              no-title
+              @input="menu2 = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 
-
-
-
-
-
+  <v-container fluid>
     <v-btn color="warning" dark @click="Filter">Filtrar</v-btn>
-    <h2>{{dateStart}}</h2>
-    <h2>{{dateEnd}}</h2>
+  </v-container>
+
+  <v-container fluid>
+    <br/>
     <table border = '1px'>
       <tr>
         <td>Data</td>
         <td>Valor</td>
       </tr>
-      <tr v-for="item in this.list" v-bind:key="item.DT_DOC">
+      <tr v-for="item in this.list2" v-bind:key="item.DT_DOC">
         <td>{{item.DT_DOC}}</td>
         <td>{{item.VL_DOC}}</td>
       </tr>
     </table>
+  </v-container>
 
-  </div>
+  <v-container>
+    <Bar :chart-data="chartData" />
+  </v-container>
+
+  <footer-layout-vue></footer-layout-vue>
+  </app>
 </template>
 
 <script>
-
-import reports from '@/services/reports.ts'
+import FooterLayoutVue from '@/layouts/FooterLayout.vue'
 import axios from 'axios'
+import moment from 'moment'
 
 export default {
-  name: 'ReportCFDay',
-  data () {
-    return {
-      list: undefined,
-      dateStart: '',
-      dateEnd: ''
+  name: 'ReportMain',
+  data: vm => ({
+    list: undefined,
+    list2: [],
+    loaded: false,
+    date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+    date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+    dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+    dateFormatted2: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+    menu1: false,
+    menu2: false,
+    chartData: {
+      labels: ['Janeiro', 'Fevereiro', 'Março'],
+      datasets: [
+        {
+          label: 'Data One',
+          backgroundColor: '#f87979',
+          data: [40, 62, 12]
+        }
+      ]
+    }
+  }),
+  components: {
+    FooterLayoutVue
+  },
+  computed: {
+    computedDateFormatted () {
+      return this.formatDate(this.date)
     }
   },
-  components: {
-
+  watch: {
+    date (val) {
+      this.dateFormatted = this.formatDate(this.date)
+    },
+    date2 (val) {
+      this.dateFormatted = this.formatDate(this.date)
+    }
   },
   methods: {
-    Filter () {
+    formatDate (date) {
+      if (!date) return null
+
+      const [year, month, day] = date.split('-')
+      return `${day}/${month}/${year}`
+    },
+    parseDate (date) {
+      if (!date) return null
+
+      const [day, month, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    },
+    FilterBKP () {/*OK - Sem o moment para corrigir a data que está vindo datetime do backend */
       axios
-        .post('https://localhost:7258/api/ReportCFDay?dateStart=' + this.dateStart + '&dateEnd=' + this.dateEnd).then(response => {
+        .post('https://localhost:7258/api/ReportCFDay?dateStart=' + this.date + '&dateEnd=' + this.date2).then(response => {
           this.list = response.data
-          console.log(response.data) })
+          this.loaded = true
+          console.log(response.data)
+        }
+        ).catch(error => console.log(error))
+    },
+    Filter () {/*Com o moment para corrigir a data que está vindo datetime do backend */
+      axios
+        .post('https://localhost:7258/api/ReportCFDay?dateStart=' + this.date + '&dateEnd=' + this.date2).then(response => {
+          this.list = response.data
+
+          this.list.forEach(d => {
+            const DT_DOC = moment(d.DT_DOC, 'DD/MM/YYYY 00:00:00').format('DD/MM/YYYY')
+            const {
+              VL_DOC
+            } = d
+            this.list2.push({ DT_DOC, VL_DOC })
+          })
+          this.loaded = true
+          console.log(response.data)
+          console.log('teste')
+          console.log(this.list2)
+        }
+        )
+    },
+    Return () {
+      this.$router.push('/reports')
+    },
+    mounted () {
+      this.loaded = false
     }
-  },
-  mounted () {
   }
 }
+
 </script>
