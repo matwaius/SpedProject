@@ -28,7 +28,7 @@ namespace dotnet_api.Repository
         public async Task<Users> GetUsersByIdAsync(int Id)
         {
             return await _context.Users
-                        .Select(x => new Users { Id = x.Id, Login = x.Login, Email = x.Email })
+                        .Select(x => new Users { Id = x.Id, Login = x.Login, Password = x.Password, Email = x.Email })
                         .Where(x => x.Id == Id).FirstOrDefaultAsync();
         }
 

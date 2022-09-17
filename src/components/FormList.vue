@@ -78,6 +78,7 @@
                               @click="onEditItem(item)">
                               mdi-pencil
                           </v-icon>
+                          <!--<router-link :to="`/Users-Editar/${item.id}`"> alterar</router-link>-->
                         </template>
                         <span>Alterar</span>
                       </v-tooltip>
@@ -130,7 +131,16 @@ export default {
       tableHeader: [],
       tableItems: [],
       itemDelete:null,
-      fieldSearch: ""
+      fieldSearch: "",
+      User:{
+        props:['id'],
+        mounted() {
+          {
+            console.log(this.$route.params.id); // this is returning the value
+             console.log(this.id); // this is giving undefined
+          }
+        },
+      }
   },
   data() {
     return {
@@ -144,12 +154,10 @@ export default {
       this.$router.push('/'+this.routerInsert);
     },
     onEditItem(item){
-      console.log('/'+this.routerUpdate+'/'+item.Id);
         this.$router.push({
-          path:'/'+this.routerUpdate+'/'+item.Id,
-          name: "Users-Editar",
+          name: this.routerUpdate,
           params:{
-            id:item.id
+            id:item.Id 
           }
       })
     },

@@ -44,9 +44,10 @@ const routes = [
     component: () => import('../views/Users-Register.vue')
   },
   {
-    path: `/Users-Editar/:id`,
-    name: "Users-Editar",
-    component: () => import('@/views/Users-Register.vue')
+    path: `/Users-Edit/:id`,
+    name: "Users-Edit",
+    component: () => import('@/views/Users-Register.vue'),
+    props:true //router => router.params
   },
   {
     path: '/ReportCFDay',

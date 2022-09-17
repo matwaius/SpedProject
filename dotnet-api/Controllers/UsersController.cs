@@ -42,7 +42,7 @@ namespace dotnet_api.Controllers
         {
             var user = await _repository.GetUsersByIdAsync(id);
 
-            var userRet = _mapper.Map<UsersDto>(user);
+            var userRet = _mapper.Map<Users>(user);
 
             return userRet != null
                 ? Ok(userRet)

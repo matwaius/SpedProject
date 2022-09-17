@@ -18,10 +18,8 @@
                   <v-toolbar-title class="font-weight-medium">
                     {{title}}
                   </v-toolbar-title> 
-
                   <!--slot CABEÇALHO-->
                   <slot name="header"></slot>
-
                 </v-toolbar>
               </v-col>
             </v-row>

@@ -1,4 +1,5 @@
 <template>
+  <div>
   <app name="ReportCFDay">
     <div>
       <h1>Relatório - AJUSTAR</h1>
@@ -98,6 +99,7 @@
 
   <footer-layout-vue></footer-layout-vue>
   </app>
+</div>
 </template>
 
 <script>
