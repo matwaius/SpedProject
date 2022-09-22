@@ -1,10 +1,14 @@
 <template>
   <app name="reports">
     <sidebar-layout-vue>
-    <v-card
-      class="mx-auto"
-      max-width="500"
-      tile
+    <v-container class="fill-height flex-column">
+        <v-card :width="800"
+          height="100%"
+          max-height="430"
+          class="mx-auto"
+          outilined
+          elevation="3"
+          max-width="300"
     >
     <v-list dense>
       <v-subheader>Relatórios</v-subheader>
@@ -28,6 +32,7 @@
       </v-list-item-group>
     </v-list>
     </v-card>
+    </v-container>
     </sidebar-layout-vue>
     <footer-layout-vue></footer-layout-vue>
   </app>
@@ -41,15 +46,15 @@ export default {
   name: 'ReportMain',
   data: vm => ({
     items: [
-      { text: 'Relatório de ICMS', icon: 'mdi-clock', to: '/ReportCFDay' },
-      { text: 'ReportNFDay', icon: 'mdi-account', to: '/ReportNFDay' },
-      { text: 'ReportNFDayByICMS', icon: 'mdi-flag', to: '/ReportNFDayByICMS' },
-      { text: 'ReportNFDayByICMSST', icon: 'mdi-flag', to: '/ReportNFDayByICMSST' },
-      { text: 'ReportNFDepartureDayByRedZ', icon: 'mdi-flag', to: '/ReportNFDepartureDayByRedZ' },
-      { text: 'ReportNFDepartureDayByUF', icon: 'mdi-flag', to: '/ReportNFDepartureDayByUF' },
-      { text: 'ReportNFQtdDay', icon: 'mdi-flag', to: '/ReportNFQtdDay' },
-      { text: 'ReportNFQtdDayByUF', icon: 'mdi-flag', to: '/ReportNFQtdDayByUF' },
-      { text: 'ReportTotalizersDay', icon: 'mdi-flag', to: '/ReportTotalizersDay' }
+      { text: 'Relatório de ICMS', icon: 'mdi-hexagon', to: '/ReportCFDay' },
+      { text: 'ReportNFDay', icon: 'mdi-hexagon', to: '/ReportNFDay' },
+      { text: 'ReportNFDayByICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' },
+      { text: 'ReportNFDayByICMSST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' },
+      { text: 'ReportNFDepartureDayByRedZ', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
+      { text: 'ReportNFDepartureDayByUF', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByUF' },
+      { text: 'ReportNFQtdDay', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' },
+      { text: 'ReportNFQtdDayByUF', icon: 'mdi-hexagon', to: '/ReportNFQtdDayByUF' },
+      { text: 'ReportTotalizersDay', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' }
     ]
   }),
   components: {
