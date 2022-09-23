@@ -84,7 +84,7 @@ namespace dotnet_api.Controllers
                                         })
                                         .Select(s => new
                                         {
-                                            DT_DOC = s.Key.grp_date,
+                                            DT_DOC = s.Key.grp_date.ToString().Substring(0,10),
                                             VL_DOC = s.Sum(ss => Library.GetDecimal(ss["VL_DOC"].ToString()))
                                         }).ToList();
 

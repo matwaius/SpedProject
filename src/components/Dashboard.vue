@@ -99,7 +99,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 :disabled="false"
-                                @click="filtrar">
+                                @click="filtros">
                                 <v-icon>mdi-magnify</v-icon>
                             </v-btn>
                           </template>
@@ -226,7 +226,7 @@ export default {
       tableHeader: [],
       tableItems: [],
       maxHeight:"",
-      dataInicial:"",
+      filtro:[],
       dadosGrafico: {
         colunas: [],
         dados: []
@@ -276,18 +276,18 @@ export default {
       pageNumber: 0,
       chartData: {
           labels: [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December'
           ],
           datasets: [
             {
@@ -296,7 +296,7 @@ export default {
               data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
             }
           ]
-        },
+      },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false
@@ -312,7 +312,7 @@ export default {
       this.dateFormatted = this.formatDate(this.date)
     },
     date2 (val) {
-      this.dateFormatted = this.formatDate(this.date)
+      this.dateFormatted2 = this.formatDate(this.date2)
     }
   },
   methods: {
@@ -331,21 +331,20 @@ export default {
       return () {
         this.$route.go(-1);
       },
-      setup(props, { emit }){
+      filtros(){
+        
       console.log('aaaaa');
-      function filtrar(){
-        console.log('aaaaa');
-        console.log('bbb');
-        emit("dataInicial",props.dataInicial);
-      }
-      return {
-        filtrar
-      }
-    },
+          this.date = "2021-06-01";
+          this.date2 = "2021-06-30";
+          this.filtros = [ 
+                    { dataInicial: this.date, dataFinal: this.date2, ind: this.field_ind.id },
+          ];
+          this.$emit("filtros",this.filtros);
+      },
   },
   created () {
       this.loaded = false;
-      this.dadosGrafico = this.chartData;
+      //this.dadosGrafico = this.chartData;
   }
 }
 </script>

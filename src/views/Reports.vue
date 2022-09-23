@@ -8,7 +8,7 @@
           class="mx-auto"
           outilined
           elevation="3"
-          max-width="300"
+          max-width="350"
     >
     <v-list dense>
       <v-subheader>Relatórios</v-subheader>
@@ -46,15 +46,15 @@ export default {
   name: 'ReportMain',
   data: vm => ({
     items: [
-      { text: 'Relatório de ICMS', icon: 'mdi-hexagon', to: '/ReportCFDay' },
-      { text: 'ReportNFDay', icon: 'mdi-hexagon', to: '/ReportNFDay' },
-      { text: 'ReportNFDayByICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' },
-      { text: 'ReportNFDayByICMSST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' },
-      { text: 'ReportNFDepartureDayByRedZ', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
-      { text: 'ReportNFDepartureDayByUF', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByUF' },
-      { text: 'ReportNFQtdDay', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' },
-      { text: 'ReportNFQtdDayByUF', icon: 'mdi-hexagon', to: '/ReportNFQtdDayByUF' },
-      { text: 'ReportTotalizersDay', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' }
+      { text: 'Relatório de Cupom Fiscal', icon: 'mdi-hexagon', to: '/ReportCFDay' },
+      { text: 'Relatório de Nota Fiscal', icon: 'mdi-hexagon', to: '/ReportNFDay' },
+      { text: 'Relatório de Nota Fisca por ICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' },
+      { text: 'Relatório de Nota Fisca por ICMS ST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' },
+      { text: 'Relatório por Redução Z', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
+      { text: 'Relatório de Nota Fiscal por UF', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByUF' },
+      { text: 'Relatório Nota Fiscal por Quantidade', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' },
+      { text: 'Relatório Nota Fiscal por Quantidade por UF', icon: 'mdi-hexagon', to: '/ReportNFQtdDayByUF' },
+      { text: 'Relatório Nota Fiscal por Totalizadores', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' }
     ]
   }),
   components: {

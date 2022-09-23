@@ -2,13 +2,13 @@
 <div>
   <Dashboard
       title="Relatório de Cupom Fiscal por Dia"
-      :show_ind=false
+      :show_ind=true
       :show_table="false"
       :maxHeight = "570"
       :tableHeader="tableheader"
       :tableItems="tableitems"
       :dadosGrafico="chartData"
-      @dataInicial ="setaDataInicial($event)"
+      @filtros ="setaFiltros"
       >
   </Dashboard>
 </div>
@@ -16,40 +16,35 @@
 
 <script>
 import Dashboard from '@/components/Dashboard.vue'
-import {ref} from 'vue';
+import api from '@/services/api.ts';
 
 export default {
   name: 'ReportCFDay',
   props:{
-    dataInicial: "",
-    dataFinal: "",
+    filtro:[],
   },
   data() {
     return {
       dateInicial: "",
       dateFinal: "",
+      indOperacao: "",
       tableheader: [],
       tableitems:[],
+      colunas:[],
+      dados:[],
       chartData: {
           labels: [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
+             //teste
+            '01/06/2021','02/06/2021','04/06/2021'
           ],
           datasets: [
             {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+              label: '',
+              backgroundColor: '#489999',
+              data: [
+                //teste
+                2098.22,30020.08,14279.29
+              ]
             }
           ]
         }
@@ -58,27 +53,25 @@ export default {
   components: {
       Dashboard
   },
-  setup() {
-    function setaDataInicial(e){
-      this.dateInicial= e;
-      console.log(e);
-    }
-    return{
-      setaDataInicial
-    }
-  },
   methods: { 
     GetRel () {
-        axios
-          .post('https://localhost:7258/api/ReportCFDay?dateStart=' + this.dateInicial + '&dateEnd=' + this.dateFinal).then(response => {
-            this.list = response.data
-            this.loaded = true
-            console.log(response.data)
-          }
-          ).catch(error => console.log(error))
+      
+        api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+          .then(response => {
+              this.chartData.datasets[0].label="Dias";
+              for (let i = 0; i < response.data.length; i++) {
+                this.chartData.labels.push(response.data[i].DT_DOC);
+                this.chartData.datasets[0].data.push(response.data[i].VL_DOC);
+              }
+          })
+          .catch(error => console.log(error))
+    },
+    setaFiltros(e){
+      this.filtros = e;
+      this.GetRel();
     }
   },
-  onMounted(){
+  created(){
 
   }
 }
