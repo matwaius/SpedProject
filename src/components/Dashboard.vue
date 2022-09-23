@@ -27,7 +27,7 @@
                         style="display: inline-block">
                     <v-menu
                       ref="menu1"
-                      v-model="menu1"
+                      v-model="this.menu1"
                       :close-on-content-click="false"
                       transition="scale-transition"
                       offset-y
@@ -45,9 +45,9 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="this.date"
+                        v-model="date"
                         no-title
-                        @input="this.menu1 = false"
+                        @input="menu1 = false"
                       ></v-date-picker>
                     </v-menu>
                 </v-col>
@@ -226,7 +226,6 @@ export default {
       tableHeader: [],
       tableItems: [],
       maxHeight:"",
-      filtro:[],
       dadosGrafico: {
         colunas: [],
         dados: []
@@ -265,6 +264,7 @@ export default {
       ind_operacao: [{id: 0, name: "Entrada"},{id: 1, name: "Saida"}],
       list: undefined,
       list2: [],
+      dadosFiltro:[],
       loaded: false,
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
@@ -333,17 +333,23 @@ export default {
       },
       filtros(){
         
-      console.log('aaaaa');
-          this.date = "2021-06-01";
-          this.date2 = "2021-06-30";
-          this.filtros = [ 
-                    { dataInicial: this.date, dataFinal: this.date2, ind: this.field_ind.id },
-          ];
-          this.$emit("filtros",this.filtros);
+          if(this.validacoes()==true){
+            this.dadosFiltro = [ 
+                      { dataInicial: this.date, dataFinal: this.date2, ind: this.field_ind.id },
+            ];
+            this.$emit("filtros",this.dadosFiltro);
+          }
       },
+      validacoes(){
+        let retorno = true;
+        return retorno;
+      }
   },
   created () {
       this.loaded = false;
+      //data teste
+      this.date = "2021-06-01";
+      this.date2 = "2021-06-30";
       //this.dadosGrafico = this.chartData;
   }
 }
