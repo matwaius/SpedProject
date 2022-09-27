@@ -10,8 +10,29 @@
           <v-container>
             
             <!--CABEÇALHO-->
-            <v-row dense>
-              <v-col cols="12">
+            <v-container>
+              <v-row dense>
+              <v-col cols="1">
+                <v-toolbar flat
+                        rounded
+                        dense
+                        class="blue-grey lighten-4">
+                  <v-tooltip bottom color="primary">
+                        <template v-slot:activator="{on, attrs}">
+                          <v-btn icon
+                              color="primary"
+                              v-bind="attrs"
+                              v-on="on"
+                              :disabled="false"
+                              @click="retornaRota">
+                              <v-icon>mdi-arrow-left-circle-outline</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Retornar</span>
+                  </v-tooltip>
+                </v-toolbar>
+              </v-col>
+              <v-col cols="11">
                 <v-toolbar flat
                         rounded
                         dense
@@ -20,8 +41,6 @@
                 </v-toolbar>
               </v-col>
             </v-row>
-
-            <v-container>
               <v-row dense>
                 <v-col  cols="4"
                         style="display: inline-block">
@@ -40,7 +59,7 @@
                           persistent-hint
                           prepend-icon="mdi-calendar"
                           v-bind="attrs"
-                          @blur="date = parseDate(dateFormatted)"
+                          @blur="date = validation.parseDate(dateFormatted)"
                           v-on="on"
                         ></v-text-field>
                       </template>
@@ -68,7 +87,7 @@
                           persistent-hint
                           prepend-icon="mdi-calendar"
                           v-bind="attrs"
-                          @blur="date2 = parseDate(dateFormatted2)"
+                          @blur="date2 = validation.parseDate(dateFormatted2)"
                           v-on="on"
                         ></v-text-field>
                       </template>
@@ -110,11 +129,27 @@
             </v-container>
 
             <!--CHART-->
-            <v-container>
+            <v-container v-show="show_chart_bar">
               <v-row dense>
+                <v-col cols="8">
+                  <v-toolbar flat
+                          rounded
+                          dense
+                          class="blue-grey lighten-4">
+                    <v-toolbar-title class="font-weight-medium">{{title_grafico}}</v-toolbar-title> 
+                  </v-toolbar>
+                </v-col>
+                <v-col cols="4">
+                  <v-toolbar flat
+                          rounded
+                          dense
+                          class="blue-grey lighten-4">
+                    <v-toolbar-title class="font-weight-medium">{{total_grafico_bar}}</v-toolbar-title> 
+                  </v-toolbar>
+                </v-col>
                 <Bar
                   :chart-options="chartOptions"
-                  :chart-data="dadosGrafico"
+                  :chart-data="dadosGraficoBar"
                   :chart-id="chartId"
                   :dataset-id-key="datasetIdKey"
                   :plugins="plugins"
@@ -126,8 +161,53 @@
               </v-row>
             </v-container>
 
+            <!--CURVA ABC-->
+            <v-container v-show="show_chart_pie">
+              <v-row dense>
+                  <v-col cols="12">
+                    <v-toolbar flat
+                            rounded
+                            dense
+                            class="blue-grey lighten-4">
+                      <v-toolbar-title class="font-weight-medium">{{title_curva}}</v-toolbar-title> 
+                    </v-toolbar>
+                  </v-col>
+                  <Pie
+                      :chart-options="chartABCOptions"
+                      :chart-data="dadosGraficoPie"
+                      :chart-id="chartIdPIE"
+                      :dataset-id-key="datasetIdKeyPIE"
+                      :plugins="pluginsPIE"
+                      :css-classes="cssClassesPIE"
+                      :styles="stylesPIE"
+                      :width="widthPIE"
+                      :height="heightPIE"
+                    />
+              </v-row>
+            </v-container>
+
             <!--ITEMS-->
             <v-container v-show="show_table">
+              <v-row dense>
+                <v-col cols="8">
+                  <v-toolbar flat
+                          rounded
+                          dense
+                          class="blue-grey lighten-4">
+                    <v-toolbar-title class="font-weight-medium">{{title_itens}}</v-toolbar-title> 
+                  </v-toolbar>
+                </v-col>
+                <v-col cols="4">
+                    <v-toolbar flat
+                            rounded
+                            dense
+                            class="blue-grey lighten-4">
+                      <v-toolbar-title class="font-weight-medium">{{total_itens}}</v-toolbar-title> 
+                    </v-toolbar>
+                  </v-col>
+              </v-row>
+
+            
               <v-row dense>
                 <v-col>
                   <v-data-table no-data-text="Nenhum Registro Disponível"
@@ -141,37 +221,9 @@
                                 hide-default-footer
                                 :headers="tableHeader"
                                 :items="tableItems"
-                                :items-per-page="10">
+                                :items-per-page="10"
+                                :page.sync="pageNumber">
                     <template v-slot:item.actions="{item}">
-                        <v-tooltip bottom color="primary">
-                          <template v-slot:activator="{on, attrs}">
-                            <v-icon small
-                                color="primary"
-                                v-bind="attrs"
-                                v-on="on"
-                                class="mr-2"
-                                :disabled="false"
-                                @click="onEditItem(item)">
-                                mdi-pencil
-                            </v-icon>
-                            <!--<router-link :to="`/Users-Editar/${item.id}`"> alterar</router-link>-->
-                          </template>
-                          <span>Alterar</span>
-                        </v-tooltip>
-                        <v-tooltip bottom color="primary">
-                          <template v-slot:activator="{on, attrs}">
-                            <v-icon small
-                                color="primary"
-                                v-bind="attrs"
-                                v-on="on"
-                                class="mr-2"
-                                :disabled="false"
-                                @click="onDeleteItem(item)">
-                                mdi-delete
-                            </v-icon>
-                          </template>
-                          <span>Excluir</span>
-                        </v-tooltip>
                     </template>
                   </v-data-table>
                 </v-col>
@@ -185,6 +237,7 @@
                       :length="pageCount"></v-pagination>
               </v-row>
             </v-container>
+
           </v-container>
         </v-card>
     </v-container>
@@ -194,39 +247,53 @@
 <script>
 
 import SidebarLayoutVue from "@/layouts/SidebarLayout.vue";
-import api from '@/services/api.ts';
-import axios from 'axios'
-import moment from 'moment'
-import { Bar } from 'vue-chartjs/legacy'
+import { Bar, Pie } from 'vue-chartjs/legacy'
 import ReportCFDay from '../reports/ReportCFDay.vue';
-import { ref } from 'vue';
+import validation from '../services/validation.ts';
+
+
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
+  ArcElement,
   BarElement,
   CategoryScale,
   LinearScale
 } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
 
+//export const EventBus = new Vue();
 export default {
   name:"FormList",
   components: {
     SidebarLayoutVue,
     ReportCFDay,
-    Bar
+    Bar,
+    Pie
   },
   props: {
       title: "",
+      title_itens: "",
+      title_curva: "",
+      title_grafico:"",
+      total_grafico_bar: 0,
+      total_itens:0,
       show_ind: true,
+      show_chart_bar: true,
+      show_chart_pie: true,
       show_table: true,
       tableHeader: [],
       tableItems: [],
       maxHeight:"",
-      dadosGrafico: {
+      dadosGraficoBar: {
+        colunas: [],
+        dados: []
+      },
+      dadosGraficoPie: {
         colunas: [],
         dados: []
       },
@@ -257,19 +324,45 @@ export default {
       plugins: {
         type: Array,
         default: () => []
+      },
+      chartIdPIE: {
+        type: String,
+        default: 'pie-chart'
+      },
+      datasetIdKeyPIE: {
+        type: String,
+        default: 'label'
+      },
+      widthPIE: {
+        type: Number,
+        default: 400
+      },
+      heightPIE: {
+        type: Number,
+        default: 400
+      },
+      cssClassesPIE: {
+        default: '',
+        type: String
+      },
+      stylesPIE: {
+        type: Object,
+        default: () => {}
+      },
+      pluginsPIE: {
+        type: Array,
+        default: () => []
       }
+      
   },
   data: vm => ({
       field_ind: [],
       ind_operacao: [{id: 0, name: "Entrada"},{id: 1, name: "Saida"}],
-      list: undefined,
-      list2: [],
       dadosFiltro:[],
-      loaded: false,
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
-      dateFormatted2: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+      dateFormatted: validation.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+      dateFormatted2: validation.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
       menu1: false,
       menu2: false,
       pageCount: 0,
@@ -299,40 +392,65 @@ export default {
       },
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        onClick: function (event, chartElements) {
+            if(chartElements.length > 0){
+                vm.getColGraficoBar(event.chart.data.labels[chartElements[0].index]);
+            }
+        },
+      },
+      chartABC: {
+        labels: ['A', 'B', 'C'],
+        datasets: [
+          {
+            backgroundColor: ['#41B883', '#00D8FF', '##FFD54F'],
+            data: [20, 30, 50]
+          }
+        ]
+      },
+      chartABCOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: function (event, chartElements) {
+            if(chartElements.length > 0){
+                //vm.getColGrafico(event.chart.data.labels[chartElements[0].index]);
+            }
+        },
       }
   }),
   computed: {
     computedDateFormatted () {
-      return this.formatDate(this.date)
+      return validation.formatDate(this.date)
     }
   },
   watch: {
-    date (val) {
-      this.dateFormatted = this.formatDate(this.date)
+    date () {
+      this.dateFormatted = validation.formatDate(this.date)
     },
-    date2 (val) {
-      this.dateFormatted2 = this.formatDate(this.date2)
+    date2 () {
+      this.dateFormatted2 = validation.formatDate(this.date2)
+    },
+    tableItems(){
+      this.setValuesPagination();
     }
   },
   methods: {
-      formatDate (date) {
-        if (!date) return null
-
-        const [year, month, day] = date.split('-')
-        return `${day}/${month}/${year}`
+      retornaRota () {
+        this.$router.go(-1);
       },
-      parseDate (date) {
-        if (!date) return null
-
-        const [day, month, year] = date.split('/')
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      setValuesPagination(){
+        this.pageNumber=1;
+        if(this.tableItems!= null && this.tableItems.length > 10) {
+          this.pageCount = Math.ceil((Number(this.tableItems.length/10)));
+        }
+        else{
+          this.pageCount = 0;
+        }
       },
-      return () {
-        this.$route.go(-1);
+      getColGraficoBar(value){
+          this.$emit("colunaGrafico",value);
       },
       filtros(){
-        
           if(this.validacoes()==true){
             this.dadosFiltro = [ 
                       { dataInicial: this.date, dataFinal: this.date2, ind: this.field_ind.id },
@@ -346,11 +464,17 @@ export default {
       }
   },
   created () {
-      this.loaded = false;
       //data teste
       this.date = "2021-06-01";
       this.date2 = "2021-06-30";
-      //this.dadosGrafico = this.chartData;
+
+      this.setValuesPagination();
+
+      if(this.width == null || this.width < 0){
+        this.width = 800;
+      } 
+      //this.dadosGraficoBar = this.chartData;
+      //this.dadosGraficoPie = this.chartABC;
   }
 }
 </script>

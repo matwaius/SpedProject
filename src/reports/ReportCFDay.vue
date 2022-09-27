@@ -2,13 +2,22 @@
 <div>
   <Dashboard
       title="Relatório de Cupom Fiscal por Dia"
+      title_grafico = "Gráfico"
+      title_itens = "Itens"
+      title_curva = "Curva ABC"
+      :total_grafico_bar="this.total_grafico_bar"
+      :total_itens="this.total_itens"
       :show_ind=false
-      :show_table="false"
-      :maxHeight = "570"
+      :show_chart_bar="true"
+      :show_chart_pie="true"
+      :show_table="true"
       :tableHeader="tableheader"
       :tableItems="tableitems"
-      :dadosGrafico="chartData"
+      :dadosGraficoBar="chartData"
+      :dadosGraficoPie="chartABC"
+
       @filtros ="setaFiltros"
+      @colunaGrafico="getItems" 
       >
   </Dashboard>
 </div>
@@ -17,18 +26,28 @@
 <script>
 import Dashboard from '@/components/Dashboard.vue'
 import api from '@/services/api.ts';
+import validation from '../services/validation.ts';
 
 export default {
   name: 'ReportCFDay',
-  props:{
-    filtro:[],
-  },
   data() {
     return {
       dateInicial: "",
       dateFinal: "",
       indOperacao: "",
-      tableheader: [],
+      total_grafico_bar: 0,
+      total_itens:0,
+      tableheader: [ 
+        { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
+        { text: "Descrição", value: "DESCR_ITEM", align:"start", divider:false, width: "25%", sortable: true },
+        { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
+        { text: "Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
+        { text: "UN", value: "UNID",align:"end", divider:false, width: "10%", sortable: true },
+        { text: "CFOP", value: "CFOP",align:"end", divider:false, width: "12%", sortable: true },
+        { text: "ICMS", value: "ALIQ_ICMS",align:"end", divider:false, width: "14%", sortable: true },
+
+        //{ text: "", value: "actions",align:"end", divider:false, width: "1%", sortable: true },
+      ],
       tableitems:[],
       chartData: {
           labels: [
@@ -45,33 +64,64 @@ export default {
               ]
             }
           ]
-        }
+        },
+        chartABC: {
+        labels: ['A', 'B', 'C'],
+        datasets: [
+          {
+            backgroundColor: ['#41B883', '#00D8FF', '#FFD54F'],
+            data: [20, 30, 50]
+          }
+        ]
+      }
     }
   },
   components: {
       Dashboard
   },
   methods: { 
-    GetRel () {
-        this.chartData.labels=[];
-        this.chartData.datasets[0].data=[];
-        api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+    async getRel () {
+        this.limpaDados();
+        await api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
           .then(response => {
               this.chartData.datasets[0].label="Dias";
               for (let i = 0; i < response.data.length; i++) {
                 this.chartData.labels.push(response.data[i].DT_DOC);
                 this.chartData.datasets[0].data.push(response.data[i].VL_DOC);
+                this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round(response.data[i].VL_DOC* 100) / 100 ; 
               }
+              this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
           })
-          .catch(error => console.log(error))
+          .catch(error => console.log(error));
     },
     setaFiltros(e){
       this.filtros = e;
-      this.GetRel();
+      this.getRel();
+    },
+    async getItems(e){
+      this.tableitems=[];
+      this.total_itens=0;
+      await api.post('/ReportCFDayItems?date=' + validation.parseDate(e))
+          .then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+                  for (let c = 0; c < response.data[i].Itens.length; c++) {
+                      this.tableitems.push(response.data[i].Itens[c]);
+                      this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round(response.data[i].Itens[c].VL_ITEM* 100) / 100 ; 
+                  }
+              }
+              this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+          })
+          .catch(error => console.log(error));
+    },
+    limpaDados(){
+        this.chartData.labels=[];
+        this.chartData.datasets[0].data=[];
+        this.tableitems=[];
+        this.total_grafico_bar =0;
+        this.total_itens=0;
     }
   },
   created(){
-
   }
 }
 

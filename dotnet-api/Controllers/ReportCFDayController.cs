@@ -58,7 +58,7 @@ namespace dotnet_api.Controllers
                     {
                         string[] data = line.Split("|");
 
-                        //C100 
+                        //C460 
                         if (data[1] == "C460")
                         {
                             C460 c460 = new C460();
