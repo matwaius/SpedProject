@@ -34,13 +34,11 @@
     </v-card>
     </v-container>
     </sidebar-layout-vue>
-    <footer-layout-vue></footer-layout-vue>
   </app>
 </template>
 
 <script>
 import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
-import FooterLayoutVue from '@/layouts/FooterLayout.vue'
 
 export default {
   name: 'ReportMain',
@@ -58,8 +56,7 @@ export default {
     ]
   }),
   components: {
-    SidebarLayoutVue,
-    FooterLayoutVue
+    SidebarLayoutVue
   }
 }
 

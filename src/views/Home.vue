@@ -24,49 +24,46 @@
             </v-row>
         </v-container>
       </sidebar-layout-vue>
-  <footer-layout-vue></footer-layout-vue>
 </app>
 </template>
 
 <script>
 import api from '@/services/api.ts'
 import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
-import FooterLayoutVue from '@/layouts/FooterLayout.vue'
 
 export default {
-  name: "home",
-  data() {
+  name: 'HomeImport',
+  data () {
     return {
       msg: null,
       file: ''
     }
   },
   components: {
-    SidebarLayoutVue,
-    FooterLayoutVue
+    SidebarLayoutVue
   },
   methods: {
-    submitForm() {
+    submitForm () {
       console.log(this.file)
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', this.file)
 
-      api.post("/Files",
+      api.post('/Files',
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }
-      ).then(function(data) {
+      ).then(function (data) {
         console.log(data.data)
       })
-        .catch(function() {
+        .catch(function () {
           console.log('Falha ao Carregar o Arquivo!')
         })
     },
 
-    onChangeFileUpload() {
+    onChangeFileUpload () {
       this.file = this.$refs.file.files[0]
     }
   }
