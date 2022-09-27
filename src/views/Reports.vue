@@ -1,5 +1,4 @@
 <template>
-  <app name="reports">
     <sidebar-layout-vue>
     <v-container class="fill-height flex-column">
         <v-card :width="800"
@@ -44,7 +43,6 @@
     </v-card>
     </v-container>
     </sidebar-layout-vue>
-  </app>
 </template>
 
 <script>

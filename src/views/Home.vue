@@ -1,7 +1,5 @@
 <template>
-<app name="home">
   <sidebar-layout-vue>
-
     <v-container class="fill-height" fluid>
             <v-card :width="800"
                 height="100%"
@@ -64,7 +62,6 @@
           </v-card>
         </v-container>
       </sidebar-layout-vue>
-</app>
 </template>
 
 <script>
@@ -72,7 +69,7 @@ import api from '@/services/api.ts'
 import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
 
 export default {
-  name: 'HomeImport',
+  name: 'HomePage',
   data () {
     return {
       msg: null,

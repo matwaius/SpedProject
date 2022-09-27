@@ -35,7 +35,7 @@
                         rounded
                         dense
                         class="blue-grey lighten-4">
-                  <v-toolbar-title class="font-weight-medium">{{title}}</v-toolbar-title> 
+                  <v-toolbar-title class="font-weight-medium">{{title}}</v-toolbar-title>
                 </v-toolbar>
               </v-col>
               <v-col cols="1">
@@ -135,68 +135,63 @@
 </template>
 
 <script>
-import SidebarLayoutVue from "@/layouts/SidebarLayout.vue";
-import api from '@/services/api.ts';
+import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
+import api from '@/services/api.ts'
 
 export default {
-  name:"FormList",
+  name: 'FormList',
   components: {
     SidebarLayoutVue
   },
   props: {
-      title: String,
-      routerInsert:"",
-      routerUpdate:"",
-      tabela:"",
-      tableHeader: [],
-      tableItems: [],
-      itemDelete:null,
-      fieldSearch: "",
-      User:{
-        props:['id'],
-        mounted() {
-          {
-            console.log(this.$route.params.id); // this is returning the value
-             console.log(this.id); // this is giving undefined
-          }
-        },
+    title: String,
+    routerInsert: '',
+    routerUpdate: '',
+    tabela: '',
+    tableHeader: [],
+    tableItems: [],
+    itemDelete: null,
+    fieldSearch: '',
+    User: {
+      props: ['id'],
+      mounted () {
+        console.log(this.$route.params.id) // this is returning the value
+        console.log(this.id) // this is giving undefined
       }
+    }
   },
-  data() {
+  data () {
     return {
       pageCount: 0,
       pageNumber: 0,
-      searchlabel:"Pesquisar",
+      searchlabel: 'Pesquisar'
     }
   },
-  methods:{
-    onInsertItem(){
-      this.$router.push('/'+this.routerInsert);
+  methods: {
+    onInsertItem () {
+      this.$router.push('/' + this.routerInsert)
     },
-    retornaRota(){
-      this.$router.go(-1);
+    retornaRota () {
+      this.$router.go(-1)
     },
-    onEditItem(item){
-        this.$router.push({
-          name: this.routerUpdate,
-          params:{
-            id:item.Id 
-          }
+    onEditItem (item) {
+      this.$router.push({
+        name: this.routerUpdate,
+        params: {
+          id: item.Id
+        }
       })
     },
-    async onDeleteItem(item){
+    async onDeleteItem (item) {
       await api.delete(`/${this.tabela}/${item.Id}`)
-            .then((response) => {
-            })
-            .catch((error) => {
-              console.log(error.response)
-            })
-      this.tableItems.splice(this.tableItems.findIndex(f => f==item),1);      
+        .then((response) => {
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
+      this.tableItems.splice(this.tableItems.findIndex(f => f == item), 1)
     }
-    
-    },
-  
-
+  }
 }
 
 </script>
