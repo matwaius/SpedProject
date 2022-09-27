@@ -15,6 +15,7 @@ namespace dotnet_api.Methods.Classes
         public decimal VL_COFINS { get; set; }
         public string CPF_CNPJ { get; set; }
         public string NOM_ADQ { get; set; }
+        public List<C470> Itens { get; set; }
 
         public C460 MountDataC460(string[] data)
         {

@@ -10,7 +10,27 @@
           <v-container>
             <!--CABEÇALHO-->
             <v-row dense>
-              <v-col cols="12">
+              <v-col cols="1">
+                <v-toolbar flat
+                        rounded
+                        dense
+                        class="blue-grey lighten-4">
+                  <v-tooltip bottom color="primary">
+                        <template v-slot:activator="{on, attrs}">
+                          <v-btn icon
+                              color="primary"
+                              v-bind="attrs"
+                              v-on="on"
+                              :disabled="false"
+                              @click="retornaRota">
+                              <v-icon>mdi-arrow-left-circle-outline</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Retornar</span>
+                  </v-tooltip>
+                </v-toolbar>
+              </v-col>
+              <v-col cols="11">
                 <v-toolbar flat
                         rounded
                         dense
@@ -54,7 +74,7 @@
                   <v-btn color="error"
                         small
                         elevation="5"
-                        @click="onCancel"
+                        @click="retornaRota"
                         >
                         <v-icon left>
                           mdi-close-circle
@@ -89,9 +109,10 @@ export default {
     onSave(){
       this.$emit('onSave')
     },
-    onCancel(){
+    retornaRota () {
       this.$router.go(-1);
-    }
+    },
+    
   }
 }
 

@@ -10,8 +10,18 @@
           elevation="3"
           max-width="350"
     >
+    <!--CABEÇALHO-->
+    <v-row dense>
+        <v-col cols="12">
+        <v-toolbar flat
+                rounded
+                dense
+                class="blue-grey lighten-4">
+          <v-toolbar-title class="font-weight-medium">Relatórios</v-toolbar-title> 
+        </v-toolbar>
+      </v-col>
+    </v-row>
     <v-list dense>
-      <v-subheader>Relatórios</v-subheader>
       <v-list-item-group
         v-model="selectedItem"
         color="primary"
@@ -34,7 +44,6 @@
     </v-card>
     </v-container>
     </sidebar-layout-vue>
-    <footer-layout-vue></footer-layout-vue>
   </app>
 </template>
 
@@ -48,8 +57,8 @@ export default {
     items: [
       { text: 'Relatório de Cupom Fiscal', icon: 'mdi-hexagon', to: '/ReportCFDay' },
       { text: 'Relatório de Nota Fiscal', icon: 'mdi-hexagon', to: '/ReportNFDay' },
-      { text: 'Relatório de Nota Fisca por ICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' },
-      { text: 'Relatório de Nota Fisca por ICMS ST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' },
+      { text: 'Relatório de Nota Fiscal por ICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' },
+      { text: 'Relatório de Nota Fiscal por ICMS ST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' },
       { text: 'Relatório por Redução Z', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
       { text: 'Relatório de Nota Fiscal por UF', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByUF' },
       { text: 'Relatório Nota Fiscal por Quantidade', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' },
@@ -60,7 +69,12 @@ export default {
   components: {
     SidebarLayoutVue,
     FooterLayoutVue
-  }
+  },
+  methods: {
+    retornaRota(){
+      this.$router.go(-1);
+    },
+  },
 }
 
 </script>
