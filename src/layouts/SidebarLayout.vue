@@ -1,5 +1,5 @@
 <template>
-  <v-app id="sidebar">
+  <v-app id="side-bar" name="side-bar">
     <v-navigation-drawer  v-model="drawer"
       app>
         <v-list-item>
@@ -51,6 +51,7 @@
 
 <script>
 export default {
+  name: 'side-bar',
   data: () => ({
     drawer: false,
     items: [
@@ -67,4 +68,3 @@ export default {
   }
 }
 </script>
-

@@ -20,7 +20,7 @@ const routes = [
   },
   {
     path: '/home',
-    name: 'Home',
+    name: 'HomePage',
     component: () => import('../views/Home.vue')
   },
   {
@@ -44,10 +44,10 @@ const routes = [
     component: () => import('../views/Users-Register.vue')
   },
   {
-    path: `/Users-Edit/:id`,
-    name: "Users-Edit",
+    path: '/Users-Edit/:id',
+    name: 'Users-Edit',
     component: () => import('@/views/Users-Register.vue'),
-    props:true //router => router.params
+    props: true //  router => router.params
   },
   {
     path: '/ReportCFDay',

@@ -1,5 +1,5 @@
 <template>
-  <v-card height="400px">
+  <v-card>
     <v-footer
       v-bind="localAttrs"
     >

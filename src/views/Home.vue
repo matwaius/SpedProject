@@ -1,7 +1,5 @@
 <template>
-<app name="home">
   <sidebar-layout-vue>
-    
     <v-container class="fill-height" fluid>
             <v-card :width="800"
                 height="100%"
@@ -37,7 +35,7 @@
                         rounded
                         dense
                         class="blue-grey lighten-4">
-                  <v-toolbar-title class="font-weight-medium">Carregar Arquivo</v-toolbar-title> 
+                  <v-toolbar-title class="font-weight-medium">Carregar Arquivo</v-toolbar-title>
                 </v-toolbar>
               </v-col>
             </v-row>
@@ -64,50 +62,47 @@
           </v-card>
         </v-container>
       </sidebar-layout-vue>
-</app>
 </template>
 
 <script>
 import api from '@/services/api.ts'
 import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
-import FooterLayoutVue from '@/layouts/FooterLayout.vue'
 
 export default {
-  name: "home",
-  data() {
+  name: 'HomePage',
+  data () {
     return {
       msg: null,
       file: ''
     }
   },
   components: {
-    SidebarLayoutVue,
-    FooterLayoutVue
+    SidebarLayoutVue
   },
   methods: {
-    submitForm() {
+    submitForm () {
       console.log(this.file)
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', this.file)
 
-      api.post("/Files",
+      api.post('/Files',
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }
-      ).then(function(data) {
+      ).then(function (data) {
         console.log(data.data)
       })
-        .catch(function() {
+        .catch(function () {
           console.log('Falha ao Carregar o Arquivo!')
         })
     },
-    retornaRota(){
-      this.$router.go(-1);
+    retornaRota () {
+      this.$router.go(-1)
     },
-    onChangeFileUpload() {
+    onChangeFileUpload () {
       this.file = this.$refs.file.files[0]
     }
   }

@@ -1,5 +1,4 @@
 <template>
-  <app name="reports">
     <sidebar-layout-vue>
     <v-container class="fill-height flex-column">
         <v-card :width="800"
@@ -17,7 +16,7 @@
                 rounded
                 dense
                 class="blue-grey lighten-4">
-          <v-toolbar-title class="font-weight-medium">Relatórios</v-toolbar-title> 
+          <v-toolbar-title class="font-weight-medium">Relatórios</v-toolbar-title>
         </v-toolbar>
       </v-col>
     </v-row>
@@ -44,12 +43,10 @@
     </v-card>
     </v-container>
     </sidebar-layout-vue>
-  </app>
 </template>
 
 <script>
 import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
-import FooterLayoutVue from '@/layouts/FooterLayout.vue'
 
 export default {
   name: 'ReportMain',
@@ -67,14 +64,13 @@ export default {
     ]
   }),
   components: {
-    SidebarLayoutVue,
-    FooterLayoutVue
+    SidebarLayoutVue
   },
   methods: {
-    retornaRota(){
-      this.$router.go(-1);
-    },
-  },
+    retornaRota () {
+      this.$router.go(-1)
+    }
+  }
 }
 
 </script>
