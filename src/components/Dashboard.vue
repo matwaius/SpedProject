@@ -172,6 +172,7 @@
                       <v-toolbar-title class="font-weight-medium">{{title_curva}}</v-toolbar-title> 
                     </v-toolbar>
                   </v-col>
+                  <v-col cols="6">
                   <Pie
                       :chart-options="chartABCOptions"
                       :chart-data="dadosGraficoPie"
@@ -183,6 +184,43 @@
                       :width="widthPIE"
                       :height="heightPIE"
                     />
+                    
+                  </v-col>
+                    <v-col cols="2"
+                        style="display: inline-block">
+                    <v-text-field
+                      v-model="curva_A"
+                      label="Curva A"
+                      :value="this.curva_A = (this.curva_A== null) ? 0 : this.curva_A"
+                      type="Number"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <br />
+                  <br />
+
+                  <v-col cols="2"
+                        style="display: inline-block">
+                    <v-text-field
+                      v-model="curva_B"
+                      label="Curva B"
+                      :value="this.curva_B = (this.curva_B== null) ? 0 : this.curva_B"
+                      type="Number"
+                      required
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="2"
+                        style="display: inline-block">
+                    <v-text-field
+                      v-model="curva_C"
+                      label="Curva C"
+                      :value="this.curva_C = (this.curva_C== null) ? 0 : this.curva_C"
+                      type="Number"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  
               </v-row>
             </v-container>
 
@@ -339,7 +377,7 @@ export default {
       },
       heightPIE: {
         type: Number,
-        default: 400
+        default: 200
       },
       cssClassesPIE: {
         default: '',
@@ -367,6 +405,9 @@ export default {
       menu2: false,
       pageCount: 0,
       pageNumber: 0,
+      curva_A: 20,
+      curva_B: 30,
+      curva_C: 50,
       chartData: {
           labels: [
           'January',
@@ -404,7 +445,7 @@ export default {
         datasets: [
           {
             backgroundColor: ['#41B883', '#00D8FF', '##FFD54F'],
-            data: [20, 30, 50]
+            data: [20,30,50]
           }
         ]
       },
@@ -413,6 +454,7 @@ export default {
         maintainAspectRatio: false,
         onClick: function (event, chartElements) {
             if(chartElements.length > 0){
+                console.log('aaaa');
                 //vm.getColGrafico(event.chart.data.labels[chartElements[0].index]);
             }
         },
@@ -435,7 +477,7 @@ export default {
     }
   },
   methods: {
-      retornaRota () {
+      retornaRota() {
         this.$router.go(-1);
       },
       setValuesPagination(){
@@ -452,14 +494,21 @@ export default {
       },
       filtros(){
           if(this.validacoes()==true){
+            
             this.dadosFiltro = [ 
-                      { dataInicial: this.date, dataFinal: this.date2, ind: this.field_ind.id },
+                      { dataInicial: this.date, dataFinal: this.date2, ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
             ];
             this.$emit("filtros",this.dadosFiltro);
           }
       },
       validacoes(){
         let retorno = true;
+        if((parseInt(this.curva_A) + parseInt(this.curva_B) + parseInt(this.curva_C))  != 100)
+        {
+          this.curva_A = 20; 
+          this.curva_B = 30;
+          this.curva_C = 50;
+        }
         return retorno;
       }
   },

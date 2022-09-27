@@ -59,7 +59,7 @@
                 <v-row>
                   <v-col cols="12"
                         style="display: inline-block">
-                        <v-text-field
+                    <v-text-field
                       v-model="formData.Email"
                       :rules="emailRules"
                       label="E-mail"

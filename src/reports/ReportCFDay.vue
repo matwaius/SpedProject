@@ -96,6 +96,14 @@ export default {
     },
     setaFiltros(e){
       this.filtros = e;
+      this.chartABC= {
+        labels: ['A', 'B', 'C'],
+        datasets: [
+          {
+            backgroundColor: ['#41B883', '#00D8FF', '#FFD54F'],
+            data: [this.filtros[0].curvaA, this.filtros[0].curvaB, this.filtros[0].curvaC]
+          }
+        ]};
       this.getRel();
     },
     async getItems(e){
