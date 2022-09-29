@@ -21,12 +21,12 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportCFDayItemsController : ControllerBase
+    public class ReportCFDayItemsABCController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportCFDayItemsController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportCFDayItemsABCController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -34,12 +34,13 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime date)
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] decimal A, [FromQuery] decimal B, [FromQuery] decimal C, [FromQuery] string CurvaSel)
         {
             string retRel = "";
+
             try
             {
-                if (date == null)
+                if (dateEnd < dateStart || dateStart > dateEnd)
                 {
                     return BadRequest("Data Invalida!");
                 }
@@ -52,8 +53,8 @@ namespace dotnet_api.Controllers
                 }
 
                 List<_0200> list0200 = new List<_0200>();
-                List<C460> list = new List<C460>();
-                C460 c460 = new C460();
+                List<C470> list = new List<C470>();
+                decimal total = 0;
                 bool add = false;
                 foreach (string line in file.Split('\n'))
                 {
@@ -72,13 +73,9 @@ namespace dotnet_api.Controllers
                         if (data[1] == "C460")
                         {
                             add = false;
-                            if (date == Library.ToDateTime(data[5], "ddMMyyyy"))
+                            if (Library.ToDateTime(data[5], "ddMMyyyy") >= dateStart  && Library.ToDateTime(data[5], "ddMMyyyy") <= dateEnd)
                             {
                                 add = true;
-                                c460 = new C460();
-                                c460.DT_DOC = Library.ToDateTime(data[5], "ddMMyyyy");
-                                c460.Itens = new List<C470>();
-                                list.Add(c460);
                             }
                         }
 
@@ -87,19 +84,20 @@ namespace dotnet_api.Controllers
                         {
                             C470 c470 = new C470();
                             c470.REG = Library.GetString(data[1]);
-                            c470.COD_ITEM = Library.GetString(data[2]).Trim();
+                            c470.COD_ITEM = Library.GetString(data[2]);
                             c470.QTD = Library.GetDecimal(data[3]);
                             c470.QTD_CANC = Library.GetDecimal(data[4]);
                             c470.UNID = Library.GetString(data[5]);
                             c470.VL_ITEM = Library.GetDecimal(data[6]);
+                            total += c470.VL_ITEM;
                             c470.CST_ICMS = Library.GetInt16(data[7]);
                             c470.CFOP = Library.GetInt16(data[8]);
                             c470.ALIQ_ICMS = Library.GetDecimal(data[9]);
                             c470.VL_PIS = Library.GetDecimal(data[10]);
                             c470.VL_COFINS = Library.GetDecimal(data[11]);
-                            c470.DESCR_ITEM = "";//list0200.Where(w => w.COD_ITEM == c470.COD_ITEM).Select(s => s.DESCR_ITEM).FirstOrDefault().ToString();
+                            c470.DESCR_ITEM = "";
                             c470.PERC = 0;
-                            c460.Itens.Add(c470);
+                            list.Add(c470);
                         }
                     }
                 }
@@ -110,15 +108,26 @@ namespace dotnet_api.Controllers
                 }
                 else
                 {
-                    foreach (var notas in list)
+                    decimal Acumulado = 0;
+                    foreach (C470 c470 in list.OrderByDescending(o => o.VL_ITEM))
                     {
-                        foreach (C470 c470 in notas.Itens)
+                        c470.DESCR_ITEM = list0200.Where(w => w.COD_ITEM == c470.COD_ITEM).Select(s => s.DESCR_ITEM).FirstOrDefault().ToString();
+                        c470.PERC = (c470.VL_ITEM * 100) / total;
+                        Acumulado += c470.PERC;
+                        if (Acumulado <= A && A > 0) //Curva A
                         {
-                            c470.DESCR_ITEM = list0200.Where(w => w.COD_ITEM == c470.COD_ITEM).Select(s => s.DESCR_ITEM).FirstOrDefault().ToString();
+                            c470.CURVA = "A";
+                        }
+                        else if (Acumulado >= A && Acumulado <= (A + B) && B > 0) //Curva B
+                        {
+                            c470.CURVA = "B";
+                        }
+                        else if (Acumulado >= (A + B) && Acumulado <= (A + B + C) && C > 0) //Curva C
+                        {
+                            c470.CURVA = "C";
                         }
                     }
-
-                    retRel = JsonConvert.SerializeObject(list);
+                    retRel = JsonConvert.SerializeObject(list.Where(w => w.CURVA == CurvaSel));
                 }
             }
             catch

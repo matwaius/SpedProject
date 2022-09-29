@@ -21,7 +21,7 @@
             _0200 _0200 = new _0200();
 
             _0200.REG = Library.GetString(data[1]);
-            _0200.COD_ITEM = Library.GetString(data[2]);
+            _0200.COD_ITEM = Library.GetString(data[2]).Trim();
             _0200.DESCR_ITEM = Library.GetString(data[3]);
             _0200.COD_BARRA = Library.GetString(data[4]);
             _0200.COD_ANT_ITEM = Library.GetString(data[5]);

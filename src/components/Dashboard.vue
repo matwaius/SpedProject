@@ -118,7 +118,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 :disabled="false"
-                                @click="filtros">
+                                @click="botaoFiltrar">
                                 <v-icon>mdi-magnify</v-icon>
                             </v-btn>
                           </template>
@@ -172,7 +172,7 @@
                       <v-toolbar-title class="font-weight-medium">{{title_curva}}</v-toolbar-title> 
                     </v-toolbar>
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="8">
                   <Pie
                       :chart-options="chartABCOptions"
                       :chart-data="dadosGraficoPie"
@@ -186,11 +186,11 @@
                     />
                     
                   </v-col>
-                    <v-col cols="2"
+                    <v-col cols="1"
                         style="display: inline-block">
                     <v-text-field
                       v-model="curva_A"
-                      label="Curva A"
+                      label="A (%)"
                       :value="this.curva_A = (this.curva_A== null) ? 0 : this.curva_A"
                       type="Number"
                       required
@@ -199,27 +199,44 @@
                   <br />
                   <br />
 
-                  <v-col cols="2"
+                  <v-col cols="1"
                         style="display: inline-block">
                     <v-text-field
                       v-model="curva_B"
-                      label="Curva B"
+                      label="B (%)"
                       :value="this.curva_B = (this.curva_B== null) ? 0 : this.curva_B"
                       type="Number"
                       required
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="2"
+                  <v-col cols="1"
                         style="display: inline-block">
                     <v-text-field
                       v-model="curva_C"
-                      label="Curva C"
+                      label="C (%)"
                       :value="this.curva_C = (this.curva_C== null) ? 0 : this.curva_C"
                       type="Number"
                       required
                     ></v-text-field>
                   </v-col>
+
+                  <v-col cols="1"
+                      style="display: inline-block"> 
+                  <v-tooltip bottom color="primary">
+                          <template v-slot:activator="{on, attrs}">
+                            <v-btn icon
+                                color="primary"
+                                v-bind="attrs"
+                                v-on="on"
+                                :disabled="false"
+                                @click="botaoFiltrarABC">
+                                <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Filtrar</span>
+                    </v-tooltip>
+                </v-col>
                   
               </v-row>
             </v-container>
@@ -405,9 +422,9 @@ export default {
       menu2: false,
       pageCount: 0,
       pageNumber: 0,
-      curva_A: 20,
-      curva_B: 30,
-      curva_C: 50,
+      curva_A: 80,
+      curva_B: 15,
+      curva_C: 5,
       chartData: {
           labels: [
           'January',
@@ -441,30 +458,24 @@ export default {
         },
       },
       chartABC: {
-        labels: ['A', 'B', 'C'],
-        datasets: [
-          {
-            backgroundColor: ['#41B883', '#00D8FF', '##FFD54F'],
-            data: [20,30,50]
-          }
-        ]
-      },
+                labels: ['A', 'B', 'C'],
+                datasets: [
+                  {
+                    backgroundColor: ['#41B883', '#00D8FF', '##FFD54F'],
+                    data: [75,20,20]
+                  }
+                ]
+          },
       chartABCOptions: {
         responsive: true,
         maintainAspectRatio: false,
         onClick: function (event, chartElements) {
             if(chartElements.length > 0){
-                console.log('aaaa');
-                //vm.getColGrafico(event.chart.data.labels[chartElements[0].index]);
+                vm.getColGraficoPie(event.chart.data.labels[chartElements[0].index]);
             }
         },
       }
   }),
-  computed: {
-    computedDateFormatted () {
-      return validation.formatDate(this.date)
-    }
-  },
   watch: {
     date () {
       this.dateFormatted = validation.formatDate(this.date)
@@ -474,7 +485,7 @@ export default {
     },
     tableItems(){
       this.setValuesPagination();
-    }
+    },
   },
   methods: {
       retornaRota() {
@@ -490,25 +501,34 @@ export default {
         }
       },
       getColGraficoBar(value){
-          this.$emit("colunaGrafico",value);
+          this.$emit("colunaGraficoBar",value);
       },
-      filtros(){
+      getColGraficoPie(value){
+          this.$emit("colunaGraficoPie",value);
+      },
+      botaoFiltrar(){
           if(this.validacoes()==true){
-            
-            this.dadosFiltro = [ 
-                      { dataInicial: this.date, dataFinal: this.date2, ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
-            ];
-            this.$emit("filtros",this.dadosFiltro);
+              this.dadosFiltro = [ 
+                        { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
+              ];
+              this.$emit("botaoFiltrar",this.dadosFiltro);
           }
+      },
+      botaoFiltrarABC(){
+          if((parseFloat(this.curva_A) + parseFloat(this.curva_B) + parseFloat(this.curva_C)) != 100 || parseFloat(this.curva_A) < 0 || parseFloat(this.curva_B) < 0 || parseFloat(this.curva_C) < 0)
+          {
+            this.curva_A = 80; 
+            this.curva_B = 15;
+            this.curva_C = 5;
+          }
+          this.dadosFiltro = [ 
+                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
+          ];
+          this.$emit("botaoFiltrarABC",this.dadosFiltro);
       },
       validacoes(){
         let retorno = true;
-        if((parseInt(this.curva_A) + parseInt(this.curva_B) + parseInt(this.curva_C))  != 100)
-        {
-          this.curva_A = 20; 
-          this.curva_B = 30;
-          this.curva_C = 50;
-        }
+        
         return retorno;
       }
   },

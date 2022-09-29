@@ -16,8 +16,11 @@
       :dadosGraficoBar="chartData"
       :dadosGraficoPie="chartABC"
 
-      @filtros ="setaFiltros"
-      @colunaGrafico="getItems" 
+      @botaoFiltrar ="setaFiltros"
+      @botaoFiltrarABC ="setaFiltrosABC"
+      
+      @colunaGraficoBar="getItems" 
+      @colunaGraficoPie="getItemsABC"
       >
   </Dashboard>
 </div>
@@ -37,17 +40,7 @@ export default {
       indOperacao: "",
       total_grafico_bar: 0,
       total_itens:0,
-      tableheader: [ 
-        { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
-        { text: "Descrição", value: "DESCR_ITEM", align:"start", divider:false, width: "25%", sortable: true },
-        { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
-        { text: "Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
-        { text: "UN", value: "UNID",align:"end", divider:false, width: "10%", sortable: true },
-        { text: "CFOP", value: "CFOP",align:"end", divider:false, width: "12%", sortable: true },
-        { text: "ICMS", value: "ALIQ_ICMS",align:"end", divider:false, width: "14%", sortable: true },
-
-        //{ text: "", value: "actions",align:"end", divider:false, width: "1%", sortable: true },
-      ],
+      tableheader: [],
       tableitems:[],
       chartData: {
           labels: [
@@ -70,7 +63,7 @@ export default {
         datasets: [
           {
             backgroundColor: ['#41B883', '#00D8FF', '#FFD54F'],
-            data: [20, 30, 50]
+            data: [80, 15, 5]
           }
         ]
       }
@@ -81,6 +74,15 @@ export default {
   },
   methods: { 
     async getRel () {
+        this.tableheader=[
+            { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
+            { text: "Descrição", value: "DESCR_ITEM", align:"start", divider:false, width: "25%", sortable: true },
+            { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
+            { text: "Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
+            { text: "UN", value: "UNID",align:"end", divider:false, width: "10%", sortable: true },
+            { text: "CFOP", value: "CFOP",align:"end", divider:false, width: "12%", sortable: true },
+            { text: "ICMS", value: "ALIQ_ICMS",align:"end", divider:false, width: "14%", sortable: true },
+        ];
         this.limpaDados();
         await api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
           .then(response => {
@@ -104,7 +106,18 @@ export default {
             data: [this.filtros[0].curvaA, this.filtros[0].curvaB, this.filtros[0].curvaC]
           }
         ]};
-      this.getRel();
+        this.getRel();
+    },
+    setaFiltrosABC(e){
+      this.filtros = e;
+      this.chartABC= {
+        labels: ['A', 'B', 'C'],
+        datasets: [
+          {
+            backgroundColor: ['#41B883', '#00D8FF', '#FFD54F'],
+            data: [this.filtros[0].curvaA, this.filtros[0].curvaB, this.filtros[0].curvaC]
+          }
+        ]};
     },
     async getItems(e){
       this.tableitems=[];
@@ -118,6 +131,27 @@ export default {
                   }
               }
               this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+          })
+          .catch(error => console.log(error));
+    },
+    async getItemsABC(e){
+      this.tableheader = [ 
+        { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
+        { text: "Descrição", value: "DESCR_ITEM", align:"start", divider:false, width: "25%", sortable: true },
+        { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
+        { text: "Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
+        { text: "Perc. %", value: "PERC",align:"end", divider:false, width: "24%", sortable: true },
+        { text: "Curva", value: "CURVA",align:"end", divider:false, width: "12%", sortable: true },
+      ];
+      this.tableitems=[];
+      this.total_itens=0;
+      await api.post('/ReportCFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
+          .then(response => {
+              for (let c = 0; c < response.data.length; c++) {
+                  this.tableitems.push(response.data[c]);
+              }
+              this.total_itens = ((e == "A") ? this.filtros[0].curvaA : (e == "B") ?  this.filtros[0].curvaB  : this.filtros[0].curvaC) + "%";
+
           })
           .catch(error => console.log(error));
     },

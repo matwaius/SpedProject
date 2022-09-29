@@ -17,6 +17,8 @@ namespace dotnet_api.Methods.Classes
         public decimal VL_PIS { get; set; }
         public decimal VL_COFINS { get; set; }
         public string DESCR_ITEM { get; set; }
+        public decimal PERC { get; set; }
+        public string CURVA { get; set; }
 
         public C470 MountDataC470(string[] data)
         {
