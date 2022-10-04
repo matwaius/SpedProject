@@ -231,10 +231,10 @@
                                 v-on="on"
                                 :disabled="false"
                                 @click="botaoFiltrarABC">
-                                <v-icon>mdi-magnify</v-icon>
+                                <v-icon>mdi-refresh</v-icon>
                             </v-btn>
                           </template>
-                          <span>Filtrar</span>
+                          <span>Atualiza Gráfico ABC</span>
                     </v-tooltip>
                 </v-col>
                   
@@ -507,6 +507,7 @@ export default {
           this.$emit("colunaGraficoPie",value);
       },
       botaoFiltrar(){
+          console.log(this.loading );
           if(this.validacoes()==true){
               this.dadosFiltro = [ 
                         { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
@@ -528,7 +529,9 @@ export default {
       },
       validacoes(){
         let retorno = true;
-        
+        if(this.field_ind.id == undefined && this.show_ind == true){
+            retorno=false;
+        }
         return retorno;
       }
   },

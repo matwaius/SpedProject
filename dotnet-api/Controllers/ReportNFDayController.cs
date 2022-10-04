@@ -80,7 +80,7 @@ namespace dotnet_api.Controllers
                                         .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) //0-IND OPER => NOTAS DE ENTRADA 1-IND OPER => NOTAS DE SAIDA 
                                         .GroupBy(g => new
                                         {
-                                            grp_date = g["DT_DOC"]
+                                            grp_date = g["DT_DOC"].ToString().Substring(0, 10)
                                         })
                                         .Select(s => new
                                         {
