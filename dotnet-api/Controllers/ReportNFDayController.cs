@@ -86,7 +86,7 @@ namespace dotnet_api.Controllers
                                         {
                                             DT_DOC = s.Key.grp_date,
                                             VL_DOC = s.Sum(ss => Library.GetDecimal(ss["VL_DOC"].ToString()))
-                                        }).ToList();
+                                        }).ToList().OrderBy(o => o.DT_DOC); ;
 
                     retRel = JsonConvert.SerializeObject(dateFormat);
                 }

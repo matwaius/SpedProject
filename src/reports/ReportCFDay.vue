@@ -50,7 +50,7 @@ export default {
           datasets: [
             {
               label: 'CF Dia',
-              backgroundColor: '#489999',
+              backgroundColor: '#EF5350',
               data: [
                 //teste
                 100.22,500.08,650.29,590.00,998.00,1500.65,1900.89,2150.98,3500.99,4888.88
@@ -74,15 +74,6 @@ export default {
   },
   methods: { 
     async getRel () {
-        this.tableheader=[
-            { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
-            { text: "Descrição", value: "DESCR_ITEM", align:"start", divider:false, width: "25%", sortable: true },
-            { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
-            { text: "Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
-            { text: "UN", value: "UNID",align:"end", divider:false, width: "10%", sortable: true },
-            { text: "CFOP", value: "CFOP",align:"end", divider:false, width: "12%", sortable: true },
-            { text: "ICMS", value: "ALIQ_ICMS",align:"end", divider:false, width: "14%", sortable: true },
-        ];
         this.limpaDados();
         await api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
           .then(response => {
@@ -120,6 +111,15 @@ export default {
         ]};
     },
     async getItems(e){
+      this.tableheader=[
+            { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
+            { text: "Descrição", value: "DESCR_ITEM", align:"start", divider:false, width: "25%", sortable: true },
+            { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
+            { text: "Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
+            { text: "UN", value: "UNID",align:"end", divider:false, width: "10%", sortable: true },
+            { text: "CFOP", value: "CFOP",align:"end", divider:false, width: "12%", sortable: true },
+            { text: "ICMS", value: "ALIQ_ICMS",align:"end", divider:false, width: "14%", sortable: true },
+        ];
       this.tableitems=[];
       this.total_itens=0;
       await api.post('/ReportCFDayItems?date=' + validation.parseDate(e))

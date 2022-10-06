@@ -44,6 +44,7 @@ namespace dotnet_api.Methods.Classes
         public string COD_CTA { get; set; }
         public decimal VL_ABAT_NT { get; set; }
         public decimal PERC { get; set; }
+        public string CURVA { get; set; }
 
         public C170 MountDataC170(string[] data)
         {

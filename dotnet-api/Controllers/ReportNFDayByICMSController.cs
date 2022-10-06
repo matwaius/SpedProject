@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int16 indOperacao)
         {
             string retRel = "";
             try
@@ -77,16 +77,16 @@ namespace dotnet_api.Controllers
 
                     var dateFormat = data
                                         .Select()
-                                        .Where(x => Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) 
+                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd && Library.GetDecimal(x["VL_ICMS"].ToString()) > 0) 
                                         .GroupBy(g => new
                                         {
-                                            grp_date = g["DT_DOC"]
+                                            grp_date = g["DT_DOC"].ToString().Substring(0,10)
                                         })
                                         .Select(s => new
                                         {
                                             DT_DOC = s.Key.grp_date,
                                             VL_ICMS = s.Sum(ss => Library.GetDecimal(ss["VL_ICMS"].ToString()))
-                                        }).ToList();
+                                        }).ToList().OrderBy(o=> o.DT_DOC);
 
                     retRel = JsonConvert.SerializeObject(dateFormat);
                 }

@@ -1,7 +1,7 @@
 <template>
   <sidebar-layout-vue>
     <v-container class="fill-height flex-column">
-        <v-card :width="800"
+        <v-card :width="1200"
           height="100%"
           class="mx-auto"
           :max-height="maxHeight"
@@ -147,6 +147,7 @@
                     <v-toolbar-title class="font-weight-medium">{{total_grafico_bar}}</v-toolbar-title> 
                   </v-toolbar>
                 </v-col>
+                <v-col cols="12">
                 <Bar
                   :chart-options="chartOptions"
                   :chart-data="dadosGraficoBar"
@@ -158,6 +159,7 @@
                   :width="width"
                   :height="height"
                   />
+                </v-col>
               </v-row>
             </v-container>
 
@@ -263,17 +265,17 @@
               </v-row>
 
             
-              <v-row dense>
+              <v-row fluid>
                 <v-col>
                   <v-data-table no-data-text="Nenhum Registro Disponível"
                                 no-results-text="Nenhum Registro Encontrado"
                                 dense
                                 fixed-header
-                                height="352px"
-                                class="elevation-3"
-                                item-key="Id"
+                                :height=352
+                                class="elevation-0 list-data-table"
                                 single-select
                                 hide-default-footer
+                                calculate-widths
                                 :headers="tableHeader"
                                 :items="tableItems"
                                 :items-per-page="10"
@@ -486,6 +488,22 @@ export default {
     tableItems(){
       this.setValuesPagination();
     },
+    field_ind(){
+      //ENTRADA
+      if(this.field_ind.id == 0){
+        this.dadosFiltro = [ 
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#489999'  },
+        ];
+        this.$emit("color",this.dadosFiltro);
+      }
+      //SAIDA
+      else if(this.field_ind.id == 1){
+        this.dadosFiltro = [ 
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#EF5350'  },
+        ];
+        this.$emit("color",this.dadosFiltro);
+      }
+    }
   },
   methods: {
       retornaRota() {
@@ -507,7 +525,6 @@ export default {
           this.$emit("colunaGraficoPie",value);
       },
       botaoFiltrar(){
-          console.log(this.loading );
           if(this.validacoes()==true){
               this.dadosFiltro = [ 
                         { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
@@ -542,6 +559,8 @@ export default {
 
       this.setValuesPagination();
 
+      //Inicia como Primeiro Index
+      this.field_ind = {id: 0, name: "Entrada"};
       if(this.width == null || this.width < 0){
         this.width = 800;
       } 
