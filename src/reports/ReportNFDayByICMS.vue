@@ -123,13 +123,11 @@
           ];
         this.tableitems=[];
         this.total_itens=0;
-        await api.post('/ReportNFDayItems?date=' + validation.parseDate(e)+'&indOperacao='+this.filtros[0].ind)
+        await api.post('/ReportNFDayByICMSItems?date=' + validation.parseDate(e)+'&indOperacao='+this.filtros[0].ind)
             .then(response => {
-              for (let i = 0; i < response.data.length; i++) {
-                    for (let c = 0; c < response.data[i].Itens.length; c++) {
-                        this.tableitems.push(response.data[i].Itens[c]);
-                        this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ICMS)* 100) / 100 ; 
-                    }
+                for (let c = 0; c < response.data.length; c++) {
+                    this.tableitems.push(response.data[c]);
+                    this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[c].VL_ICMS)* 100) / 100 ; 
                 }
                 this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             })
@@ -137,16 +135,17 @@
       },
       async getItemsABC(e){
         this.tableheader = [ 
-          { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
-          { text: "Descrição", value: "DESCR_COMPL", align:"start", divider:false, width: "25%", sortable: true },
-          { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
-          { text: "Preco Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
-          { text: "Perc. %", value: "PERC",align:"end", divider:false, width: "24%", sortable: true },
-          { text: "Curva", value: "CURVA",align:"end", divider:false, width: "12%", sortable: true },
+          { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: 100, sortable: true },
+          { text: "Descrição", value: "DESCR_COMPL", align:"start", divider:false, width: 200, sortable: true },
+          { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
+          { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
+          { text: "Valor ICMS", value: "VL_ICMS",align:"end", divider:false, width: 100, sortable: true },
+          { text: "Perc. %", value: "PERC",align:"end", divider:false, width: 100, sortable: true },
+          { text: "Curva", value: "CURVA",align:"end", divider:false, width: 100, sortable: true },
         ];
         this.tableitems=[];
         this.total_itens=0;
-        await api.post('/ReportNFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&indOperacao='+this.filtros[0].ind +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
+        await api.post('/ReportNFDayByICMSItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&indOperacao='+this.filtros[0].ind +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
             .then(response => {
                 for (let c = 0; c < response.data.length; c++) {
                     this.tableitems.push(response.data[c]);

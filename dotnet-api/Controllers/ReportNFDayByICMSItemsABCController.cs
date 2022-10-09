@@ -21,12 +21,12 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportNFDayItemsABCController : ControllerBase
+    public class ReportNFDayByICMSItemsABCController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportNFDayItemsABCController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportNFDayByICMSItemsABCController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -53,7 +53,6 @@ namespace dotnet_api.Controllers
                 }
 
                 List<C170> list = new List<C170>();
-                C100 c100 = new C100();
                 decimal total = 0;
                 bool add = false;
                 foreach (string line in file.Split('\n'))
@@ -68,7 +67,7 @@ namespace dotnet_api.Controllers
                             add = false;
                             if (Library.GetInt16(data[2]) == indOperacao)
                             {
-                                if (dateStart >= Library.ToDateTime(data[10], "ddMMyyyy") && Library.ToDateTime(data[10], "ddMMyyyy") <= dateEnd)
+                                if (Library.ToDateTime(data[10], "ddMMyyyy") >= dateStart && Library.ToDateTime(data[10], "ddMMyyyy") <= dateEnd)
                                 {
                                     add = true;
                                 }
@@ -78,49 +77,52 @@ namespace dotnet_api.Controllers
                         //C170
                         if (data[1] == "C170" && add == true)
                         {
-                            C170 c170 = new C170();
-                            c170.REG = Library.GetString(data[1]);
-                            c170.NUM_ITEM = Library.GetInt32(data[2]);
-                            c170.COD_ITEM = Library.GetString(data[3]);
-                            c170.DESCR_COMPL = Library.GetString(data[4]);
-                            c170.QTD = Library.GetDecimal(data[5]);
-                            c170.UNID = Library.GetString(data[6]);
-                            c170.VL_ITEM = Library.GetDecimal(data[7]);
-                            total += c170.VL_ITEM;
-                            c170.VL_DESC = Library.GetDecimal(data[8]);
-                            c170.IND_MOV = Library.GetInt16(data[9]);
-                            c170.CST_ICMS = Library.GetString(data[10]);
-                            c170.CFOP = Library.GetInt16(data[11]);
-                            c170.COD_NAT = Library.GetString(data[12]);
-                            c170.VL_BC_ICMS = Library.GetDecimal(data[13]);
-                            c170.ALIQ_ICMS = Library.GetDecimal(data[14]);
-                            c170.VL_ICMS = Library.GetDecimal(data[15]);
-                            c170.VL_BC_ICMS_ST = Library.GetDecimal(data[16]);
-                            c170.ALIQ_ST = Library.GetDecimal(data[17]);
-                            c170.VL_ICMS_ST = Library.GetDecimal(data[18]);
-                            c170.IND_APUR = Library.GetInt16(data[19]);
-                            c170.CST_IPI = Library.GetString(data[20]);
-                            c170.COD_ENQ = Library.GetString(data[21]);
-                            c170.VL_BC_IPI = Library.GetDecimal(data[22]);
-                            c170.ALIQ_IPI = Library.GetDecimal(data[23]);
-                            c170.VL_IPI = Library.GetDecimal(data[24]);
-                            c170.CST_PIS = Library.GetString(data[25]);
-                            c170.VL_BC_PIS = Library.GetDecimal(data[26]);
-                            c170.ALIQ_PIS_PERC = Library.GetDecimal(data[27]);
-                            c170.QUANT_BC_PIS = Library.GetDecimal(data[28]);
-                            c170.ALIQ_PIS_REAIS = Library.GetDecimal(data[29]);
-                            c170.VL_PIS = Library.GetDecimal(data[30]);
-                            c170.CST_COFINS = Library.GetString(data[31]);
-                            c170.VL_BC_COFINS = Library.GetDecimal(data[32]);
-                            c170.ALIQ_COFINS_PERC = Library.GetDecimal(data[33]);
-                            c170.QUANT_BC_COFINS = Library.GetDecimal(data[34]);
-                            c170.ALIQ_COFINS_REAIS = Library.GetDecimal(data[35]);
-                            c170.VL_COFINS = Library.GetDecimal(data[36]);
-                            c170.COD_CTA = Library.GetString(data[37]);
-                            c170.VL_ABAT_NT = Library.GetDecimal(data[38]);
-                            c170.PERC = 0;
-                            c170.CURVA = "";
-                            list.Add(c170);
+                            if (Library.GetDecimal(data[15]) > 0)//VALOR ICMS
+                            {
+                                C170 c170 = new C170();
+                                c170.REG = Library.GetString(data[1]);
+                                c170.NUM_ITEM = Library.GetInt32(data[2]);
+                                c170.COD_ITEM = Library.GetString(data[3]);
+                                c170.DESCR_COMPL = Library.GetString(data[4]);
+                                c170.QTD = Library.GetDecimal(data[5]);
+                                c170.UNID = Library.GetString(data[6]);
+                                c170.VL_ITEM = Library.GetDecimal(data[7]);
+                                c170.VL_DESC = Library.GetDecimal(data[8]);
+                                c170.IND_MOV = Library.GetInt16(data[9]);
+                                c170.CST_ICMS = Library.GetString(data[10]);
+                                c170.CFOP = Library.GetInt16(data[11]);
+                                c170.COD_NAT = Library.GetString(data[12]);
+                                c170.VL_BC_ICMS = Library.GetDecimal(data[13]);
+                                c170.ALIQ_ICMS = Library.GetDecimal(data[14]);
+                                c170.VL_ICMS = Library.GetDecimal(data[15]);
+                                total += c170.VL_ICMS;
+                                c170.VL_BC_ICMS_ST = Library.GetDecimal(data[16]);
+                                c170.ALIQ_ST = Library.GetDecimal(data[17]);
+                                c170.VL_ICMS_ST = Library.GetDecimal(data[18]);
+                                c170.IND_APUR = Library.GetInt16(data[19]);
+                                c170.CST_IPI = Library.GetString(data[20]);
+                                c170.COD_ENQ = Library.GetString(data[21]);
+                                c170.VL_BC_IPI = Library.GetDecimal(data[22]);
+                                c170.ALIQ_IPI = Library.GetDecimal(data[23]);
+                                c170.VL_IPI = Library.GetDecimal(data[24]);
+                                c170.CST_PIS = Library.GetString(data[25]);
+                                c170.VL_BC_PIS = Library.GetDecimal(data[26]);
+                                c170.ALIQ_PIS_PERC = Library.GetDecimal(data[27]);
+                                c170.QUANT_BC_PIS = Library.GetDecimal(data[28]);
+                                c170.ALIQ_PIS_REAIS = Library.GetDecimal(data[29]);
+                                c170.VL_PIS = Library.GetDecimal(data[30]);
+                                c170.CST_COFINS = Library.GetString(data[31]);
+                                c170.VL_BC_COFINS = Library.GetDecimal(data[32]);
+                                c170.ALIQ_COFINS_PERC = Library.GetDecimal(data[33]);
+                                c170.QUANT_BC_COFINS = Library.GetDecimal(data[34]);
+                                c170.ALIQ_COFINS_REAIS = Library.GetDecimal(data[35]);
+                                c170.VL_COFINS = Library.GetDecimal(data[36]);
+                                c170.COD_CTA = Library.GetString(data[37]);
+                                c170.VL_ABAT_NT = Library.GetDecimal(data[38]);
+                                c170.PERC = 0;
+                                c170.CURVA = "";
+                                list.Add(c170);
+                            }
                         }
                     }
                 }
@@ -132,9 +134,9 @@ namespace dotnet_api.Controllers
                 else
                 {
                     decimal Acumulado = 0;
-                    foreach (C170 c170 in list.OrderByDescending(o => o.VL_ITEM))
+                    foreach (C170 c170 in list.OrderByDescending(o => o.VL_ICMS))
                     {
-                        c170.PERC = (c170.VL_ITEM * 100) / total;
+                        c170.PERC = (c170.VL_ICMS * 100) / total;
                         Acumulado += c170.PERC;
                         if (Acumulado <= A && A > 0) //Curva A
                         {
@@ -152,7 +154,7 @@ namespace dotnet_api.Controllers
                     retRel = JsonConvert.SerializeObject(list.Where(w => w.CURVA == CurvaSel));
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 return BadRequest("Erro ao Executar Relatório.");
             }
@@ -161,6 +163,6 @@ namespace dotnet_api.Controllers
                     ? Ok(retRel)
                     : BadRequest("Nenhum Registro Encontrado.");
         }
-
+      
     }
 }

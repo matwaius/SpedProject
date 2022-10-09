@@ -21,12 +21,12 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportNFDayItemsABCController : ControllerBase
+    public class ReportNFDayByICMSItemsController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportNFDayItemsABCController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportNFDayByICMSItemsController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -34,13 +34,13 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int16 indOperacao, [FromQuery] decimal A, [FromQuery] decimal B, [FromQuery] decimal C, [FromQuery] string CurvaSel)
+        public async Task<IActionResult> Post([FromQuery] DateTime date, [FromQuery] Int16 indOperacao)
         {
             string retRel = "";
-
             try
             {
-                if (dateEnd < dateStart || dateStart > dateEnd)
+                string teste = indOperacao.ToString();
+                if (date == null)
                 {
                     return BadRequest("Data Invalida!");
                 }
@@ -53,8 +53,6 @@ namespace dotnet_api.Controllers
                 }
 
                 List<C170> list = new List<C170>();
-                C100 c100 = new C100();
-                decimal total = 0;
                 bool add = false;
                 foreach (string line in file.Split('\n'))
                 {
@@ -68,7 +66,7 @@ namespace dotnet_api.Controllers
                             add = false;
                             if (Library.GetInt16(data[2]) == indOperacao)
                             {
-                                if (dateStart >= Library.ToDateTime(data[10], "ddMMyyyy") && Library.ToDateTime(data[10], "ddMMyyyy") <= dateEnd)
+                                if (date == Library.ToDateTime(data[10], "ddMMyyyy"))
                                 {
                                     add = true;
                                 }
@@ -86,7 +84,6 @@ namespace dotnet_api.Controllers
                             c170.QTD = Library.GetDecimal(data[5]);
                             c170.UNID = Library.GetString(data[6]);
                             c170.VL_ITEM = Library.GetDecimal(data[7]);
-                            total += c170.VL_ITEM;
                             c170.VL_DESC = Library.GetDecimal(data[8]);
                             c170.IND_MOV = Library.GetInt16(data[9]);
                             c170.CST_ICMS = Library.GetString(data[10]);
@@ -131,25 +128,7 @@ namespace dotnet_api.Controllers
                 }
                 else
                 {
-                    decimal Acumulado = 0;
-                    foreach (C170 c170 in list.OrderByDescending(o => o.VL_ITEM))
-                    {
-                        c170.PERC = (c170.VL_ITEM * 100) / total;
-                        Acumulado += c170.PERC;
-                        if (Acumulado <= A && A > 0) //Curva A
-                        {
-                            c170.CURVA = "A";
-                        }
-                        else if (Acumulado >= A && Acumulado <= (A + B) && B > 0) //Curva B
-                        {
-                            c170.CURVA = "B";
-                        }
-                        else if (Acumulado >= (A + B) && Acumulado <= (A + B + C) && C > 0) //Curva C
-                        {
-                            c170.CURVA = "C";
-                        }
-                    }
-                    retRel = JsonConvert.SerializeObject(list.Where(w => w.CURVA == CurvaSel));
+                    retRel = JsonConvert.SerializeObject(list.Where(w => w.VL_ICMS > 0));
                 }
             }
             catch
@@ -161,6 +140,6 @@ namespace dotnet_api.Controllers
                     ? Ok(retRel)
                     : BadRequest("Nenhum Registro Encontrado.");
         }
-
+      
     }
 }
