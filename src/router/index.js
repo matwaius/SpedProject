@@ -77,7 +77,7 @@ const routes = [
   {
     path: '/ReportNFDepartureDayByUF',
     name: 'ReportNFDepartureDayByUF',
-    component: () => import('../reports/ReportNFDepartureDayByUF.vue')
+    component: () => import('../reports/ReportNFDayByUF.vue')
   },
   {
     path: '/ReportNFQtdDay',

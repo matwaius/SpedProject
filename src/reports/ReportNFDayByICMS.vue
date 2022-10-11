@@ -34,7 +34,7 @@
   import validation from '../services/validation.ts';
   
   export default {
-    name: 'ReportNFDay',
+    name: 'ReportNFDayByICMS',
     data: vm => ({
         dateInicial: "",
         dateFinal: "",
@@ -50,7 +50,7 @@
             ],
             datasets: [
               {
-                label: 'NF Dia',
+                label: 'ICMS',
                 backgroundColor: '#489999',
                 data: [
                   //teste
