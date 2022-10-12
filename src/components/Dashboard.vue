@@ -243,6 +243,49 @@
               </v-row>
             </v-container>
 
+             <!--NOTAS-->
+             <v-container v-show="show_table_notas">
+              <v-row dense>
+                <v-col cols="8">
+                  <v-toolbar flat
+                          rounded
+                          dense
+                          class="blue-grey lighten-4">
+                    <v-toolbar-title class="font-weight-medium">{{title_notas}}</v-toolbar-title> 
+                  </v-toolbar>
+                </v-col>
+                <v-col cols="4">
+                    <v-toolbar flat
+                            rounded
+                            dense
+                            class="blue-grey lighten-4">
+                      <v-toolbar-title class="font-weight-medium">{{total_notas}}</v-toolbar-title> 
+                    </v-toolbar>
+                  </v-col>
+              </v-row>
+
+            
+              <v-row fluid>
+                <v-col>
+                  <v-data-table no-data-text="Nenhum Registro Disponível"
+                                no-results-text="Nenhum Registro Encontrado"
+                                dense
+                                fixed-header
+                                :height=250
+                                class="elevation-0 list-data-table"
+                                single-select
+                                hide-default-footer
+                                calculate-widths
+                                :headers="tableHeaderNotas"
+                                :items="tableItemsNotas"
+                                :items-per-page="-1">
+                    <template v-slot:item.actions="{item}">
+                    </template>
+                  </v-data-table>
+                </v-col>
+              </v-row>
+            </v-container>
+
             <!--ITEMS-->
             <v-container v-show="show_table">
               <v-row dense>
@@ -334,15 +377,20 @@ export default {
   },
   props: {
       title: "",
+      title_notas: "",
       title_itens: "",
       title_curva: "",
       title_grafico:"",
       total_grafico_bar: 0,
+      total_notas:0,
       total_itens:0,
       show_ind: true,
       show_chart_bar: true,
       show_chart_pie: true,
       show_table: true,
+      show_table_notas: true,
+      tableHeaderNotas: [],
+      tableItemsNotas: [],
       tableHeader: [],
       tableItems: [],
       maxHeight:"",
@@ -424,6 +472,8 @@ export default {
       menu2: false,
       pageCount: 0,
       pageNumber: 0,
+      pageCountNotas: 0,
+      pageNumberNotas: 0,
       curva_A: 80,
       curva_B: 15,
       curva_C: 5,

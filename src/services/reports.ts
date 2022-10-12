@@ -18,7 +18,7 @@ export default {
     return api.post('/ReportNFDepartureDayByRedZ?dateStart=' + dateStart + '&dateEnd=' + dateEnd)
   },
   ReportNFDepartureDayByUF: (dateStart, dateEnd) => {
-    return api.post('/ReportNFDepartureDayByUF?dateStart=' + dateStart + '&dateEnd=' + dateEnd)
+    return api.post('/ReportNFDayByUF?dateStart=' + dateStart + '&dateEnd=' + dateEnd)
   },
   ReportNFQtdDay: (dateStart, dateEnd) => {
     return api.post('/ReportNFQtdDay?dateStart=' + dateStart + '&dateEnd=' + dateEnd)

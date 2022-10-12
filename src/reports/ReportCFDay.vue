@@ -33,8 +33,7 @@ import validation from '../services/validation.ts';
 
 export default {
   name: 'ReportCFDay',
-  data() {
-    return {
+  data: vm => ({
       dateInicial: "",
       dateFinal: "",
       indOperacao: "",
@@ -67,8 +66,7 @@ export default {
           }
         ]
       }
-    }
-  },
+  }),
   components: {
       Dashboard
   },

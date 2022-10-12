@@ -75,8 +75,8 @@ const routes = [
     component: () => import('../reports/ReportNFDepartureDayByRedZ.vue')
   },
   {
-    path: '/ReportNFDepartureDayByUF',
-    name: 'ReportNFDepartureDayByUF',
+    path: '/ReportNFDayByUF',
+    name: 'ReportNFDayByUF',
     component: () => import('../reports/ReportNFDayByUF.vue')
   },
   {

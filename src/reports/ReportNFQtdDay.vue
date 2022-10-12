@@ -1,197 +1,203 @@
 <template>
-  <app name="ReportNFQtdDay">
-    <div>
-      <h1>Relatório - AJUSTAR</h1>
+  <div>
+    <Dashboard
+        title="Relatório de Nota Fiscal por Quantidade"
+        title_grafico = "Gráfico"
+        title_notas = "Notas"
+        title_itens = "Itens"
+        title_curva = "Curva ABC"
+        :total_grafico_bar="this.total_grafico_bar"
+        :total_notas="this.total_notas"
+        :total_itens="this.total_itens"
+        :show_ind=true
+        :show_chart_bar="true"
+        :show_chart_pie="false"
+        :show_table_notas="true"
+        :show_table="false"
+        :tableHeaderNotas="tableheaderNotas"
+        :tableItemsNotas="tableitemsNotas"
+        :tableHeader="tableheader"
+        :tableItems="tableitems"
+        :dadosGraficoBar="chartData"
+        :dadosGraficoPie="chartABC"
+  
+        @botaoFiltrar ="setaFiltros"
+        @botaoFiltrarABC ="setaFiltrosABC"
+        
+        @colunaGraficoBar="getNotas" 
+        @colunaGraficoPie="getItemsABC"
 
-    <v-container   fluid >
-      <v-btn color="error" dark @click="Return">Retornar</v-btn>
-      <br/>
-      <br/>
-      <v-row>
-        <v-col
-          cols="3"
-          lg="3"
+        @color="changeColor"
         >
-          <v-menu
-            ref="menu1"
-            v-model="menu1"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="dateFormatted"
-                label="Data Inicial"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                v-bind="attrs"
-                @blur="date = parseDate(dateFormatted)"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="date"
-              no-title
-              @input="menu1 = false"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col
-          cols="6"
-          lg="3"
-        >
-          <v-menu
-            ref="menu2"
-            v-model="menu2"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="dateFormatted2"
-                label="Data Final"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                v-bind="attrs"
-                @blur="date2 = parseDate(dateFormatted2)"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="date2"
-              no-title
-              @input="menu2 = false"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-    </v-container>
+    </Dashboard>
   </div>
-
-  <v-container fluid>
-    <v-btn color="warning" dark @click="Filter">Filtrar</v-btn>
-  </v-container>
-
-  <v-container fluid>
-    <br/>
-    <table border = '1px'>
-      <tr>
-        <td>Data</td>
-        <td>Valor</td>
-      </tr>
-      <tr v-for="item in this.list2" v-bind:key="item.DT_DOC">
-        <td>{{item.DT_DOC}}</td>
-        <td>{{item.QTD}}</td>
-      </tr>
-    </table>
-  </v-container>
-
-  <v-container>
-    <Bar :chart-data="chartData" />
-  </v-container>
-
-  <footer-layout-vue></footer-layout-vue>
-  </app>
-</template>
-
-<script>
-import FooterLayoutVue from '@/layouts/FooterLayout.vue'
-import axios from 'axios'
-import moment from 'moment'
-
-export default {
-  name: 'ReportNFQtdDay',
-  data: vm => ({
-    list: undefined,
-    list2: [],
-    loaded: false,
-    date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-    date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
-    dateFormatted2: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
-    menu1: false,
-    menu2: false,
-    chartData: {
-      labels: ['Janeiro', 'Fevereiro', 'Março'],
-      datasets: [
-        {
-          label: 'Data One',
-          backgroundColor: '#f87979',
-          data: [40, 62, 12]
-        }
-      ]
-    }
-  }),
-  components: {
-    FooterLayoutVue
-  },
-  computed: {
-    computedDateFormatted () {
-      return this.formatDate(this.date)
-    }
-  },
-  watch: {
-    date (val) {
-      this.dateFormatted = this.formatDate(this.date)
+  </template>
+  
+  <script>
+  import Dashboard from '@/components/Dashboard.vue'
+  import api from '@/services/api.ts';
+  import validation from '../services/validation.ts';
+  
+  export default {
+    name: 'ReportNFQtdDay',
+    data: vm => ({
+        dateInicial: "",
+        dateFinal: "",
+        indOperacao: "",
+        total_grafico_bar: 0,
+        total_notas:0,
+        total_itens:0,
+        tableheaderNotas: [],
+        tableitemsNotas:[],
+        tableheader: [],
+        tableitems:[],
+        chartData: {
+            labels: [
+               //teste
+              '01/06/2021','02/06/2021','03/06/2021','04/06/2021','05/06/2021','06/06/2021','07/06/2021','08/06/2021','09/06/2021','10/06/2021'
+            ],
+            datasets: [
+              {
+                label: 'Qtd',
+                backgroundColor: '#489999',
+                data: [
+                  //teste
+                  100.22,500.08,650.29,590.00,998.00,1500.65,1900.89,2150.98,3500.99,4888.88
+                ]
+              }
+            ]
+          },
+          chartABC: {
+          labels: ['A', 'B', 'C'],
+          datasets: [
+            {
+              backgroundColor: ['#41B883', '#00D8FF', '#FFD54F'],
+              data: [80, 15, 5]
+            }
+          ]
+      }
+    }),
+    components: {
+        Dashboard
     },
-    date2 (val) {
-      this.dateFormatted = this.formatDate(this.date)
-    }
-  },
-  methods: {
-    formatDate (date) {
-      if (!date) return null
-
-      const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
+    methods: { 
+      async getRel () {
+          this.limpaDados();
+          await api.post('/ReportNFQtdDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
+            .then(response => {
+                this.chartData.datasets[0].label="Qtd";
+                for (let i = 0; i < response.data.length; i++) {
+                  this.chartData.labels.push(response.data[i].DT_DOC);
+                  this.chartData.datasets[0].data.push(response.data[i].QTD );
+                  this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].QTD)* 100) / 100 ; 
+                }
+                this.total_grafico_bar = "Qtd: " +this.total_grafico_bar;
+            })
+            .catch(error => console.log(error));
+      },
+      setaFiltros(e){
+        this.filtros = e;
+        this.chartABC= {
+          labels: ['A', 'B', 'C'],
+          datasets: [
+            {
+              backgroundColor: ['#41B883', '#00D8FF', '#FFD54F'],
+              data: [this.filtros[0].curvaA, this.filtros[0].curvaB, this.filtros[0].curvaC]
+            }
+          ]};
+          this.getRel();
+      },
+      setaFiltrosABC(e){
+        this.filtros = e;
+        this.chartABC= {
+          labels: ['A', 'B', 'C'],
+          datasets: [
+            {
+              backgroundColor: ['#41B883', '#00D8FF', '#FFD54F'],
+              data: [this.filtros[0].curvaA, this.filtros[0].curvaB, this.filtros[0].curvaC]
+            }
+          ]};
+      },
+      async getNotas(e){
+        this.tableheaderNotas=[
+              { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
+              { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
+              { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
+              { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
+              { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
+              { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+              { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
+          ];
+        this.tableitemsNotas=[];
+        this.total_notas=0;
+        this.tableheader=[
+              { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
+              { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
+              { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
+              { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
+              { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+              { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
+              { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
+              { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
+              { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
+              { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
+          ];
+        this.tableitems=[];
+        this.total_itens=0;
+        await api.post('/ReportNFQtdDayItems?date=' + validation.parseDate(e)+'&indOperacao='+this.filtros[0].ind)
+            .then(response => {
+              for (let i = 0; i < response.data.length; i++) {
+                    this.tableitemsNotas.push(response.data[i]);
+                    this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC - response.data[i].VL_FRT)* 100) / 100 ; 
+                    for (let c = 0; c < response.data[i].Itens.length; c++) {
+                        this.tableitems.push(response.data[i].Itens[c]);
+                        this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ITEM - response.data[i].Itens[c].VL_DESC)* 100) / 100 ; 
+                    }
+                }
+                this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            })
+            .catch(error => console.log(error));
+      },
+      async getItemsABC(e){
+        this.tableheader = [ 
+          { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
+          { text: "Descrição", value: "DESCR_COMPL", align:"start", divider:false, width: "25%", sortable: true },
+          { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
+          { text: "Preco Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
+          { text: "Perc. %", value: "PERC",align:"end", divider:false, width: "24%", sortable: true },
+          { text: "Curva", value: "CURVA",align:"end", divider:false, width: "12%", sortable: true },
+        ];
+        this.tableitems=[];
+        this.total_itens=0;
+        await api.post('/ReportNFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&indOperacao='+this.filtros[0].ind +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
+            .then(response => {
+                for (let c = 0; c < response.data.length; c++) {
+                    this.tableitems.push(response.data[c]);
+                }
+                this.total_itens = ((e == "A") ? this.filtros[0].curvaA : (e == "B") ?  this.filtros[0].curvaB  : this.filtros[0].curvaC) + "%";
+  
+            })
+            .catch(error => console.log(error));
+      },
+      async changeColor(e){
+          this.filtros =e;
+          this.chartData.datasets[0].backgroundColor=this.filtros[0].color;
+          this.getRel();
+      },
+      limpaDados(){
+          this.chartData.labels=[];
+          this.chartData.datasets[0].data=[];
+          this.tableitemsNotas=[];
+          this.tableitems=[];
+          this.total_grafico_bar =0;
+          this.total_notas=0;
+          this.total_itens=0;
+      }
     },
-    parseDate (date) {
-      if (!date) return null
-
-      const [day, month, year] = date.split('/')
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-    },
-    FilterBKP () {/*OK - Sem o moment para corrigir a data que está vindo datetime do backend */
-      axios
-        .post('https://localhost:7258/api/ReportNFQtdDay?dateStart=' + this.date + '&dateEnd=' + this.date2).then(response => {
-          this.list = response.data
-          this.loaded = true
-          console.log(response.data)
-        }
-        ).catch(error => console.log(error))
-    },
-    Filter () {/*Com o moment para corrigir a data que está vindo datetime do backend */
-      axios
-        .post('https://localhost:7258/api/ReportNFQtdDay?dateStart=' + this.date + '&dateEnd=' + this.date2).then(response => {
-          this.list = response.data
-
-          this.list.forEach(d => {
-            const DT_DOC = moment(d.DT_DOC, 'DD/MM/YYYY 00:00:00').format('DD/MM/YYYY')
-            const {
-              QTD
-            } = d
-            this.list2.push({ DT_DOC, QTD })
-          })
-          this.loaded = true
-          console.log(response.data)
-          console.log('teste')
-          console.log(this.list2)
-        }
-        )
-    },
-    Return () {
-      this.$router.push('/reports')
-    },
-    mounted () {
-      this.loaded = false
+    created(){
     }
   }
-}
-
-</script>
+  
+  </script>
+  

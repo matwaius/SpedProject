@@ -21,12 +21,12 @@ namespace dotnet_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportNFDayItemsController : ControllerBase
+    public class ReportNFQtdDayItemsController : ControllerBase
     {
         private readonly IFilesRepository _repository;
         private readonly IMapper _mapper;
         private IConfiguration _configuration { get; }
-        public ReportNFDayItemsController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
+        public ReportNFQtdDayItemsController(IFilesRepository repository, IMapper mapper, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -51,7 +51,6 @@ namespace dotnet_api.Controllers
                 {
                     return BadRequest("Arquivo Invalido!");
                 }
-
                 List<_0150> list0150 = new List<_0150>();
                 List<C100> list = new List<C100>();
                 C100 c100 = new C100();
@@ -168,9 +167,9 @@ namespace dotnet_api.Controllers
                 }
                 else
                 {
-                    foreach (var notas in list)
+                    foreach(var notas in list)
                     {
-                        notas.NOME = list0150.Where(w => w.COD_PART == notas.COD_PART).Select(s => s.NOME).FirstOrDefault().ToString();
+                        notas.NOME= list0150.Where(w => w.COD_PART == notas.COD_PART).Select(s => s.NOME).FirstOrDefault().ToString();
                     }
                     retRel = JsonConvert.SerializeObject(list.OrderBy(o => o.DT_DOC));
                 }

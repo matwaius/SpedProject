@@ -3,14 +3,19 @@
     <Dashboard
         title="Relatório de Nota Fiscal por Dia"
         title_grafico = "Gráfico"
+        title_notas = "Notas"
         title_itens = "Itens"
         title_curva = "Curva ABC"
         :total_grafico_bar="this.total_grafico_bar"
+        :total_notas="this.total_notas"
         :total_itens="this.total_itens"
         :show_ind=true
         :show_chart_bar="true"
         :show_chart_pie="true"
+        :show_table_notas="true"
         :show_table="true"
+        :tableHeaderNotas="tableheaderNotas"
+        :tableItemsNotas="tableitemsNotas"
         :tableHeader="tableheader"
         :tableItems="tableitems"
         :dadosGraficoBar="chartData"
@@ -19,7 +24,7 @@
         @botaoFiltrar ="setaFiltros"
         @botaoFiltrarABC ="setaFiltrosABC"
         
-        @colunaGraficoBar="getItems" 
+        @colunaGraficoBar="getNotas" 
         @colunaGraficoPie="getItemsABC"
 
         @color="changeColor"
@@ -40,7 +45,10 @@
         dateFinal: "",
         indOperacao: "",
         total_grafico_bar: 0,
+        total_notas:0,
         total_itens:0,
+        tableheaderNotas: [],
+        tableitemsNotas:[],
         tableheader: [],
         tableitems:[],
         chartData: {
@@ -110,7 +118,18 @@
             }
           ]};
       },
-      async getItems(e){
+      async getNotas(e){
+        this.tableheaderNotas=[
+              { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
+              { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
+              { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
+              { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
+              { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
+              { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+              { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
+          ];
+        this.tableitemsNotas=[];
+        this.total_notas=0;
         this.tableheader=[
               { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
               { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
@@ -125,14 +144,17 @@
           ];
         this.tableitems=[];
         this.total_itens=0;
-        await api.post('/ReportNFDayItems?date=' + validation.parseDate(e)+'&indOperacao='+this.filtros[0].ind)
+        await api.post('/ReportNFDayItems?date=' + validation.parseDate(e) +'&indOperacao='+this.filtros[0].ind)
             .then(response => {
               for (let i = 0; i < response.data.length; i++) {
+                    this.tableitemsNotas.push(response.data[i]);
+                    this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC - response.data[i].VL_FRT)* 100) / 100 ; 
                     for (let c = 0; c < response.data[i].Itens.length; c++) {
                         this.tableitems.push(response.data[i].Itens[c]);
                         this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ITEM - response.data[i].Itens[c].VL_DESC)* 100) / 100 ; 
                     }
                 }
+                this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             })
             .catch(error => console.log(error));
@@ -166,8 +188,10 @@
       limpaDados(){
           this.chartData.labels=[];
           this.chartData.datasets[0].data=[];
+          this.tableitemsNotas=[];
           this.tableitems=[];
           this.total_grafico_bar =0;
+          this.total_notas=0;
           this.total_itens=0;
       }
     },
