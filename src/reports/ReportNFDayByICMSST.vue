@@ -77,7 +77,7 @@
           this.limpaDados();
           await api.post('/ReportNFDayByICMSST?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
             .then(response => {
-                this.chartData.datasets[0].label="Dias";
+                this.chartData.datasets[0].label="ICMS ST";
                 
                 for (let i = 0; i < response.data.length; i++) {
                   this.chartData.labels.push(response.data[i].DT_DOC);

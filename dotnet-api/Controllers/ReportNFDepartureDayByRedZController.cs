@@ -80,13 +80,13 @@ namespace dotnet_api.Controllers
                                         .Where(x => Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) 
                                         .GroupBy(g => new
                                         {
-                                            grp_date = g["DT_DOC"]
+                                            grp_date = g["DT_DOC"].ToString().Substring(0,10)
                                         })
                                         .Select(s => new
                                         {
                                             DT_DOC = s.Key.grp_date,
                                             VL_BRT = s.Sum(ss => Library.GetDecimal(ss["VL_BRT"].ToString()))
-                                        }).ToList();
+                                        }).ToList().OrderBy(o=>o.DT_DOC);
 
                     retRel = JsonConvert.SerializeObject(dateFormat);
                 }

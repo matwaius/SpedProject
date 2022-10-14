@@ -42,7 +42,7 @@
               </v-col>
             </v-row>
               <v-row dense>
-                <v-col  cols="4"
+                <v-col  cols="2"
                         style="display: inline-block">
                     <v-menu
                       ref="menu1"
@@ -56,6 +56,7 @@
                         <v-text-field
                           v-model="dateFormatted"
                           label="Data Inicial"
+                          readonly
                           persistent-hint
                           prepend-icon="mdi-calendar"
                           v-bind="attrs"
@@ -70,7 +71,7 @@
                       ></v-date-picker>
                     </v-menu>
                 </v-col>
-                <v-col  cols="4" 
+                <v-col  cols="2" 
                         style="display: inline-block">
                     <v-menu
                       ref="menu2"
@@ -85,6 +86,7 @@
                           v-model="dateFormatted2"
                           label="Data Final"
                           persistent-hint
+                          readonly
                           prepend-icon="mdi-calendar"
                           v-bind="attrs"
                           @blur="date2 = validation.parseDate(dateFormatted2)"
@@ -98,7 +100,7 @@
                       ></v-date-picker>
                     </v-menu>
                 </v-col>
-                <v-col cols="3" 
+                <v-col cols="2" 
                       v-show="show_ind" 
                       style="display: inline-block"> 
                       <v-select label="Ind. Operação"
@@ -279,8 +281,6 @@
                                 :headers="tableHeaderNotas"
                                 :items="tableItemsNotas"
                                 :items-per-page="-1">
-                    <template v-slot:item.actions="{item}">
-                    </template>
                   </v-data-table>
                 </v-col>
               </v-row>

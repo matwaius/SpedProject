@@ -3,7 +3,7 @@
     <Dashboard
         title="Relatório de Nota Fiscal por Dia"
         title_grafico = "Gráfico"
-        title_notas = "Notas"
+        title_notas = "Notas Fiscais"
         title_itens = "Itens"
         title_curva = "Curva ABC"
         :total_grafico_bar="this.total_grafico_bar"
@@ -85,7 +85,7 @@
           this.limpaDados();
           await api.post('/ReportNFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
             .then(response => {
-                this.chartData.datasets[0].label="Dias";
+                this.chartData.datasets[0].label="Valor";
                 for (let i = 0; i < response.data.length; i++) {
                   this.chartData.labels.push(response.data[i].DT_DOC);
                   this.chartData.datasets[0].data.push(response.data[i].VL_DOC );

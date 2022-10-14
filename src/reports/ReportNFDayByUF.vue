@@ -84,7 +84,7 @@
           this.limpaDados();
           await api.post('/ReportNFDayByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
             .then(response => {
-                this.chartData.datasets[0].label="Dias";
+                this.chartData.datasets[0].label="Valor";
                 for (let i = 0; i < response.data.length; i++) {
                   this.chartData.labels.push(response.data[i].UF);
                   this.chartData.datasets[0].data.push(response.data[i].VL_DOC );

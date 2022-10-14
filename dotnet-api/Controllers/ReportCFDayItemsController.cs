@@ -76,7 +76,16 @@ namespace dotnet_api.Controllers
                             {
                                 add = true;
                                 c460 = new C460();
+                                c460.REG = Library.GetString(data[1]);
+                                c460.COD_MOD = Library.GetString(data[2]);
+                                c460.COD_SIT = Library.GetString(data[3]);
+                                c460.NUM_DOC = Library.GetInt32(data[4]);
                                 c460.DT_DOC = Library.ToDateTime(data[5], "ddMMyyyy");
+                                c460.VL_DOC = Library.GetDecimal(data[6]);
+                                c460.VL_PIS = Library.GetDecimal(data[7]);
+                                c460.VL_COFINS = Library.GetDecimal(data[8]);
+                                c460.CPF_CNPJ = Library.GetString(data[9]);
+                                c460.NOM_ADQ = Library.GetString(data[10]);
                                 c460.Itens = new List<C470>();
                                 list.Add(c460);
                             }
