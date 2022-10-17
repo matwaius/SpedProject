@@ -12,6 +12,7 @@ namespace dotnet_api.Methods.Classes
         public Int32 NUM_COO_FIN { get; set; }
         public decimal GT_FIN { get; set; }
         public decimal VL_BRT { get; set; }
+        public List<C420> Itens { get; set; }
 
         public C405 MountDataC405(string[] data)
         {

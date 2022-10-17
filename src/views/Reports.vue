@@ -56,10 +56,10 @@ export default {
       { text: 'Relatório de Nota Fiscal por ICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' },
       { text: 'Relatório de Nota Fiscal por ICMS ST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' },
       { text: 'Relatório por Redução Z', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
+      { text: 'Relatório de Totalizadores por Dia', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' },
       { text: 'Relatório de Nota Fiscal por UF', icon: 'mdi-hexagon', to: '/ReportNFDayByUF' },
       { text: 'Relatório Nota Fiscal por Quantidade', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' },
       { text: 'Relatório Nota Fiscal por Quantidade por UF', icon: 'mdi-hexagon', to: '/ReportNFQtdDayByUF' },
-      { text: 'Relatório Nota Fiscal por Totalizadores', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' }
     ]
   }),
   components: {

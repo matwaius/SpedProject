@@ -1,195 +1,118 @@
 <template>
-  <app name="ReportNFDepartureDayByUF">
-    <div>
-      <h1>Relatório - NÃO FINALIZADO</h1>
-    <v-container   fluid >
-      <v-btn color="error" dark @click="Return">Retornar</v-btn>
-      <br/>
-      <br/>
-      <v-row>
-        <v-col
-          cols="3"
-          lg="3"
+  <div>
+    <Dashboard
+        title="Relatório de Totalizadores por Dia"
+        title_grafico = "Gráfico"
+        title_notas = "Totalizadores"
+        :total_grafico_bar="this.total_grafico_bar"
+        :total_notas="this.total_notas"
+        :show_ind=false
+        :show_chart_bar="true"
+        :show_chart_pie="false"
+        :show_table_notas="true"
+        :show_table="false"
+        :tableHeaderNotas="tableheaderNotas"
+        :tableItemsNotas="tableitemsNotas"
+        :dadosGraficoBar="chartData"
+  
+        @botaoFiltrar ="setaFiltros"
+        
+        @colunaGraficoBar="getNotas" 
+
         >
-          <v-menu
-            ref="menu1"
-            v-model="menu1"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="dateFormatted"
-                label="Data Inicial"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                v-bind="attrs"
-                @blur="date = parseDate(dateFormatted)"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="date"
-              no-title
-              @input="menu1 = false"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col
-          cols="6"
-          lg="3"
-        >
-          <v-menu
-            ref="menu2"
-            v-model="menu2"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="dateFormatted2"
-                label="Data Final"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                v-bind="attrs"
-                @blur="date2 = parseDate(dateFormatted2)"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="date2"
-              no-title
-              @input="menu2 = false"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-    </v-container>
+    </Dashboard>
   </div>
-
-  <v-container fluid>
-    <v-btn color="warning" dark @click="Filter">Filtrar</v-btn>
-  </v-container>
-
-  <v-container fluid>
-    <br/>
-    <table border = '1px'>
-      <tr>
-        <td>Data</td>
-        <td>Valor</td>
-      </tr>
-      <tr v-for="item in this.list2" v-bind:key="item.UF">
-        <td>{{item.UF}}</td>
-        <td>{{item.VL_DOC}}</td>
-      </tr>
-    </table>
-  </v-container>
-
-  <v-container>
-    <Bar :chart-data="chartData" />
-  </v-container>
-
-  <footer-layout-vue></footer-layout-vue>
-  </app>
-</template>
-
-<script>
-import FooterLayoutVue from '@/layouts/FooterLayout.vue'
-import axios from 'axios'
-
-export default {
-  name: 'ReportNFDepartureDayByUF',
-  data: vm => ({
-    list: undefined,
-    list2: [],
-    loaded: false,
-    date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-    date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
-    dateFormatted2: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
-    menu1: false,
-    menu2: false,
-    chartData: {
-      labels: ['Janeiro', 'Fevereiro', 'Março'],
-      datasets: [
-        {
-          label: 'Data One',
-          backgroundColor: '#f87979',
-          data: [40, 62, 12]
-        }
-      ]
-    }
-  }),
-  components: {
-    FooterLayoutVue
-  },
-  computed: {
-    computedDateFormatted () {
-      return this.formatDate(this.date)
-    }
-  },
-  watch: {
-    date (val) {
-      this.dateFormatted = this.formatDate(this.date)
+  </template>
+  
+  <script>
+  import Dashboard from '@/components/Dashboard.vue'
+  import api from '@/services/api.ts';
+  import validation from '../services/validation.ts';
+  
+  export default {
+    name: 'ReportNFDayByUF',
+    data: vm => ({
+        dateInicial: "",
+        dateFinal: "",
+        indOperacao: "",
+        total_grafico_bar: 0,
+        total_notas:0,
+        total_itens:0,
+        tableheaderNotas: [],
+        tableitemsNotas:[],
+        tableheader: [],
+        tableitems:[],
+        chartData: {
+            labels: [
+               //teste
+              '01/06/2021','02/06/2021','03/06/2021','04/06/2021','05/06/2021','06/06/2021','07/06/2021','08/06/2021','09/06/2021','10/06/2021'
+            ],
+            datasets: [
+              {
+                label: 'UF',
+                backgroundColor: '#EF5350',
+                data: [
+                  //teste
+                  100.22,500.08,650.29,590.00,998.00,1500.65,1900.89,2150.98,3500.99,4888.88
+                ]
+              }
+            ]
+          },
+    }),
+    components: {
+        Dashboard
     },
-    date2 (val) {
-      this.dateFormatted = this.formatDate(this.date)
-    }
-  },
-  methods: {
-    formatDate (date) {
-      if (!date) return null
-
-      const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
+    methods: { 
+      async getRel () {
+          this.limpaDados();
+          await api.post('/ReportTotalizersDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+            .then(response => {
+                this.chartData.datasets[0].label="Valor Tot.";
+                for (let i = 0; i < response.data.length; i++) {
+                  this.chartData.labels.push(response.data[i].DT_DOC);
+                  this.chartData.datasets[0].data.push(response.data[i].VL_BRT );
+                  this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].VL_BRT)* 100) / 100 ; 
+                }
+                this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            })
+            .catch(error => console.log(error));
+      },
+      setaFiltros(e){
+        this.filtros = e;
+        this.getRel();
+      },
+      async getNotas(e){
+        this.tableheaderNotas=[
+              { text: "Totalizador", value: "COD_TOT_PAR", align:"start", width: 150, divider:false, sortable: true },
+              { text: "Valor", value: "VLR_ACUM_TOT", align:"start", width: 100, divider:false, sortable: true },
+          ];
+        this.tableitemsNotas=[];
+        this.total_notas=0;
+        
+        await api.post('/ReportTotalizersItemsDay?date=' + validation.parseDate(e))
+            .then(response => {
+              for (let i = 0; i < response.data.length; i++) {
+                    
+                    for (let c = 0; c < response.data[i].Itens.length; c++) {
+                        this.tableitemsNotas.push(response.data[i].Itens[c]);
+                        this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].Itens[c].VLR_ACUM_TOT)* 100) / 100 ; 
+                    }
+                }
+                this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            })
+            .catch(error => console.log(error));
+      },
+      limpaDados(){
+          this.chartData.labels=[];
+          this.chartData.datasets[0].data=[];
+          this.tableitemsNotas=[];
+          this.total_grafico_bar =0;
+          this.total_notas=0;
+      }
     },
-    parseDate (date) {
-      if (!date) return null
-
-      const [day, month, year] = date.split('/')
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-    },
-    FilterBKP () {/*OK - Sem o moment para corrigir a data que está vindo datetime do backend */
-      axios
-        .post('https://localhost:7258/api/ReportNFDepartureDayByUF?dateStart=' + this.date + '&dateEnd=' + this.date2).then(response => {
-          this.list = response.data
-          this.loaded = true
-          console.log(response.data)
-        }
-        ).catch(error => console.log(error))
-    },
-    Filter () {/*Com o moment para corrigir a data que está vindo datetime do backend */
-      axios
-        .post('https://localhost:7258/api/ReportNFDepartureDayByUF?dateStart=' + this.date + '&dateEnd=' + this.date2).then(response => {
-          this.list = response.data
-
-          this.list.forEach(d => {
-            const {
-              UF,
-              VL_BRT
-            } = d
-            this.list2.push({ UF, VL_BRT })
-          })
-          this.loaded = true
-          console.log(response.data)
-          console.log('teste')
-          console.log(this.list2)
-        }
-        )
-    },
-    Return () {
-      this.$router.push('/reports')
-    },
-    mounted () {
-      this.loaded = false
+    created(){
     }
   }
-}
-
-</script>
+  
+  </script>
+  
