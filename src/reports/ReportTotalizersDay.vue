@@ -34,6 +34,7 @@
     data: vm => ({
         dateInicial: "",
         dateFinal: "",
+        loading: false,
         indOperacao: "",
         total_grafico_bar: 0,
         total_notas:0,
@@ -64,43 +65,66 @@
     },
     methods: { 
       async getRel () {
-          this.limpaDados();
-          await api.post('/ReportTotalizersDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
-            .then(response => {
-                this.chartData.datasets[0].label="Valor Tot.";
-                for (let i = 0; i < response.data.length; i++) {
-                  this.chartData.labels.push(response.data[i].DT_DOC);
-                  this.chartData.datasets[0].data.push(response.data[i].VL_BRT );
-                  this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].VL_BRT)* 100) / 100 ; 
-                }
-                this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            })
-            .catch(error => console.log(error));
+        if(this.loading == false){
+            this.loading = true;
+            this.limpaDados();
+              try{
+                await api.post('/ReportTotalizersDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+                  .then(response => {
+                      this.chartData.datasets[0].label="Valor Tot.";
+                      for (let i = 0; i < response.data.length; i++) {
+                        this.chartData.labels.push(response.data[i].DT_DOC);
+                        this.chartData.datasets[0].data.push(response.data[i].VL_BRT );
+                        this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].VL_BRT)* 100) / 100 ; 
+                      }
+                      this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                      this.loading = false;
+                  })
+                  .catch(error => console.log(error));
+              } catch (error) {
+                this.loading = false;
+                error => console.log(error)
+              }
+              finally{
+                this.loading = false;
+              }
+          }
       },
       setaFiltros(e){
         this.filtros = e;
         this.getRel();
       },
       async getNotas(e){
-        this.tableheaderNotas=[
-              { text: "Totalizador", value: "COD_TOT_PAR", align:"start", width: 150, divider:false, sortable: true },
-              { text: "Valor", value: "VLR_ACUM_TOT", align:"start", width: 100, divider:false, sortable: true },
-          ];
-        this.tableitemsNotas=[];
-        this.total_notas=0;
-        
-        await api.post('/ReportTotalizersItemsDay?date=' + validation.parseDate(e))
-            .then(response => {
-              for (let i = 0; i < response.data.length; i++) {
-                    
-                    for (let c = 0; c < response.data[i].Itens.length; c++) {
-                        this.tableitemsNotas.push(response.data[i].Itens[c]);
-                        this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].Itens[c].VLR_ACUM_TOT)* 100) / 100 ; 
-                    }
-                }
-                this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            })
-            .catch(error => console.log(error));
+        if(this.loading == false){
+            this.loading = true;
+            this.tableheaderNotas=[
+                  { text: "Totalizador", value: "COD_TOT_PAR", align:"start", width: 200, divider:false, sortable: true },
+                  { text: "Valor", value: "VLR_ACUM_TOT", align:"end", width: 100, divider:false, sortable: true },
+              ];
+            this.tableitemsNotas=[];
+            this.total_notas=0;
+              try{
+                await api.post('/ReportTotalizersItemsDay?date=' + validation.parseDate(e))
+                    .then(response => {
+                      for (let i = 0; i < response.data.length; i++) {
+                            
+                            for (let c = 0; c < response.data[i].Itens.length; c++) {
+                                this.tableitemsNotas.push(response.data[i].Itens[c]);
+                                this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].Itens[c].VLR_ACUM_TOT)* 100) / 100 ; 
+                            }
+                        }
+                        this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        this.loading = false;
+                    })
+                    .catch(error => console.log(error));
+              } catch (error) {
+                this.loading = false;
+                error => console.log(error)
+              }
+              finally{
+                this.loading = false;
+              }
+          }
       },
       limpaDados(){
           this.chartData.labels=[];

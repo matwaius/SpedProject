@@ -27,6 +27,7 @@
     data: vm => ({
         dateInicial: "",
         dateFinal: "",
+        loading: false,
         total_grafico_bar: 0,
         tableheader: [],
         chartData: {
@@ -51,18 +52,31 @@
     },
     methods: { 
       async getRel () {
-          this.limpaDados();
-          await api.post('/ReportNFDepartureDayByRedZ?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
-            .then(response => {
-                this.chartData.datasets[0].label="Valor";
-                for (let i = 0; i < response.data.length; i++) {
-                  this.chartData.labels.push(response.data[i].DT_DOC);
-                  this.chartData.datasets[0].data.push(response.data[i].VL_BRT);
-                  this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round(response.data[i].VL_BRT* 100) / 100 ; 
-                }
-                this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            })
-            .catch(error => console.log(error));
+        if(this.loading == false){
+            this.loading = true;
+            this.limpaDados();
+            try {
+              await api.post('/ReportNFDepartureDayByRedZ?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+              .then(response => {
+                  this.chartData.datasets[0].label="Valor";
+                  for (let i = 0; i < response.data.length; i++) {
+                    this.chartData.labels.push(response.data[i].DT_DOC);
+                    this.chartData.datasets[0].data.push(response.data[i].VL_BRT);
+                    this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round(response.data[i].VL_BRT* 100) / 100 ; 
+                  }
+                  this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                  this.loading = false;
+              })
+              .catch(error => console.log(error))
+            } catch (error) {
+              this.loading = false;
+              error => console.log(error)
+            }
+            finally{
+              this.loading = false;
+            }
+            
+          }
       },
       setaFiltros(e){
         this.filtros = e;

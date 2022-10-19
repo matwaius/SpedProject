@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int16 indOperacao)
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int16 indOperacao, [FromQuery] string mod, [FromQuery] Int64 doc)
         {
             string retRel = "";
             try
@@ -62,7 +62,14 @@ namespace dotnet_api.Controllers
                         if (data[1] == "C100")
                         {
                             C100 c100 = new C100();
-                            list.Add(c100.MountDataC100(data));
+                            if (doc > 0 && Library.GetInt64(data[8]) != doc)
+                            {
+                                //Não Adiciona
+                            }
+                            else
+                            {
+                                list.Add(c100.MountDataC100(data));
+                            }
                         }
                     }
                 }
@@ -77,7 +84,8 @@ namespace dotnet_api.Controllers
 
                     var dateFormat = data
                                         .Select()
-                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd) //0-IND OPER => NOTAS DE ENTRADA 1-IND OPER => NOTAS DE SAIDA 
+                                        .Where(x => Library.GetInt16(x["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(x["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(x["DT_DOC"].ToString()) <= dateEnd
+                                                && x["COD_MOD"].ToString() == mod) //0-IND OPER => NOTAS DE ENTRADA 1-IND OPER => NOTAS DE SAIDA 
                                         .GroupBy(g => new
                                         {
                                             grp_date = g["DT_DOC"].ToString().Substring(0, 10)

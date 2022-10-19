@@ -42,6 +42,7 @@
     data: vm => ({
         dateInicial: "",
         dateFinal: "",
+        loading: false,
         indOperacao: "",
         total_grafico_bar: 0,
         total_notas:0,
@@ -81,18 +82,30 @@
     },
     methods: { 
       async getRel () {
-          this.limpaDados();
-          await api.post('/ReportNFDayByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
-            .then(response => {
-                this.chartData.datasets[0].label="Valor";
-                for (let i = 0; i < response.data.length; i++) {
-                  this.chartData.labels.push(response.data[i].UF);
-                  this.chartData.datasets[0].data.push(response.data[i].VL_DOC );
-                  this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].VL_DOC)* 100) / 100 ; 
-                }
-                this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            })
-            .catch(error => console.log(error));
+        if(this.loading == false){
+            this.loading = true;
+            this.limpaDados();
+              try{
+                  await api.post('/ReportNFDayByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
+                    .then(response => {
+                        this.chartData.datasets[0].label="Valor";
+                        for (let i = 0; i < response.data.length; i++) {
+                          this.chartData.labels.push(response.data[i].UF);
+                          this.chartData.datasets[0].data.push(response.data[i].VL_DOC );
+                          this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].VL_DOC)* 100) / 100 ; 
+                        }
+                        this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        this.loading = false;
+                    })
+                    .catch(error => console.log(error));
+              } catch (error) {
+                this.loading = false;
+                error => console.log(error)
+              }
+              finally{
+                this.loading = false;
+              }
+          }
       },
       setaFiltros(e){
         this.filtros = e;
@@ -118,45 +131,57 @@
           ]};
       },
       async getNotas(e){
-        this.tableheaderNotas=[
-              { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
-              { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
-              { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
-              { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
-              { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
-              { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-              { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
-          ];
-        this.tableitemsNotas=[];
-        this.total_notas=0;
-        this.tableheader=[
-              { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
-              { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
-              { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
-              { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
-              { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-              { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
-              { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
-              { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
-              { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
-              { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
-          ];
-        this.tableitems=[];
-        this.total_itens=0;
-        await api.post('/ReportNFDayItemsByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&UF=' + e+'&indOperacao='+this.filtros[0].ind)
-            .then(response => {
-              for (let i = 0; i < response.data.length; i++) {
-                    this.tableitemsNotas.push(response.data[i]);
-                    this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC - response.data[i].VL_FRT)* 100) / 100 ; 
-                    for (let c = 0; c < response.data[i].Itens.length; c++) {
-                        this.tableitems.push(response.data[i].Itens[c]);
-                        this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ITEM - response.data[i].Itens[c].VL_DESC)* 100) / 100 ; 
-                    }
-                }
-                this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            })
-            .catch(error => console.log(error));
+        if(this.loading == false){
+            this.loading = true;
+            this.tableheaderNotas=[
+                  { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
+                  { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
+                  { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
+                  { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
+                  { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
+              ];
+            this.tableitemsNotas=[];
+            this.total_notas=0;
+            this.tableheader=[
+                  { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
+                  { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
+                  { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
+                  { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
+                  { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
+                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
+                  { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
+                  { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
+              ];
+            this.tableitems=[];
+            this.total_itens=0;
+              try{
+                await api.post('/ReportNFDayItemsByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&UF=' + e+'&indOperacao='+this.filtros[0].ind)
+                    .then(response => {
+                      for (let i = 0; i < response.data.length; i++) {
+                            this.tableitemsNotas.push(response.data[i]);
+                            this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC - response.data[i].VL_FRT)* 100) / 100 ; 
+                            for (let c = 0; c < response.data[i].Itens.length; c++) {
+                                this.tableitems.push(response.data[i].Itens[c]);
+                                this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ITEM - response.data[i].Itens[c].VL_DESC)* 100) / 100 ; 
+                            }
+                        }
+                        this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        this.loading = false;
+                    })
+                    .catch(error => console.log(error));
+              } catch (error) {
+                this.loading = false;
+                error => console.log(error)
+              }
+              finally{
+                this.loading = false;
+              }
+          }
       },
       async changeColor(e){
           this.filtros =e;

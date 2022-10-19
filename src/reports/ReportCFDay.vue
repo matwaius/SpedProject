@@ -40,6 +40,7 @@ export default {
   name: "ReportCFDay",
   data: vm => ({
       dateInicial: "",
+      loading: false,
       dateFinal: "",
       indOperacao: "",
       total_grafico_bar: 0,
@@ -80,18 +81,30 @@ export default {
   },
   methods: { 
     async getRel () {
-        this.limpaDados();
-        await api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
-          .then(response => {
-              this.chartData.datasets[0].label="Valor";
-              for (let i = 0; i < response.data.length; i++) {
-                this.chartData.labels.push(response.data[i].DT_DOC);
-                this.chartData.datasets[0].data.push(response.data[i].VL_DOC);
-                this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round(response.data[i].VL_DOC* 100) / 100 ; 
-              }
-              this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-          })
-          .catch(error => console.log(error));
+        if(this.loading == false){
+          this.loading = true;
+          this.limpaDados();
+            try{
+              await api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+                .then(response => {
+                    this.chartData.datasets[0].label="Valor";
+                    for (let i = 0; i < response.data.length; i++) {
+                      this.chartData.labels.push(response.data[i].DT_DOC);
+                      this.chartData.datasets[0].data.push(response.data[i].VL_DOC);
+                      this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round(response.data[i].VL_DOC* 100) / 100 ; 
+                    }
+                    this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    this.loading = false;
+                })
+                .catch(error => console.log(error));
+            } catch (error) {
+              this.loading = false;
+              error => console.log(error)
+            }
+            finally{
+              this.loading = false;
+            }
+        }
     },
     setaFiltros(e){
       this.filtros = e;
@@ -117,45 +130,57 @@ export default {
         ]};
     },
     async getNotas(e){
-        this.tableheaderNotas=[
-              { text: "Cód.", value: "CPF_CNPJ", align:"start", width: 100, divider:false, sortable: true },
-              { text: "Nome", value: "NOM_ADQ", align:"start", width: 250, divider:false, sortable: true },
-              { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
-              { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
-              { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
-              { text: "Valor PIS", value: "VL_PIS",align:"end", width: 150, divider:false,  sortable: true },
-              { text: "Valor COFINS", value: "VL_COFINS",align:"end", divider:false, width: 100, sortable: true },
-          ];
-        this.tableitemsNotas=[];
-        this.total_notas=0;
-        this.tableheader=[
-              { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
-              { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
-              { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
-              { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
-              { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-              { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
-              { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
-              { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
-              { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
-              { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
-          ];
-        this.tableitems=[];
-        this.total_itens=0;
-        await api.post('/ReportCFDayItems?date=' + validation.parseDate(e))
-            .then(response => {
-              for (let i = 0; i < response.data.length; i++) {
-                    this.tableitemsNotas.push(response.data[i]);
-                    this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC)* 100) / 100 ; 
-                    for (let c = 0; c < response.data[i].Itens.length; c++) {
-                        this.tableitems.push(response.data[i].Itens[c]);
-                        this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ITEM)* 100) / 100 ; 
-                    }
-                }
-                this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            })
-            .catch(error => console.log(error));
+      if(this.loading == false){
+            this.loading = true;
+            this.tableheaderNotas=[
+                  { text: "Cód.", value: "CPF_CNPJ", align:"start", width: 100, divider:false, sortable: true },
+                  { text: "Nome", value: "NOM_ADQ", align:"start", width: 250, divider:false, sortable: true },
+                  { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
+                  { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
+                  { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Valor PIS", value: "VL_PIS",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "Valor COFINS", value: "VL_COFINS",align:"end", divider:false, width: 100, sortable: true },
+              ];
+            this.tableitemsNotas=[];
+            this.total_notas=0;
+            this.tableheader=[
+                  { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
+                  { text: "Descrição", value: "DESCR_ITEM", align:"start", width: 300, divider:false, sortable: true },
+                  { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
+                  { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
+                  { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
+                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
+                  { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
+                  { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
+              ];
+            this.tableitems=[];
+            this.total_itens=0;
+              try{
+                await api.post('/ReportCFDayItems?date=' + validation.parseDate(e))
+                    .then(response => {
+                      for (let i = 0; i < response.data.length; i++) {
+                            this.tableitemsNotas.push(response.data[i]);
+                            this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC)* 100) / 100 ; 
+                            for (let c = 0; c < response.data[i].Itens.length; c++) {
+                                this.tableitems.push(response.data[i].Itens[c]);
+                                this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ITEM)* 100) / 100 ; 
+                            }
+                        }
+                        this.total_notas = this.total_notas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        this.total_itens = this.total_itens.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        this.loading = false;
+                    })
+                    .catch(error => console.log(error));
+              } catch (error) {
+                this.loading = false;
+                error => console.log(error)
+              }
+              finally{
+                this.loading = false;
+              }
+          }
     },
     async getItemsABC(e){
       this.tableheader = [ 
@@ -168,21 +193,31 @@ export default {
       ];
       this.tableitems=[];
       this.total_itens=0;
-      await api.post('/ReportCFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
-          .then(response => {
-              for (let c = 0; c < response.data.length; c++) {
-                  this.tableitems.push(response.data[c]);
-              }
-              this.total_itens = ((e == "A") ? this.filtros[0].curvaA : (e == "B") ?  this.filtros[0].curvaB  : this.filtros[0].curvaC) + "%";
+        try{
+            await api.post('/ReportCFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
+                .then(response => {
+                    for (let c = 0; c < response.data.length; c++) {
+                        this.tableitems.push(response.data[c]);
+                    }
+                    this.total_itens = ((e == "A") ? this.filtros[0].curvaA : (e == "B") ?  this.filtros[0].curvaB  : this.filtros[0].curvaC) + "%";
 
-          })
-          .catch(error => console.log(error));
+                })
+                .catch(error => console.log(error));
+        } catch (error) {
+          this.loading = false;
+          error => console.log(error)
+        }
+        finally{
+          this.loading = false;
+        }
     },
     limpaDados(){
         this.chartData.labels=[];
         this.chartData.datasets[0].data=[];
+        this.tableitemsNotas=[];
         this.tableitems=[];
         this.total_grafico_bar =0;
+        this.total_notas=0;
         this.total_itens=0;
     }
   },

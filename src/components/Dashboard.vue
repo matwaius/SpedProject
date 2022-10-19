@@ -111,6 +111,29 @@
                                 return-object>
                       </v-select>
                 </v-col>
+                <v-col cols="1" 
+                      v-show="show_mod" 
+                      style="display: inline-block"> 
+                      <v-select label="Ind. Operação"
+                                v-model="field_mod"
+                                item-value="mod"
+                                item-text="mod"
+                                :items="[{mod:55},{mod:65}, {mod:'2D'},{mod:'SE'}]"
+                                >
+                      </v-select>
+                </v-col>
+                <v-col cols="2"
+                  v-show="show_numdoc"
+                  style="display: inline-block" >
+                  <v-text-field
+                      v-model="field_num_doc"
+                      label="Núm. Doc."
+                      :value="this.field_num_doc = (this.field_num_doc== null) ? 0 : this.field_num_doc"
+                      type="Number"
+                      @blur="onFieldNumDoc"
+                      
+                    ></v-text-field>
+                </v-col>
                 <v-col cols="1"
                       style="display: inline-block"> 
                   <v-tooltip bottom color="primary">
@@ -384,11 +407,13 @@ export default {
       total_grafico_bar: 0,
       total_notas:0,
       total_itens:0,
-      show_ind: true,
-      show_chart_bar: true,
-      show_chart_pie: true,
-      show_table: true,
-      show_table_notas: true,
+      show_ind: false,
+      show_mod: false,
+      show_numdoc: false,
+      show_chart_bar: false,
+      show_chart_pie: false,
+      show_table: false,
+      show_table_notas: false,
       tableHeaderNotas: [],
       tableItemsNotas: [],
       tableHeader: [],
@@ -462,6 +487,8 @@ export default {
   },
   data: vm => ({
       field_ind: [],
+      field_mod:"",
+      field_num_doc:  0,
       ind_operacao: [{id: 0, name: "Entrada"},{id: 1, name: "Saida"}],
       dadosFiltro:[],
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
@@ -542,14 +569,14 @@ export default {
       //ENTRADA
       if(this.field_ind.id == 0){
         this.dadosFiltro = [ 
-            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#489999'  },
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#489999', mod: this.field_mod, doc: this.field_num_doc  },
         ];
         this.$emit("color",this.dadosFiltro);
       }
       //SAIDA
       else if(this.field_ind.id == 1){
         this.dadosFiltro = [ 
-            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#EF5350'  },
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#EF5350', mod: this.field_mod, doc: this.field_num_doc   },
         ];
         this.$emit("color",this.dadosFiltro);
       }
@@ -577,7 +604,7 @@ export default {
       botaoFiltrar(){
           if(this.validacoes()==true){
               this.dadosFiltro = [ 
-                        { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
+                        { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc  },
               ];
               this.$emit("botaoFiltrar",this.dadosFiltro);
           }
@@ -590,7 +617,7 @@ export default {
             this.curva_C = 5;
           }
           this.dadosFiltro = [ 
-                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C },
+                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc  },
           ];
           this.$emit("botaoFiltrarABC",this.dadosFiltro);
       },
@@ -600,6 +627,11 @@ export default {
             retorno=false;
         }
         return retorno;
+      },
+      onFieldNumDoc(){
+          if(this.field_num_doc < 0 || this.field_num_doc == ''){
+              this.field_num_doc = 0;
+          }
       }
   },
   created () {
@@ -611,6 +643,8 @@ export default {
 
       //Inicia como Primeiro Index
       this.field_ind = {id: 0, name: "Entrada"};
+      this.field_mod =  55;
+      
       if(this.width == null || this.width < 0){
         this.width = 800;
       } 
@@ -619,3 +653,6 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+</style>
