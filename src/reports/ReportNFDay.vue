@@ -17,6 +17,7 @@
         :show_table_notas="true"
         :show_table="true"
         :show_campos="true"
+        :show_campos_items="true"
         :tableHeaderNotas="tableheaderNotas"
         :tableItemsNotas="tableitemsNotas"
         :tableHeader="tableheader"
@@ -24,6 +25,7 @@
         :dadosGraficoBar="chartData"
         :dadosGraficoPie="chartABC"
         :camposNotas="camposNotas"
+        :camposItems="camposItems"
   
         @botaoFiltrar ="setaFiltros"
         @botaoFiltrarABC ="setaFiltrosABC"
@@ -32,7 +34,8 @@
         @colunaGraficoPie="getItemsABC"
 
         @color="changeColor"
-        @campos="insertFields"
+        @campos="insertFieldsNotas"
+        @camposItems="insertFieldsItems"
         >
     </Dashboard>
   </div>
@@ -49,6 +52,7 @@
         dateInicial: "",
         dateFinal: "",
         loading: false,
+        headerCurvaABC: false,
         indOperacao: "",
         modelo: "",
         total_grafico_bar: 0,
@@ -59,7 +63,9 @@
         tableheader: [],
         tableitems:[],
         filtros:[],
-        camposNotas:['IND_OPER','IND_EMIT','COD_SIT','SER','CHV_NFE','IND_PGTO','VL_ABAT_NT','VL_MERC','VL_IPI','VL_PIS'],
+        camposNotas:['IND_OPER','IND_EMIT','COD_SIT','SER','CHV_NFE','IND_PGTO','VL_ABAT_NT','IND_FRT','VL_SEG','VL_OUT_DA','VL_BC_ICMS','VL_ICMS','VL_BC_ICMS_ST','VL_PIS','VL_COFINS','VL_IPI','VL_PIS'],
+        camposItems:['NUM_ITEM','IND_MOV','CST_ICMS','COD_NAT','VL_BC_ICMS','ALIQ_ICMS','VL_ICMS','VL_BC_ICMS_ST','ALIQ_ST','VL_ICMS_ST','IND_APUR','CST_IPI','COD_ENQ','VL_BC_IPI','ALIQ_IPI','VL_IPI','CST_PIS','VL_BC_PIS','ALIQ_PIS_PERC',
+                      'QUANT_BC_PIS','QUANT_BC_PIS','ALIQ_PIS_REAL','VL_PIS','CST_COFINS','VL_BC_COFINS','QUANT_BC_COFINS','ALIQ_COFINS','VL_COFINS','COD_CTA','VL_ABAT_NT'],
         chartData: {
             labels: [
                //teste
@@ -127,6 +133,8 @@
             }
           ]};
           this.getRel();
+          this.tableheaderNotasPadrao();
+          this.tableheaderItemsPadrao()
       },
       setaFiltrosABC(e){
         this.filtros = e;
@@ -142,17 +150,22 @@
       async getNotas(e){
         if(this.loading == false){
             this.loading = true;
-            this.tableheaderPadraoNotas();
+            if(this.tableheaderNotas == null || this.tableheaderNotas.length == 0 ) {
+                this.tableheaderNotasPadrao();
+            }
+            if(this.tableheader == null || this.tableheader.length == 0 || this.headerCurvaABC == true) {
+                this.tableheaderItemsPadrao();
+                this.headerCurvaABC = false;
+            }
             this.tableitemsNotas=[];
-            this.total_notas=0;
-            this.tableheaderitemsPadrao();
+            this.total_notas=0;;
             this.tableitems=[];
             this.total_itens=0;
             await api.post('/ReportNFDayItems?date=' + validation.parseDate(e) +'&indOperacao='+this.filtros[0].ind+'&mod='+this.filtros[0].mod+'&doc='+this.filtros[0].doc)
                 .then(response => {
                   for (let i = 0; i < response.data.length; i++) {
                         this.tableitemsNotas.push(response.data[i]);
-                        this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC - response.data[i].VL_FRT)* 100) / 100 ; 
+                        this.total_notas = Math.round(this.total_notas* 100) / 100  + Math.round((response.data[i].VL_DOC)* 100) / 100 ; 
                         for (let c = 0; c < response.data[i].Itens.length; c++) {
                             this.tableitems.push(response.data[i].Itens[c]);
                             this.total_itens = Math.round(this.total_itens* 100) / 100  + Math.round((response.data[i].Itens[c].VL_ITEM - response.data[i].Itens[c].VL_DESC)* 100) / 100 ; 
@@ -168,7 +181,8 @@
       async getItemsABC(e){
         if(this.loading == false){
             this.loading = true;
-            this.tableheaderitemsABCPadrao();
+            this.tableheaderItemsABCPadrao();
+            this.headerCurvaABC = true;
             this.tableitems=[];
             this.total_itens=0;
             await api.post('/ReportNFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&indOperacao='+this.filtros[0].ind +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
@@ -187,28 +201,39 @@
           this.chartData.datasets[0].backgroundColor=this.filtros[0].color;
           this.getRel();
       },
-      insertFields(e){
+      insertFieldsNotas(e){
           this.itemsNotas =e;
+          this.tableheaderNotasPadrao();
           if(this.itemsNotas != null && this.itemsNotas != undefined)
           { 
-            this.tableheaderPadraoNotas();
             for (let i = 0; i < this.itemsNotas.length; i++) {
               this.tableheaderNotas.push( { text: this.itemsNotas[i], value: this.itemsNotas[i],align:"end", divider:false, width: 150, sortable: true })
             }
           }
       },
-      tableheaderPadraoNotas(){
+      insertFieldsItems(e){
+          this.items =e;
+          this.tableheaderItemsPadrao();
+          if(this.items != null && this.items != undefined)
+          { 
+            for (let i = 0; i < this.items.length; i++) {
+              this.tableheader.push( { text: this.items[i], value: this.items[i],align:"end", divider:false, width: 150, sortable: true })
+            }
+          }
+      },
+      tableheaderNotasPadrao(){
         this.tableheaderNotas=[
                   { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
                   { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
                   { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
                   { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
-                  { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
-                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-                  { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
+                  { text: "Valor", value: "VL_MERC",align:"end",width: 125, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 125, divider:false,  sortable: true },
+                  { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 125, sortable: true },
+                  { text: "Total", value: "VL_DOC",align:"end",width: 125, divider:false, sortable: true },
               ];
       },
-      tableheaderitemsPadrao(){
+      tableheaderItemsPadrao(){
         this.tableheader=[
                   { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
                   { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
@@ -219,7 +244,7 @@
                   { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
               ];
       },
-      tableheaderitemsABCPadrao(){
+      tableheaderItemsABCPadrao(){
         this.tableheader = [ 
               { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
               { text: "Descrição", value: "DESCR_COMPL", align:"start", divider:false, width: "25%", sortable: true },

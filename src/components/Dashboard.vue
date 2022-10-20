@@ -151,29 +151,48 @@
                     </v-tooltip>
                 </v-col>
               </v-row>
-                  <template>
-                      <v-container fluid v-show="show_campos">
-                        <v-row
-                          align="center"
-                        >
-                          <v-col
-                            cols="12"
-                            SM="6"
-                          >
-                          <v-select
-                            v-model="camposSelecNotas"
-                            :items="camposNotas"
-                            chips
-                            label="Campos Notas"
-                            multiple
-                            outlined
-                          ></v-select>
-                          </v-col>
-                      </v-row>
-                    </v-container>
-                 </template>
-                <!-- </v-col>
-              </v-row> -->
+              <template>
+                  <v-container fluid v-show="show_campos">
+                    <v-row
+                      align="center"
+                    >
+                      <v-col
+                        cols="12"
+                        SM="6"
+                      >
+                      <v-select
+                        v-model="camposSelecNotas"
+                        :items="camposNotas"
+                        chips
+                        label="Campos Notas"
+                        multiple
+                        outlined
+                      ></v-select>
+                      </v-col>
+                  </v-row>
+                </v-container>
+              </template>
+              <template>
+                  <v-container fluid v-show="show_campos_items">
+                    <v-row
+                      align="center"
+                    >
+                      <v-col
+                        cols="12"
+                        SM="6"
+                      >
+                      <v-select
+                        v-model="camposSelecItems"
+                        :items="camposItems"
+                        chips
+                        label="Campos Items"
+                        multiple
+                        outlined
+                      ></v-select>
+                      </v-col>
+                  </v-row>
+                </v-container>
+              </template>
             </v-container>
 
             <!--CHART-->
@@ -438,6 +457,7 @@ export default {
       show_table: false,
       show_table_notas: false,
       show_campos: false,
+      show_campos_items: false,
       tableHeaderNotas: [],
       tableItemsNotas: [],
       tableHeader: [],
@@ -508,6 +528,7 @@ export default {
         default: () => []
       },
       camposNotas:[],
+      camposItems:[],
   },
   data: vm => ({
       field_ind: [],
@@ -570,6 +591,7 @@ export default {
                 ]
           },
       camposSelecNotas:[],
+      camposSelecItems:[],
       chartABCOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -594,20 +616,23 @@ export default {
       //ENTRADA
       if(this.field_ind.id == 0){
         this.dadosFiltro = [ 
-            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#489999', mod: this.field_mod, doc: this.field_num_doc  },
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#489999', mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
         ];
         this.$emit("color",this.dadosFiltro);
       }
       //SAIDA
       else if(this.field_ind.id == 1){
         this.dadosFiltro = [ 
-            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#EF5350', mod: this.field_mod, doc: this.field_num_doc   },
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#EF5350', mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas   },
         ];
         this.$emit("color",this.dadosFiltro);
       }
     },
     camposSelecNotas(){
       this.$emit("campos",this.camposSelecNotas);
+    },
+    camposSelecItems(){
+      this.$emit("camposItems",this.camposSelecItems);
     }
   },
   methods: {
@@ -624,15 +649,18 @@ export default {
         }
       },
       getColGraficoBar(value){
+          this.dadosFiltro = [ 
+                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
+          ];
           this.$emit("colunaGraficoBar",value);
       },
-      getColGraficoPie(value){
-          this.$emit("colunaGraficoPie",value);
+      getColGraficoPie(value,filtro){
+          this.$emit("colunaGraficoPie",value,filtro);
       },
       botaoFiltrar(){
           if(this.validacoes()==true){
               this.dadosFiltro = [ 
-                        { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc  },
+                        { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
               ];
               this.$emit("botaoFiltrar",this.dadosFiltro);
           }
@@ -645,7 +673,7 @@ export default {
             this.curva_C = 5;
           }
           this.dadosFiltro = [ 
-                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc  },
+                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
           ];
           this.$emit("botaoFiltrarABC",this.dadosFiltro);
       },

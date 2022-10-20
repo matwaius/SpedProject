@@ -9,7 +9,7 @@
         :total_itens="this.total_itens"
         :show_ind=true
         :show_chart_bar="true"
-        :show_chart_pie="true"
+        :show_chart_pie="false"
         :show_table="true"
         :tableHeader="tableheader"
         :tableItems="tableitems"
