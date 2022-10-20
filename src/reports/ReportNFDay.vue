@@ -16,12 +16,14 @@
         :show_chart_pie="true"
         :show_table_notas="true"
         :show_table="true"
+        :show_campos="true"
         :tableHeaderNotas="tableheaderNotas"
         :tableItemsNotas="tableitemsNotas"
         :tableHeader="tableheader"
         :tableItems="tableitems"
         :dadosGraficoBar="chartData"
         :dadosGraficoPie="chartABC"
+        :camposNotas="camposNotas"
   
         @botaoFiltrar ="setaFiltros"
         @botaoFiltrarABC ="setaFiltrosABC"
@@ -30,6 +32,7 @@
         @colunaGraficoPie="getItemsABC"
 
         @color="changeColor"
+        @campos="insertFields"
         >
     </Dashboard>
   </div>
@@ -55,6 +58,8 @@
         tableitemsNotas:[],
         tableheader: [],
         tableitems:[],
+        filtros:[],
+        camposNotas:['IND_OPER','IND_EMIT','COD_SIT','SER','CHV_NFE','IND_PGTO','VL_ABAT_NT','VL_MERC','VL_IPI','VL_PIS'],
         chartData: {
             labels: [
                //teste
@@ -137,29 +142,10 @@
       async getNotas(e){
         if(this.loading == false){
             this.loading = true;
-            this.tableheaderNotas=[
-                  { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
-                  { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
-                  { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
-                  { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
-                  { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
-                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-                  { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
-              ];
+            this.tableheaderPadraoNotas();
             this.tableitemsNotas=[];
             this.total_notas=0;
-            this.tableheader=[
-                  { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
-                  { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
-                  { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
-                  { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
-                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-                  { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
-                  { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
-                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
-                  { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
-                  { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
-              ];
+            this.tableheaderitemsPadrao();
             this.tableitems=[];
             this.total_itens=0;
             await api.post('/ReportNFDayItems?date=' + validation.parseDate(e) +'&indOperacao='+this.filtros[0].ind+'&mod='+this.filtros[0].mod+'&doc='+this.filtros[0].doc)
@@ -182,14 +168,7 @@
       async getItemsABC(e){
         if(this.loading == false){
             this.loading = true;
-            this.tableheader = [ 
-              { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
-              { text: "Descrição", value: "DESCR_COMPL", align:"start", divider:false, width: "25%", sortable: true },
-              { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
-              { text: "Preco Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
-              { text: "Perc. %", value: "PERC",align:"end", divider:false, width: "24%", sortable: true },
-              { text: "Curva", value: "CURVA",align:"end", divider:false, width: "12%", sortable: true },
-            ];
+            this.tableheaderitemsABCPadrao();
             this.tableitems=[];
             this.total_itens=0;
             await api.post('/ReportNFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&indOperacao='+this.filtros[0].ind +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
@@ -207,6 +186,48 @@
           this.filtros =e;
           this.chartData.datasets[0].backgroundColor=this.filtros[0].color;
           this.getRel();
+      },
+      insertFields(e){
+          this.itemsNotas =e;
+          if(this.itemsNotas != null && this.itemsNotas != undefined)
+          { 
+            this.tableheaderPadraoNotas();
+            for (let i = 0; i < this.itemsNotas.length; i++) {
+              this.tableheaderNotas.push( { text: this.itemsNotas[i], value: this.itemsNotas[i],align:"end", divider:false, width: 150, sortable: true })
+            }
+          }
+      },
+      tableheaderPadraoNotas(){
+        this.tableheaderNotas=[
+                  { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
+                  { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
+                  { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
+                  { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
+                  { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
+              ];
+      },
+      tableheaderitemsPadrao(){
+        this.tableheader=[
+                  { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
+                  { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
+                  { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
+                  { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
+                  { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
+              ];
+      },
+      tableheaderitemsABCPadrao(){
+        this.tableheader = [ 
+              { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, width: "14%", sortable: true },
+              { text: "Descrição", value: "DESCR_COMPL", align:"start", divider:false, width: "25%", sortable: true },
+              { text: "Qtd.", value: "QTD",align:"end", divider:false, width: "11%", sortable: true },
+              { text: "Preco Total", value: "VL_ITEM",align:"end", divider:false, width: "14%", sortable: true },
+              { text: "Perc. %", value: "PERC",align:"end", divider:false, width: "24%", sortable: true },
+              { text: "Curva", value: "CURVA",align:"end", divider:false, width: "12%", sortable: true },
+            ];
       },
       limpaDados(){
           this.chartData.labels=[];

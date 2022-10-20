@@ -30,7 +30,7 @@
   import validation from '../services/validation.ts';
   
   export default {
-    name: 'ReportNFDayByUF',
+    name: 'ReportTotalizersDay',
     data: vm => ({
         dateInicial: "",
         dateFinal: "",

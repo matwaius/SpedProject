@@ -151,6 +151,29 @@
                     </v-tooltip>
                 </v-col>
               </v-row>
+                  <template>
+                      <v-container fluid v-show="show_campos">
+                        <v-row
+                          align="center"
+                        >
+                          <v-col
+                            cols="12"
+                            SM="6"
+                          >
+                          <v-select
+                            v-model="camposSelecNotas"
+                            :items="camposNotas"
+                            chips
+                            label="Campos Notas"
+                            multiple
+                            outlined
+                          ></v-select>
+                          </v-col>
+                      </v-row>
+                    </v-container>
+                 </template>
+                <!-- </v-col>
+              </v-row> -->
             </v-container>
 
             <!--CHART-->
@@ -414,6 +437,7 @@ export default {
       show_chart_pie: false,
       show_table: false,
       show_table_notas: false,
+      show_campos: false,
       tableHeaderNotas: [],
       tableItemsNotas: [],
       tableHeader: [],
@@ -482,8 +506,8 @@ export default {
       pluginsPIE: {
         type: Array,
         default: () => []
-      }
-      
+      },
+      camposNotas:[],
   },
   data: vm => ({
       field_ind: [],
@@ -545,6 +569,7 @@ export default {
                   }
                 ]
           },
+      camposSelecNotas:[],
       chartABCOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -580,6 +605,9 @@ export default {
         ];
         this.$emit("color",this.dadosFiltro);
       }
+    },
+    camposSelecNotas(){
+      this.$emit("campos",this.camposSelecNotas);
     }
   },
   methods: {

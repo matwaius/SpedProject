@@ -37,7 +37,7 @@ import api from '@/services/api.ts';
 import validation from '../services/validation.ts';
 
 export default {
-  name: "ReportCFDay",
+  name: 'ReportCFDay',
   data: vm => ({
       dateInicial: "",
       loading: false,
