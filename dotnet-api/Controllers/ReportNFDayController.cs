@@ -52,6 +52,7 @@ namespace dotnet_api.Controllers
                 }
 
                 List<C100> list = new List<C100>();
+                C100 c100 = new C100();
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
@@ -61,7 +62,6 @@ namespace dotnet_api.Controllers
                         //C100 
                         if (data[1] == "C100")
                         {
-                            C100 c100 = new C100();
                             if (doc > 0 && Library.GetInt64(data[8]) != doc)
                             {
                                 //Não Adiciona

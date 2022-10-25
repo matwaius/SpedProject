@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int16 indOperacao, [FromQuery] decimal A, [FromQuery] decimal B, [FromQuery] decimal C, [FromQuery] string CurvaSel)
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int16 indOperacao, [FromQuery] decimal A, [FromQuery] decimal B, [FromQuery] decimal C, [FromQuery] string CurvaSel, [FromQuery] string mod, [FromQuery] Int64 doc)
         {
             string retRel = "";
 
@@ -70,7 +70,17 @@ namespace dotnet_api.Controllers
                             {
                                 if (dateStart >= Library.ToDateTime(data[10], "ddMMyyyy") && Library.ToDateTime(data[10], "ddMMyyyy") <= dateEnd)
                                 {
-                                    add = true;
+                                    //if (doc > 0 && Library.GetInt64(data[8]) != doc)
+                                    //{
+                                    //    //Não Adiciona
+                                    //}
+                                    //else
+                                    //{
+                                        if (mod == Library.GetString(data[5]))
+                                        {
+                                            add = true;
+                                        }
+                                    //}
                                 }
                             }
                         }

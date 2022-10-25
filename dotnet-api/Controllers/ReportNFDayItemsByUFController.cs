@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] string UF, [FromQuery] Int16 indOperacao)
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] string UF, [FromQuery] Int16 indOperacao, [FromQuery] string mod, [FromQuery] Int64 doc)
         {
             string retRel = "";
             try

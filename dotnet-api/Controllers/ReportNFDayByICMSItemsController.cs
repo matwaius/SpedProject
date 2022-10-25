@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime date, [FromQuery] Int16 indOperacao)
+        public async Task<IActionResult> Post([FromQuery] DateTime date, [FromQuery] Int16 indOperacao, [FromQuery] string mod, [FromQuery] Int64 doc)
         {
             string retRel = "";
             try
@@ -68,7 +68,17 @@ namespace dotnet_api.Controllers
                             {
                                 if (date == Library.ToDateTime(data[10], "ddMMyyyy"))
                                 {
-                                    add = true;
+                                    if (doc > 0 && Library.GetInt64(data[8]) != doc)
+                                    {
+                                        //Não Adiciona
+                                    }
+                                    else
+                                    {
+                                        if (mod == Library.GetString(data[5]))
+                                        {
+                                            add = true;
+                                        }
+                                    }
                                 }
                             }
                         }

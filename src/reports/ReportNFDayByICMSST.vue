@@ -7,7 +7,9 @@
         title_curva = "Curva ABC"
         :total_grafico_bar="this.total_grafico_bar"
         :total_itens="this.total_itens"
-        :show_ind=true
+        :show_ind="true"
+        :show_mod="true"
+        :show_numdoc="true"
         :show_chart_bar="true"
         :show_chart_pie="false"
         :show_table="true"
@@ -78,19 +80,27 @@
         if(this.loading == false){
             this.loading = true;
             this.limpaDados();
-            await api.post('/ReportNFDayByICMSST?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
-              .then(response => {
-                  this.chartData.datasets[0].label="ICMS ST";
-                  
-                  for (let i = 0; i < response.data.length; i++) {
-                    this.chartData.labels.push(response.data[i].DT_DOC);
-                    this.chartData.datasets[0].data.push(response.data[i].VL_ICMS_ST );
-                    this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].VL_ICMS_ST)* 100) / 100 ; 
-                  }
-                  this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                  this.loading = false;
-              })
-              .catch(error => console.log(error));
+            try{
+              await api.post('/ReportNFDayByICMSST?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
+                .then(response => {
+                    this.chartData.datasets[0].label="ICMS ST";
+                    
+                    for (let i = 0; i < response.data.length; i++) {
+                      this.chartData.labels.push(response.data[i].DT_DOC);
+                      this.chartData.datasets[0].data.push(response.data[i].VL_ICMS_ST );
+                      this.total_grafico_bar = Math.round(this.total_grafico_bar* 100) / 100  + Math.round((response.data[i].VL_ICMS_ST)* 100) / 100 ; 
+                    }
+                    this.total_grafico_bar = this.total_grafico_bar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    this.loading = false;
+                })
+                .catch(error => console.log(error));
+              } catch (error) {
+                this.loading = false;
+                error => console.log(error)
+              }
+              finally{
+                this.loading = false;
+              }
           }
       },
       setaFiltros(e){
@@ -124,9 +134,9 @@
                   { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
                   { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
                   { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
-                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
-                  { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
-                  { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "BC ICMS ST", value: "VL_BC_ICMS_ST",align:"end", width: 150,divider:false, sortable: true },
+                  { text: "Aliq. ICMS ST", value: "ALIQ_ICMS_ST",align:"end", width: 150, divider:false, sortable: true },
+                  { text: "Valor ICMS ST", value: "VL_ICMS_ST",align:"end", width: 150, divider:false,  sortable: true },
               ];
             this.tableitems=[];
             this.total_itens=0;

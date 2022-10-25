@@ -151,9 +151,9 @@ export default {
                   { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
                   { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
                   { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
-                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
-                  { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
+                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 150,divider:false, sortable: true },
                   { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "Aliq. ICMS", value: "ALIQ_ICMS",align:"end", width: 150, divider:false, sortable: true },
               ];
             this.tableitems=[];
             this.total_itens=0;

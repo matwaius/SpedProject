@@ -63,9 +63,15 @@
         tableheader: [],
         tableitems:[],
         filtros:[],
-        camposNotas:['IND_OPER','IND_EMIT','COD_SIT','SER','CHV_NFE','IND_PGTO','VL_ABAT_NT','IND_FRT','VL_SEG','VL_OUT_DA','VL_BC_ICMS','VL_ICMS','VL_BC_ICMS_ST','VL_PIS','VL_COFINS','VL_IPI','VL_PIS'],
-        camposItems:['NUM_ITEM','IND_MOV','CST_ICMS','COD_NAT','VL_BC_ICMS','ALIQ_ICMS','VL_ICMS','VL_BC_ICMS_ST','ALIQ_ST','VL_ICMS_ST','IND_APUR','CST_IPI','COD_ENQ','VL_BC_IPI','ALIQ_IPI','VL_IPI','CST_PIS','VL_BC_PIS','ALIQ_PIS_PERC',
-                      'QUANT_BC_PIS','QUANT_BC_PIS','ALIQ_PIS_REAL','VL_PIS','CST_COFINS','VL_BC_COFINS','QUANT_BC_COFINS','ALIQ_COFINS','VL_COFINS','COD_CTA','VL_ABAT_NT'],
+        camposNotas:[{id:'IND_OPER', name:"Ind. Operação"},{id:'IND_EMIT', name:"Ind. Emitente"},{id:'COD_SIT', name:"Sit. Doc"},{id:'SER', name:"Série Doc."},{id:'CHV_NFE', name:"Chave Doc."},
+                    {id:'IND_PGTO', name:"Ind. Pagto"}, {id:'VL_ABAT_NT', name:"Abatimento Não Trib."}, {id:'IND_FRT', name:"Ind. Frete"}, {id:'VL_SEG', name:"Valor Seguro"}, 
+                    {id:'VL_OUT_DA', name:"Valor Outr. Desp."},{id:'VL_BC_ICMS', name:"Base Calc. ICMS"},{id:'VL_ICMS', name:"Valor ICMS"},{id:'VL_BC_ICMS_ST', name:"Base Calc. ICMS ST"},
+                    {id:'VL_ICMS_ST', name:"Valor ICMS ST"},{id:'VL_PIS', name:"Valor PIS"},{id:'VL_COFINS', name:"Valor COFINS"},{id:'VL_IPI', name:"Valor IPI"}],
+
+        camposItems:[{id:'NUM_ITEM', name:"Num. Item"},{id:'IND_MOV', name:"Ind. Movimento"},{id:'CST_ICMS', name:"CST"},{id:'COD_NAT', name:"Cód. Nat."},{id:'VL_BC_ICMS', name:"Base Calc. ICMS"},{id:'VL_ICMS', name:"Valor ICMS"},
+                    {id:'VL_BC_ICMS_ST', name:"Base Calc. ICMS ST"},{id:'VL_ICMS_ST', name:"Valor ICMS ST"},{id:'IND_APUR', name:"Ind. Apuração"}, {id:'CST_IPI', name:"CST IPI"}, {id:'COD_ENQ', name:"Cód. Enquadramento"}, 
+                    {id:'VL_BC_IPI', name:"Base Calc. IPI"}, {id:'VL_IPI', name:"Valor IPI"}, {id:'ALIQ_IPI', name:"Aliq. IPI"}, {id:'CST_PIS', name:"CST PIS"}, {id:'VL_BC_PIS', name:"Base Calc. PIS"},{id:'VL_PIS', name:"Valor PIS"},{id:'ALIQ_PIS_PERC', name:"Aliq. PIS"},
+                    {id:'VL_BC_COFINS', name:"Base Calc. COFINS"},{id:'VL_COFINS', name:"Valor COFINS"},{id:'ALIQ_COFINS_PERC', name:"Aliq. COFINS"},{id:'COD_CTA', name:"Cód. Conta Analitica"},{id:'VL_ABAT_NT', name:"Abatimento Não Trib."}],
         chartData: {
             labels: [
                //teste
@@ -185,16 +191,24 @@
             this.headerCurvaABC = true;
             this.tableitems=[];
             this.total_itens=0;
-            await api.post('/ReportNFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&indOperacao='+this.filtros[0].ind +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e)
-                .then(response => {
-                    for (let c = 0; c < response.data.length; c++) {
-                        this.tableitems.push(response.data[c]);
-                    }
-                    this.total_itens = ((e == "A") ? this.filtros[0].curvaA : (e == "B") ?  this.filtros[0].curvaB  : this.filtros[0].curvaC) + "%";
-                    this.loading = false;
-                })
-                .catch(error => console.log(error));
-          }
+            try{
+              await api.post('/ReportNFDayItemsABC?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal +'&indOperacao='+this.filtros[0].ind +'&A=' +this.filtros[0].curvaA +'&B=' + this.filtros[0].curvaB +'&C=' + this.filtros[0].curvaC + '&CurvaSel=' + e+'&mod='+this.filtros[0].mod+'&doc='+this.filtros[0].doc)
+                  .then(response => {
+                      for (let c = 0; c < response.data.length; c++) {
+                          this.tableitems.push(response.data[c]);
+                      }
+                      this.total_itens = ((e == "A") ? this.filtros[0].curvaA : (e == "B") ?  this.filtros[0].curvaB  : this.filtros[0].curvaC) + "%";
+                      this.loading = false;
+                  })
+                  .catch(error => console.log(error));
+                } catch (error) {
+                  this.loading = false;
+                  error => console.log(error)
+                }
+                finally{
+                  this.loading = false;
+                }
+            }
       },
       async changeColor(e){
           this.filtros =e;
@@ -207,7 +221,7 @@
           if(this.itemsNotas != null && this.itemsNotas != undefined)
           { 
             for (let i = 0; i < this.itemsNotas.length; i++) {
-              this.tableheaderNotas.push( { text: this.itemsNotas[i], value: this.itemsNotas[i],align:"end", divider:false, width: 150, sortable: true })
+              this.tableheaderNotas.push( { text: this.itemsNotas[i].name, value: this.itemsNotas[i].id,align:"end", divider:false, width: 200, sortable: true })
             }
           }
       },
@@ -217,7 +231,7 @@
           if(this.items != null && this.items != undefined)
           { 
             for (let i = 0; i < this.items.length; i++) {
-              this.tableheader.push( { text: this.items[i], value: this.items[i],align:"end", divider:false, width: 150, sortable: true })
+              this.tableheader.push( { text: this.items[i].name, value: this.items[i].id,align:"end", divider:false, width: 200, sortable: true })
             }
           }
       },

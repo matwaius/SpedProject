@@ -10,6 +10,7 @@
         :total_notas="this.total_notas"
         :total_itens="this.total_itens"
         :show_ind=true
+        :show_mod="true"
         :show_chart_bar="true"
         :show_chart_pie="false"
         :show_table_notas="true"
@@ -86,7 +87,7 @@
             this.loading = true;
             this.limpaDados();
               try{
-                  await api.post('/ReportNFDayByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind)
+                  await api.post('/ReportNFDayByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&indOperacao='+this.filtros[0].ind+'&mod='+this.filtros[0].mod+'&doc='+this.filtros[0].doc)
                     .then(response => {
                         this.chartData.datasets[0].label="Valor";
                         for (let i = 0; i < response.data.length; i++) {
@@ -159,7 +160,7 @@
             this.tableitems=[];
             this.total_itens=0;
               try{
-                await api.post('/ReportNFDayItemsByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&UF=' + e+'&indOperacao='+this.filtros[0].ind)
+                await api.post('/ReportNFDayItemsByUF?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&UF=' + e+'&indOperacao='+this.filtros[0].ind+'&mod='+this.filtros[0].mod+'&doc='+this.filtros[0].doc)
                     .then(response => {
                       for (let i = 0; i < response.data.length; i++) {
                             this.tableitemsNotas.push(response.data[i]);

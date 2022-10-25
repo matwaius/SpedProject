@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery]DateTime dateStart, [FromQuery]DateTime dateEnd, [FromQuery] Int16 indOperacao)
+        public async Task<IActionResult> Post([FromQuery]DateTime dateStart, [FromQuery]DateTime dateEnd, [FromQuery] Int16 indOperacao, [FromQuery] string mod, [FromQuery] Int64 doc)
         {
             string retRel = "";
             try
@@ -53,6 +53,8 @@ namespace dotnet_api.Controllers
 
                 List<_0150> list0150 = new List<_0150>();
                 List<C100> listC100 = new List<C100>();
+                C100 c100 = new C100();
+                _0150 _0150 = new _0150();
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
@@ -62,15 +64,20 @@ namespace dotnet_api.Controllers
                         //0150 
                         if (data[1] == "0150")
                         {
-                            _0150 _0150 = new _0150();
                             list0150.Add(_0150.MountData0150(data));
                         }
 
                         //C100 
                         if (data[1] == "C100")
                         {
-                            C100 c100 = new C100();
-                            listC100.Add(c100.MountDataC100(data));
+                            if (doc > 0 && Library.GetInt64(data[8]) != doc)
+                            {
+                                //Não Adiciona
+                            }
+                            else
+                            {
+                                listC100.Add(c100.MountDataC100(data));
+                            }
                         }
                     }
                 }
@@ -89,7 +96,7 @@ namespace dotnet_api.Controllers
                     var results = from t0150 in data0150.AsEnumerable()
                                   join tC100 in dataC100.AsEnumerable() on Library.GetString(t0150["COD_PART"].ToString()) equals Library.GetString(tC100["COD_PART"].ToString())
                                   join tUF in dataUF.AsEnumerable() on Library.GetInt32(t0150["COD_MUN"].ToString().Substring(0, 2)) equals Library.GetInt32(tUF["id"].ToString())
-                                  where Library.GetInt16(tC100["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(tC100["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(tC100["DT_DOC"].ToString()) <= dateEnd
+                                  where Library.GetInt16(tC100["IND_OPER"].ToString()) == indOperacao && Library.GetDateTime(tC100["DT_DOC"].ToString()) >= dateStart && Library.GetDateTime(tC100["DT_DOC"].ToString()) <= dateEnd && tC100["COD_MOD"].ToString() == mod
                                   select new
                                   {
                                       UF = tUF["UF"].ToString(),

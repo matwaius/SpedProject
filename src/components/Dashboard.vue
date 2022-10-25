@@ -161,12 +161,15 @@
                         SM="6"
                       >
                       <v-select
+                        label="Campos Notas"
                         v-model="camposSelecNotas"
+                        item-value="id"
+                        item-text="name"
                         :items="camposNotas"
                         chips
-                        label="Campos Notas"
                         multiple
                         outlined
+                        return-object
                       ></v-select>
                       </v-col>
                   </v-row>
@@ -182,12 +185,15 @@
                         SM="6"
                       >
                       <v-select
+                        label="Campos Items"
                         v-model="camposSelecItems"
+                        item-value="id"
+                        item-text="name"
                         :items="camposItems"
                         chips
-                        label="Campos Items"
                         multiple
                         outlined
+                        return-object
                       ></v-select>
                       </v-col>
                   </v-row>
@@ -654,8 +660,8 @@ export default {
           ];
           this.$emit("colunaGraficoBar",value);
       },
-      getColGraficoPie(value,filtro){
-          this.$emit("colunaGraficoPie",value,filtro);
+      getColGraficoPie(value){
+          this.$emit("colunaGraficoPie",value);
       },
       botaoFiltrar(){
           if(this.validacoes()==true){
