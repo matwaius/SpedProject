@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int64 doc, [FromQuery] Int64 red)
         {
             string retRel = "";
             try
@@ -52,17 +52,35 @@ namespace dotnet_api.Controllers
                 }
 
                 List<C460> list = new List<C460>();
+                C460 c460 = new C460();
+                bool add = true;
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
                     {
                         string[] data = line.Split("|");
+                        
+                        //C405 
+                        if (data[1] == "C405" && red > 0)
+                        {
+                            add = false;
+                            if (Library.GetInt64(data[4]) == red) //Num. Redução Z
+                            {
+                                add = true;
+                            }
+                        }
 
                         //C460 
-                        if (data[1] == "C460")
+                        if (data[1] == "C460" && add == true)
                         {
-                            C460 c460 = new C460();
-                            list.Add(c460.MountDataC460(data));
+                            if (doc > 0 && Library.GetInt64(data[4]) != doc)
+                            {
+                                //Não Adiciona
+                            }
+                            else
+                            {
+                                list.Add(c460.MountDataC460(data));
+                            }
                         }
                     }
                 }

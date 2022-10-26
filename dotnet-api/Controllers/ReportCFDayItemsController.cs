@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime date)
+        public async Task<IActionResult> Post([FromQuery] DateTime date, [FromQuery] Int64 doc, [FromQuery] Int64 red)
         {
             string retRel = "";
             try
@@ -55,6 +55,7 @@ namespace dotnet_api.Controllers
                 List<C460> list = new List<C460>();
                 C460 c460 = new C460();
                 bool add = false;
+                bool addRed = true;
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
@@ -68,31 +69,48 @@ namespace dotnet_api.Controllers
                             list0200.Add(_0200.MountData0200(data));
                         }
 
+                        //C405 
+                        if (data[1] == "C405" && red > 0)
+                        {
+                            addRed = false;
+                            if (Library.GetInt64(data[4]) == red) //Num. Redução Z
+                            {
+                                addRed = true;
+                            }
+                        }
+
                         //C460
-                        if (data[1] == "C460")
+                        if (data[1] == "C460" && addRed == true)
                         {
                             add = false;
                             if (date == Library.ToDateTime(data[5], "ddMMyyyy"))
                             {
-                                add = true;
-                                c460 = new C460();
-                                c460.REG = Library.GetString(data[1]);
-                                c460.COD_MOD = Library.GetString(data[2]);
-                                c460.COD_SIT = Library.GetString(data[3]);
-                                c460.NUM_DOC = Library.GetInt32(data[4]);
-                                c460.DT_DOC = Library.ToDateTime(data[5], "ddMMyyyy");
-                                c460.VL_DOC = Library.GetDecimal(data[6]);
-                                c460.VL_PIS = Library.GetDecimal(data[7]);
-                                c460.VL_COFINS = Library.GetDecimal(data[8]);
-                                c460.CPF_CNPJ = Library.GetString(data[9]);
-                                c460.NOM_ADQ = Library.GetString(data[10]);
-                                c460.Itens = new List<C470>();
-                                list.Add(c460);
+                                if (doc > 0 && Library.GetInt64(data[4]) != doc)
+                                {
+                                    //Não Adiciona
+                                }
+                                else
+                                {
+                                    add = true;
+                                    c460 = new C460();
+                                    c460.REG = Library.GetString(data[1]);
+                                    c460.COD_MOD = Library.GetString(data[2]);
+                                    c460.COD_SIT = Library.GetString(data[3]);
+                                    c460.NUM_DOC = Library.GetInt32(data[4]);
+                                    c460.DT_DOC = Library.ToDateTime(data[5], "ddMMyyyy");
+                                    c460.VL_DOC = Library.GetDecimal(data[6]);
+                                    c460.VL_PIS = Library.GetDecimal(data[7]);
+                                    c460.VL_COFINS = Library.GetDecimal(data[8]);
+                                    c460.CPF_CNPJ = Library.GetString(data[9]);
+                                    c460.NOM_ADQ = Library.GetString(data[10]);
+                                    c460.Itens = new List<C470>();
+                                    list.Add(c460);
+                                }
                             }
                         }
 
                         //C470
-                        if (data[1] == "C470" && add == true)
+                        if (data[1] == "C470" && add == true && addRed == true)
                         {
                             C470 c470 = new C470();
                             c470.REG = Library.GetString(data[1]);

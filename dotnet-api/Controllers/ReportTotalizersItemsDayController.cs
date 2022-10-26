@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime date)
+        public async Task<IActionResult> Post([FromQuery] DateTime date, [FromQuery] Int64 red)
         {
             string retRel = "";
             try
@@ -67,17 +67,24 @@ namespace dotnet_api.Controllers
                             add = false;
                             if (Library.GetDecimal(data[7]) > 0 && date == Library.ToDateTime(data[2], "ddMMyyyy"))
                             {
-                                c405 = new C405();
-                                c405.REG = Library.GetString(data[1]);
-                                c405.DT_DOC = Library.ToDateTime(data[2], "ddMMyyyy");
-                                c405.CRO = Library.GetInt32(data[3]);
-                                c405.CRZ = Library.GetInt32(data[4]);
-                                c405.NUM_COO_FIN = Library.GetInt32(data[5]);
-                                c405.GT_FIN = Library.GetDecimal(data[6]);
-                                c405.VL_BRT = Library.GetDecimal(data[7]);
-                                c405.Itens = new List<C420>();
-                                list.Add(c405);
-                                add = true;
+                                if (Library.GetInt64(data[4]) != red && red > 0) //Num. Redução Z
+                                {
+                                    //Não Adiciona
+                                }
+                                else
+                                {
+                                    c405 = new C405();
+                                    c405.REG = Library.GetString(data[1]);
+                                    c405.DT_DOC = Library.ToDateTime(data[2], "ddMMyyyy");
+                                    c405.CRO = Library.GetInt32(data[3]);
+                                    c405.CRZ = Library.GetInt32(data[4]);
+                                    c405.NUM_COO_FIN = Library.GetInt32(data[5]);
+                                    c405.GT_FIN = Library.GetDecimal(data[6]);
+                                    c405.VL_BRT = Library.GetDecimal(data[7]);
+                                    c405.Itens = new List<C420>();
+                                    list.Add(c405);
+                                    add = true;
+                                }
                             }
                         }
 

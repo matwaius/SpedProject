@@ -14,6 +14,8 @@
       :show_chart_pie="true"
       :show_table_notas="true"
       :show_table="true"
+      :show_numdoc="true"
+      :show_numred="true"
       :tableHeaderNotas="tableheaderNotas"
       :tableItemsNotas="tableitemsNotas"
       :tableHeader="tableheader"
@@ -26,6 +28,8 @@
       
       @colunaGraficoBar="getNotas" 
       @colunaGraficoPie="getItemsABC"
+
+      @color="changeColor"
       >
   </Dashboard>
 </div>
@@ -85,7 +89,7 @@ export default {
           this.loading = true;
           this.limpaDados();
             try{
-              await api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+              await api.post('/ReportCFDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&doc='+this.filtros[0].doc+'&red='+this.filtros[0].red)
                 .then(response => {
                     this.chartData.datasets[0].label="Valor";
                     for (let i = 0; i < response.data.length; i++) {
@@ -147,18 +151,19 @@ export default {
                   { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
                   { text: "Descrição", value: "DESCR_ITEM", align:"start", width: 300, divider:false, sortable: true },
                   { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
+                  { text: "Qtd. Canc", value: "QTD_CANC",align:"end", divider:false, width: 150,sortable: true },
                   { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
-                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
                   { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
+                  { text: "CST", value: "CST_ICMS",align:"end", divider:false,width: 100,  sortable: true },
                   { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
-                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 150,divider:false, sortable: true },
-                  { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
                   { text: "Aliq. ICMS", value: "ALIQ_ICMS",align:"end", width: 150, divider:false, sortable: true },
+                  { text: "Valor PIS", value: "VL_PIS",align:"end", width: 150,divider:false, sortable: true },
+                  { text: "Valor COFINS", value: "VL_COFINS",align:"end", width: 150, divider:false,  sortable: true },
               ];
             this.tableitems=[];
             this.total_itens=0;
               try{
-                await api.post('/ReportCFDayItems?date=' + validation.parseDate(e))
+                await api.post('/ReportCFDayItems?date=' + validation.parseDate(e)+'&doc='+this.filtros[0].doc+'&red='+this.filtros[0].red)
                     .then(response => {
                       for (let i = 0; i < response.data.length; i++) {
                             this.tableitemsNotas.push(response.data[i]);
@@ -210,6 +215,11 @@ export default {
         finally{
           this.loading = false;
         }
+    },
+    async changeColor(e){
+        this.filtros =e;
+        this.chartData.datasets[0].backgroundColor =  ['#EF5350'];//this.filtros[0].color;
+        this.getRel();
     },
     limpaDados(){
         this.chartData.labels=[];

@@ -134,6 +134,18 @@
                       
                     ></v-text-field>
                 </v-col>
+                <v-col cols="2"
+                  v-show="show_numred"
+                  style="display: inline-block" >
+                  <v-text-field
+                      v-model="field_num_red"
+                      label="Núm. Redução Z"
+                      :value="this.field_num_red = (this.field_num_red== null) ? 0 : this.field_num_red"
+                      type="Number"
+                      @blur="onFieldNumRed"
+                      
+                    ></v-text-field>
+                </v-col>
                 <v-col cols="1"
                       style="display: inline-block"> 
                   <v-tooltip bottom color="primary">
@@ -458,6 +470,7 @@ export default {
       show_ind: false,
       show_mod: false,
       show_numdoc: false,
+      show_numred: false,
       show_chart_bar: false,
       show_chart_pie: false,
       show_table: false,
@@ -540,6 +553,7 @@ export default {
       field_ind: [],
       field_mod:"",
       field_num_doc:  0,
+      field_num_red:  0,
       ind_operacao: [{id: 0, name: "Entrada"},{id: 1, name: "Saida"}],
       dadosFiltro:[],
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
@@ -573,7 +587,7 @@ export default {
           datasets: [
             {
               label: 'Data One',
-              backgroundColor: '#f87979',
+              backgroundColor: '#EF5350',
               data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
             }
           ]
@@ -622,14 +636,14 @@ export default {
       //ENTRADA
       if(this.field_ind.id == 0){
         this.dadosFiltro = [ 
-            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#489999', mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#489999', mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas, red: this.field_num_red  },
         ];
         this.$emit("color",this.dadosFiltro);
       }
       //SAIDA
       else if(this.field_ind.id == 1){
         this.dadosFiltro = [ 
-            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#EF5350', mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas   },
+            { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, color:'#EF5350', mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas, red: this.field_num_red   },
         ];
         this.$emit("color",this.dadosFiltro);
       }
@@ -656,7 +670,7 @@ export default {
       },
       getColGraficoBar(value){
           this.dadosFiltro = [ 
-                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
+                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas, red: this.field_num_red  },
           ];
           this.$emit("colunaGraficoBar",value);
       },
@@ -666,7 +680,7 @@ export default {
       botaoFiltrar(){
           if(this.validacoes()==true){
               this.dadosFiltro = [ 
-                        { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
+                        { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas, red: this.field_num_red  },
               ];
               this.$emit("botaoFiltrar",this.dadosFiltro);
           }
@@ -679,7 +693,7 @@ export default {
             this.curva_C = 5;
           }
           this.dadosFiltro = [ 
-                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas  },
+                    { dataInicial: validation.parseDate(this.dateFormatted), dataFinal: validation.parseDate(this.dateFormatted2), ind: this.field_ind.id, curvaA: this.curva_A, curvaB: this.curva_B, curvaC:this.curva_C, mod: this.field_mod, doc: this.field_num_doc, campos: this.camposSelecNotas, red: this.field_num_red  },
           ];
           this.$emit("botaoFiltrarABC",this.dadosFiltro);
       },
@@ -693,6 +707,11 @@ export default {
       onFieldNumDoc(){
           if(this.field_num_doc < 0 || this.field_num_doc == ''){
               this.field_num_doc = 0;
+          }
+      },
+      onFieldNumRed(){
+          if(this.field_num_red < 0 || this.field_num_red == ''){
+              this.field_num_red = 0;
           }
       }
   },

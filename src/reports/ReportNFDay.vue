@@ -212,7 +212,7 @@
       },
       async changeColor(e){
           this.filtros =e;
-          this.chartData.datasets[0].backgroundColor=this.filtros[0].color;
+          this.chartData.datasets[0].backgroundColor = this.filtros[0].color;
           this.getRel();
       },
       insertFieldsNotas(e){

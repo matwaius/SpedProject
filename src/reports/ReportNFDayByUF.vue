@@ -11,16 +11,21 @@
         :total_itens="this.total_itens"
         :show_ind=true
         :show_mod="true"
+        :show_numdoc="true"
         :show_chart_bar="true"
         :show_chart_pie="false"
         :show_table_notas="true"
         :show_table="true"
+        :show_campos="true"
+        :show_campos_items="true"
         :tableHeaderNotas="tableheaderNotas"
         :tableItemsNotas="tableitemsNotas"
         :tableHeader="tableheader"
         :tableItems="tableitems"
         :dadosGraficoBar="chartData"
         :dadosGraficoPie="chartABC"
+        :camposNotas="camposNotas"
+        :camposItems="camposItems"
   
         @botaoFiltrar ="setaFiltros"
         @botaoFiltrarABC ="setaFiltrosABC"
@@ -28,6 +33,8 @@
         @colunaGraficoBar="getNotas" 
 
         @color="changeColor"
+        @campos="insertFieldsNotas"
+        @camposItems="insertFieldsItems"
         >
     </Dashboard>
   </div>
@@ -52,6 +59,15 @@
         tableitemsNotas:[],
         tableheader: [],
         tableitems:[],
+        camposNotas:[{id:'IND_OPER', name:"Ind. Operação"},{id:'IND_EMIT', name:"Ind. Emitente"},{id:'COD_SIT', name:"Sit. Doc"},{id:'SER', name:"Série Doc."},{id:'CHV_NFE', name:"Chave Doc."},
+                    {id:'IND_PGTO', name:"Ind. Pagto"}, {id:'VL_ABAT_NT', name:"Abatimento Não Trib."}, {id:'IND_FRT', name:"Ind. Frete"}, {id:'VL_SEG', name:"Valor Seguro"}, 
+                    {id:'VL_OUT_DA', name:"Valor Outr. Desp."},{id:'VL_BC_ICMS', name:"Base Calc. ICMS"},{id:'VL_ICMS', name:"Valor ICMS"},{id:'VL_BC_ICMS_ST', name:"Base Calc. ICMS ST"},
+                    {id:'VL_ICMS_ST', name:"Valor ICMS ST"},{id:'VL_PIS', name:"Valor PIS"},{id:'VL_COFINS', name:"Valor COFINS"},{id:'VL_IPI', name:"Valor IPI"}],
+
+        camposItems:[{id:'NUM_ITEM', name:"Num. Item"},{id:'IND_MOV', name:"Ind. Movimento"},{id:'CST_ICMS', name:"CST"},{id:'COD_NAT', name:"Cód. Nat."},{id:'VL_BC_ICMS', name:"Base Calc. ICMS"},{id:'VL_ICMS', name:"Valor ICMS"},
+                    {id:'VL_BC_ICMS_ST', name:"Base Calc. ICMS ST"},{id:'VL_ICMS_ST', name:"Valor ICMS ST"},{id:'IND_APUR', name:"Ind. Apuração"}, {id:'CST_IPI', name:"CST IPI"}, {id:'COD_ENQ', name:"Cód. Enquadramento"}, 
+                    {id:'VL_BC_IPI', name:"Base Calc. IPI"}, {id:'VL_IPI', name:"Valor IPI"}, {id:'ALIQ_IPI', name:"Aliq. IPI"}, {id:'CST_PIS', name:"CST PIS"}, {id:'VL_BC_PIS', name:"Base Calc. PIS"},{id:'VL_PIS', name:"Valor PIS"},{id:'ALIQ_PIS_PERC', name:"Aliq. PIS"},
+                    {id:'VL_BC_COFINS', name:"Base Calc. COFINS"},{id:'VL_COFINS', name:"Valor COFINS"},{id:'ALIQ_COFINS_PERC', name:"Aliq. COFINS"},{id:'COD_CTA', name:"Cód. Conta Analitica"},{id:'VL_ABAT_NT', name:"Abatimento Não Trib."}],
         chartData: {
             labels: [
                //teste
@@ -134,29 +150,14 @@
       async getNotas(e){
         if(this.loading == false){
             this.loading = true;
-            this.tableheaderNotas=[
-                  { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
-                  { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
-                  { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
-                  { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
-                  { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
-                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-                  { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
-              ];
+            if(this.tableheaderNotas == null || this.tableheaderNotas.length == 0 ) {
+                this.tableheaderNotasPadrao();
+            }
+            if(this.tableheader == null || this.tableheader.length == 0) {
+                this.tableheaderItemsPadrao();
+            }
             this.tableitemsNotas=[];
             this.total_notas=0;
-            this.tableheader=[
-                  { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
-                  { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
-                  { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
-                  { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
-                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
-                  { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
-                  { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
-                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
-                  { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
-                  { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
-              ];
             this.tableitems=[];
             this.total_itens=0;
               try{
@@ -183,6 +184,51 @@
                 this.loading = false;
               }
           }
+      },
+      insertFieldsNotas(e){
+          this.itemsNotas =e;
+          this.tableheaderNotasPadrao();
+          if(this.itemsNotas != null && this.itemsNotas != undefined)
+          { 
+            for (let i = 0; i < this.itemsNotas.length; i++) {
+              this.tableheaderNotas.push( { text: this.itemsNotas[i].name, value: this.itemsNotas[i].id,align:"end", divider:false, width: 200, sortable: true })
+            }
+          }
+      },
+      insertFieldsItems(e){
+          this.items =e;
+          this.tableheaderItemsPadrao();
+          if(this.items != null && this.items != undefined)
+          { 
+            for (let i = 0; i < this.items.length; i++) {
+              this.tableheader.push( { text: this.items[i].name, value: this.items[i].id,align:"end", divider:false, width: 200, sortable: true })
+            }
+          }
+      },
+      tableheaderNotasPadrao(){
+        this.tableheaderNotas=[
+                  { text: "Cód.", value: "COD_PART", align:"start", width: 100, divider:false, sortable: true },
+                  { text: "Nome", value: "NOME", align:"start", width: 250, divider:false, sortable: true },
+                  { text: "Mod.", value: "COD_MOD", align:"end", width: 100, divider:false, sortable: true },
+                  { text: "Num Doc.", value: "NUM_DOC",align:"end", divider:false, width: 150,sortable: true },
+                  { text: "Valor", value: "VL_DOC",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "Frete", value: "VL_FRT",align:"end", divider:false, width: 100, sortable: true },
+              ];
+      },
+      tableheaderItemsPadrao(){
+        this.tableheader=[
+                  { text: "Cód. Item", value: "COD_ITEM", align:"start", divider:false, sortable: true },
+                  { text: "Descrição", value: "DESCR_COMPL", align:"start", width: 300, divider:false, sortable: true },
+                  { text: "Qtd.", value: "QTD",align:"end", divider:false, width: 100,sortable: true },
+                  { text: "Preço Total", value: "VL_ITEM",align:"end",width: 150, divider:false, sortable: true },
+                  { text: "Desconto", value: "VL_DESC",align:"end", width: 150, divider:false,  sortable: true },
+                  { text: "UN", value: "UNID",align:"end", divider:false, width: 100, sortable: true },
+                  { text: "CFOP", value: "CFOP",align:"end", divider:false,width: 100,  sortable: true },
+                  { text: "BC ICMS", value: "VL_BC_ICMS",align:"end", width: 200,divider:false, sortable: true },
+                  { text: "ICMS", value: "ALIQ_ICMS",align:"end", width: 100, divider:false, sortable: true },
+                  { text: "Valor ICMS", value: "VL_ICMS",align:"end", width: 150, divider:false,  sortable: true },
+              ];
       },
       async changeColor(e){
           this.filtros =e;

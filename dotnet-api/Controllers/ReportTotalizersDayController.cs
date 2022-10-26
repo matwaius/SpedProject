@@ -34,7 +34,7 @@ namespace dotnet_api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
+        public async Task<IActionResult> Post([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd, [FromQuery] Int64 red)
         {
             string retRel = "";
             try
@@ -52,7 +52,7 @@ namespace dotnet_api.Controllers
                 }
 
                 List<C405> list = new List<C405>();
-                
+                C405 c405 = new C405();
                 foreach (string line in file.Split('\n'))
                 {
                     if (line != "")
@@ -62,8 +62,14 @@ namespace dotnet_api.Controllers
                         //C405 
                         if (data[1] == "C405")
                         {
-                            C405 c405 = new C405();
-                            list.Add(c405.MountDataC405(data));
+                            if (Library.GetInt64(data[4]) != red && red > 0) //Num. Redução Z
+                            {
+                                //Não Adiciona
+                            }
+                            else
+                            {
+                                list.Add(c405.MountDataC405(data));
+                            }
                         }
                     }
                 }

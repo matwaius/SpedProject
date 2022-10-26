@@ -6,7 +6,8 @@
         title_notas = "Totalizadores"
         :total_grafico_bar="this.total_grafico_bar"
         :total_notas="this.total_notas"
-        :show_ind=false
+        :show_ind="false"
+        :show_numred="true"
         :show_chart_bar="true"
         :show_chart_pie="false"
         :show_table_notas="true"
@@ -19,6 +20,7 @@
         
         @colunaGraficoBar="getNotas" 
 
+        @color="changeColor"
         >
     </Dashboard>
   </div>
@@ -69,7 +71,7 @@
             this.loading = true;
             this.limpaDados();
               try{
-                await api.post('/ReportTotalizersDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal)
+                await api.post('/ReportTotalizersDay?dateStart=' + this.filtros[0].dataInicial + '&dateEnd=' + this.filtros[0].dataFinal+'&red='+this.filtros[0].red)
                   .then(response => {
                       this.chartData.datasets[0].label="Valor Tot.";
                       for (let i = 0; i < response.data.length; i++) {
@@ -104,7 +106,7 @@
             this.tableitemsNotas=[];
             this.total_notas=0;
               try{
-                await api.post('/ReportTotalizersItemsDay?date=' + validation.parseDate(e))
+                await api.post('/ReportTotalizersItemsDay?date=' + validation.parseDate(e)+'&red='+this.filtros[0].red)
                     .then(response => {
                       for (let i = 0; i < response.data.length; i++) {
                             
@@ -125,6 +127,11 @@
                 this.loading = false;
               }
           }
+      },
+      async changeColor(e){
+          this.filtros =e;
+          this.chartData.datasets[0].backgroundColor =  ['#EF5350'];//this.filtros[0].color;
+          this.getRel();
       },
       limpaDados(){
           this.chartData.labels=[];
