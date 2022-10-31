@@ -36,10 +36,8 @@ namespace dotnet_api.Controllers
 
             var user = await _repository.GetUsersByLoginPasswordAsync(User, Password);
 
-            var ok = "Usuário Encontrado";
-
             return user != null
-                ? Ok(ok)
+                ? Ok(user)
                 : BadRequest("Usuário não encontrado.");
 
         }

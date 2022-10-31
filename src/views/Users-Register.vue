@@ -82,6 +82,7 @@
 import FormUpdate from '@/components/FormUpdate.vue'
 import api from '@/services/api.ts'
 import * as validations from '@/services/validation.ts'
+import md5 from "md5"
 
 export default {
   name: 'usersPage',
@@ -150,8 +151,15 @@ export default {
     },
     async onSave () {
       if (this.validacao() == true) {
+        const encryptedPassword = await md5(this.formData.Password)
+        const dataObject = {
+            ...this.formData,
+            Password: encryptedPassword
+          }
+        console.log("aaaa");
         if (this.editing == true) {
-          await api.put(`/Users/${this.id}`, this.formData)
+
+          await api.put(`/Users/${this.id}`, dataObject)
             .then((response) => {
               this.msg = response.data
             })
@@ -159,7 +167,7 @@ export default {
               console.log(error.response)
             })
         } else {
-          await api.post(`/Users`, this.formData)
+          await api.post(`/Users`, dataObject)
             .then((response) => {
               this.msg = response.data
             })

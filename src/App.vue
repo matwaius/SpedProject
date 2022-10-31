@@ -4,14 +4,6 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  mounted () {
-    this.$router.push('/login')
-  }
-}
-</script>
-
 <style>
   .main{
     height: 100vh;
