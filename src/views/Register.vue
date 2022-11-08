@@ -351,7 +351,6 @@ export default {
         ...this.formData,
         Password: encryptedPassword,
       };
-      console.log("aaaa");
       await api
         .post("/Users", dataObject)
         .then((response) => {

@@ -12,8 +12,8 @@ using dotnet_api.Context;
 namespace dotnet_api.Migrations
 {
     [DbContext(typeof(dotnet_apiContext))]
-    [Migration("20220816003744_Inicial")]
-    partial class Inicial
+    [Migration("20221107233713_migration")]
+    partial class migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,21 +34,24 @@ namespace dotnet_api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
+                        .IsRequired()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedOn");
 
                     b.Property<byte[]>("DataFiles")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("DataFiles");
 
                     b.Property<string>("FileType")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("FileType");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
@@ -74,10 +77,46 @@ namespace dotnet_api.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("Login");
 
+                    b.Property<short>("Nivel")
+                        .HasColumnType("smallint")
+                        .HasColumnName("Nivel");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasColumnName("Password");
+
+                    b.Property<short>("RelCF")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelCF");
+
+                    b.Property<short>("RelCFTOT")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelCFTOT");
+
+                    b.Property<short>("RelNF")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelNF");
+
+                    b.Property<short>("RelNFICMS")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelNFICMS");
+
+                    b.Property<short>("RelNFICMSST")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelNFICMSST");
+
+                    b.Property<short>("RelNFQTD")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelNFQTD");
+
+                    b.Property<short>("RelNFQTDUF")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelNFQTDUF");
+
+                    b.Property<short>("RelNFUF")
+                        .HasColumnType("smallint")
+                        .HasColumnName("RelNFUF");
 
                     b.HasKey("Id");
 

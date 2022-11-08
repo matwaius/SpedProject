@@ -58,8 +58,8 @@ export default {
       { text: 'Relatório Nota Fiscal por Quantidade', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' },
       { text: 'Relatório Nota Fiscal por Quantidade por UF', icon: 'mdi-hexagon', to: '/ReportNFQtdDayByUF' },
       { text: 'Relatório de Cupom Fiscal', icon: 'mdi-hexagon', to: '/ReportCFDay' },
-      //{ text: 'Relatório por Redução Z', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
       { text: 'Relatório de Totalizadores por Dia', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' },
+      //{ text: 'Relatório por Redução Z', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
     ]
   }),
   components: {

@@ -16,6 +16,15 @@ namespace dotnet_api.Maps
             builder.Property(x => x.Login).HasColumnName("Login").HasColumnType("varchar(50)").IsRequired();
             builder.Property(x => x.Password).HasColumnName("Password").HasColumnType("varchar(50)").IsRequired();
             builder.Property(x => x.Email).HasColumnName("Email").HasColumnType("varchar(255)").IsRequired();
+            builder.Property(x => x.Nivel).HasColumnName("Nivel").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelNF).HasColumnName("RelNF").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelNFICMS).HasColumnName("RelNFICMS").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelNFICMSST).HasColumnName("RelNFICMSST").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelNFUF).HasColumnName("RelNFUF").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelNFQTD).HasColumnName("RelNFQTD").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelNFQTDUF).HasColumnName("RelNFQTDUF").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelCF).HasColumnName("RelCF").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.RelCFTOT).HasColumnName("RelCFTOT").HasColumnType("smallint").IsRequired();
         }
     }
 }

@@ -106,7 +106,16 @@ export default {
       Id: 0,
       Login: '',
       Password: '',
-      Email: ''
+      Email: '',
+      Nivel:0,
+      RelNF:0,
+      RelNFICMS:0,
+      RelNFICMSST:0,
+      RelNFUF:0,
+      RelNFQTD:0,
+      RelNFQTDUF:0,
+      RelCF:0,
+      RelCFTOT:0,
     },
     loginRules: [
       v => v.length >= 4 || 'Min. 4 Caracteres',
@@ -151,14 +160,12 @@ export default {
     },
     async onSave () {
       if (this.validacao() == true) {
-        const encryptedPassword = await md5(this.formData.Password)
+        const encryptedPassword = await md5(this.formData.Password);
         const dataObject = {
-            ...this.formData,
-            Password: encryptedPassword
-          }
-        console.log("aaaa");
+          ...this.formData,
+          Password: encryptedPassword,
+        };
         if (this.editing == true) {
-
           await api.put(`/Users/${this.id}`, dataObject)
             .then((response) => {
               this.msg = response.data
@@ -175,7 +182,6 @@ export default {
               console.log(error.response)
             })
         }
-        console.log(this.msg)
         setTimeout(() => this.msg = '', 3000)
         this.$router.go(-1)
       }
@@ -185,9 +191,18 @@ export default {
         .then((response) => {
           this.formData.Id = response.data.Id
           this.formData.Login = response.data.Login
-          this.formData.Password = response.data.Password
-          this.ConfirmPass = response.data.Password
+          this.formData.Password = ""
+          this.ConfirmPass = ""
           this.formData.Email = response.data.Email
+          this.formData.Nivel = response.data.Nivel
+          this.formData.RelNF = response.data.RelNF
+          this.formData.RelNFICMS = response.data.RelNFICMS
+          this.formData.RelNFICMSST = response.data.RelNFICMSST
+          this.formData.RelNFUF = response.data.RelNFUF
+          this.formData.RelNFQTD = response.data.RelNFQTD
+          this.formData.RelNFQTDUF = response.data.RelNFQTDUF
+          this.formData.RelCF = response.data.RelCF
+          this.formData.RelCFTOT = response.data.RelCFTOT
         })
         .catch((error) => {
           console.log(error.response)

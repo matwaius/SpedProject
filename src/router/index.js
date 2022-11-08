@@ -29,52 +29,82 @@ const routes = [
   {
     path: '/sobre',
     name: 'About',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../views/About.vue')
   },
   {
     path: '/reports',
     name: 'Reports',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../views/Reports.vue')
   },
   {
     path: '/Users',
     name: 'Users',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../views/Users.vue')
   },
   {
     path: '/Users-Insert',
     name: 'Users-Insert',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../views/Users-Register.vue')
   },
   {
     path: '/Users-Edit/:id',
     name: 'Users-Edit',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('@/views/Users-Register.vue'),
     props: true //  router => router.params
   },
   {
     path: '/ReportCFDay',
     name: 'ReportCFDay',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportCFDay.vue')
   },
   {
     path: '/ReportNFDay',
     name: 'ReportNFDay',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportNFDay.vue')
   },
   {
     path: '/ReportNFDayByICMS',
     name: 'ReportNFDayByICMS',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportNFDayByICMS.vue')
   },
   {
     path: '/ReportNFDayByICMSST',
     name: 'ReportNFDayByICMSST',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportNFDayByICMSST.vue')
   },
   {
     path: '/ReportNFDepartureDayByRedZ',
     name: 'ReportNFDepartureDayByRedZ',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportNFDepartureDayByRedZ.vue')
   },
   {
@@ -85,16 +115,25 @@ const routes = [
   {
     path: '/ReportNFQtdDay',
     name: 'ReportNFQtdDay',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportNFQtdDay.vue')
   },
   {
     path: '/ReportNFQtdDayByUF',
     name: 'ReportNFQtdDayByUF',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportNFQtdDayByUF.vue')
   },
   {
     path: '/ReportTotalizersDay',
     name: 'ReportTotalizersDay',
+    meta:{
+      middleware: [EnsureIsAuthenticated]
+    },
     component: () => import('../reports/ReportTotalizersDay.vue')
   }
 ]

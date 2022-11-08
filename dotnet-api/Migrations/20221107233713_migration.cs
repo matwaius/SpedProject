@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnet_api.Migrations
 {
-    public partial class Inicial : Migration
+    public partial class migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,10 +15,10 @@ namespace dotnet_api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FileType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "varchar(100)", nullable: false),
+                    FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DataFiles = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,7 +33,16 @@ namespace dotnet_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Login = table.Column<string>(type: "varchar(50)", nullable: false),
                     Password = table.Column<string>(type: "varchar(50)", nullable: false),
-                    Email = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false),
+                    Nivel = table.Column<short>(type: "smallint", nullable: false),
+                    RelNF = table.Column<short>(type: "smallint", nullable: false),
+                    RelNFICMS = table.Column<short>(type: "smallint", nullable: false),
+                    RelNFICMSST = table.Column<short>(type: "smallint", nullable: false),
+                    RelNFUF = table.Column<short>(type: "smallint", nullable: false),
+                    RelNFQTD = table.Column<short>(type: "smallint", nullable: false),
+                    RelNFQTDUF = table.Column<short>(type: "smallint", nullable: false),
+                    RelCF = table.Column<short>(type: "smallint", nullable: false),
+                    RelCFTOT = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
