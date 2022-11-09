@@ -3,7 +3,7 @@
     <v-container class="fill-height flex-column">
         <v-card :width="800"
           height="100%"
-          max-height="390"
+          :max-height="maxHeight"
           class="mx-auto"
           outilined
           elevation="3"
@@ -50,17 +50,8 @@ import SidebarLayoutVue from '@/layouts/SidebarLayout.vue'
 export default {
   name: 'ReportMain',
   data: vm => ({
-    items: [
-      { text: 'Relatório de Nota Fiscal', icon: 'mdi-hexagon', to: '/ReportNFDay' },
-      { text: 'Relatório de Nota Fiscal por ICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' },
-      { text: 'Relatório de Nota Fiscal por ICMS ST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' },
-      { text: 'Relatório de Nota Fiscal por UF', icon: 'mdi-hexagon', to: '/ReportNFDayByUF' },
-      { text: 'Relatório Nota Fiscal por Quantidade', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' },
-      { text: 'Relatório Nota Fiscal por Quantidade por UF', icon: 'mdi-hexagon', to: '/ReportNFQtdDayByUF' },
-      { text: 'Relatório de Cupom Fiscal', icon: 'mdi-hexagon', to: '/ReportCFDay' },
-      { text: 'Relatório de Totalizadores por Dia', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' },
-      //{ text: 'Relatório por Redução Z', icon: 'mdi-hexagon', to: '/ReportNFDepartureDayByRedZ' },
-    ]
+    items: [],
+    maxHeight: 390
   }),
   components: {
     SidebarLayoutVue
@@ -69,6 +60,51 @@ export default {
     retornaRota () {
       this.$router.go(-1)
     }
+  },
+  mounted(){
+    const data = JSON.parse(localStorage.getItem('user'));
+    let cont = 0;
+    if(data.Nivel == 1 || data.RelNF == 1 )
+    {
+        this.items.push({ text: 'Relatório de Nota Fiscal', icon: 'mdi-hexagon', to: '/ReportNFDay' })
+        cont+=1
+    }
+    if(data.Nivel == 1 || data.RelNFICMS == 1 )
+    {
+        this.items.push({ text: 'Relatório de Nota Fiscal por ICMS', icon: 'mdi-hexagon', to: '/ReportNFDayByICMS' })
+        cont+=1
+    }
+    if(data.Nivel == 1 || data.RelNFICMSST == 1 )
+    {
+        this.items.push({ text: 'Relatório de Nota Fiscal por ICMS ST', icon: 'mdi-hexagon', to: '/ReportNFDayByICMSST' })
+        cont+=1
+    }
+    if(data.Nivel == 1 || data.RelNFUF == 1 )
+    {
+        this.items.push({ text: 'Relatório de Nota Fiscal por UF', icon: 'mdi-hexagon', to: '/ReportNFDayByUF' })
+        cont+=1
+    }
+    if(data.Nivel == 1 || data.RelNFQTD == 1 )
+    {
+        this.items.push({ text: 'Relatório Nota Fiscal por Quantidade', icon: 'mdi-hexagon', to: '/ReportNFQtdDay' })
+        cont+=1
+    }
+    if(data.Nivel == 1 || data.RelNFQTDUF == 1 )
+    {
+        this.items.push({ text: 'Relatório Nota Fiscal por Quantidade por UF', icon: 'mdi-hexagon', to: '/ReportNFQtdDayByUF' })
+        cont+=1
+    }
+    if(data.Nivel == 1 || data.RelCF == 1 )
+    {
+        this.items.push({ text: 'Relatório de Cupom Fiscal', icon: 'mdi-hexagon', to: '/ReportCFDay' })
+        cont+=1
+    }
+    if(data.Nivel == 1 || data.RelCFTOT == 1 )
+    {
+        this.items.push({ text: 'Relatório de Totalizadores por Dia', icon: 'mdi-hexagon', to: '/ReportTotalizersDay' })
+        cont+=1
+    }
+    this.maxHeight = 48*cont;
   }
 }
 

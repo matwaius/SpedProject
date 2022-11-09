@@ -59,8 +59,6 @@ export default {
     items: [
       { title: 'Carregar Arquivo', icon: 'mdi-archive', to: '/home' },
       { title: 'Relatórios', icon: 'mdi-monitor-dashboard', to: '/reports' },
-      { title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/Users' },
-      { title: 'Sobre', icon: 'mdi-information-outline', to: '/sobre' }
     ]
   }),
   methods: {
@@ -68,6 +66,15 @@ export default {
       localStorage.removeItem("user");
       this.$router.push('/login');
     }
+  },
+  mounted()
+  {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data.Nivel == 1)
+    {
+      this.items.push({ title: 'Usuários', icon: 'mdi-account-box-multiple', to: '/Users' });
+    }
+    this.items.push({ title: 'Sobre', icon: 'mdi-information-outline', to: '/sobre' });
   }
 }
 </script>

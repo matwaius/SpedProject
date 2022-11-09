@@ -6,7 +6,7 @@
         <h1>Sobre nós</h1>
         <br/>
         <br/>
-        <h3>Teste teste teste testes</h3>
+        <h3></h3>
         </v-col>
       </v-row>
     </v-container>
