@@ -9,6 +9,10 @@
                 elevation="3">
                 <v-container>
             <!--CABEÇALHO-->
+            <v-progress-linear v-if="showProgress"
+              indeterminate
+              color="cyan"
+            ></v-progress-linear>
             <v-row dense>
               <v-col cols="1">
                 <v-toolbar flat
@@ -73,34 +77,44 @@ export default {
   data () {
     return {
       msg: null,
-      file: ''
+      file: '',
+      showProgress: false,
     }
   },
   components: {
     SidebarLayoutVue
   },
   methods: {
-    submitForm () {
-      console.log(this.file)
-      const formData = new FormData()
-      formData.append('file', this.file)
-
-      api.post('/Files',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
+    async submitForm () {
+      let upload = false;
+      let formData = new FormData();
+      formData.append('files', this.file)
+      this.showProgress = true;
+      await api.post('/Files',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
           }
-        }
-      ).then(function (data) {
-        console.log(data.data)
-      })
+        ).then(function (data) {
+          //console.log(data.data)
+          upload = true;
+        })
         .catch(function () {
           console.log('Falha ao Carregar o Arquivo!')
+          this.showProgress = false;
         })
+        if (upload == true){
+            this.showProgress = false;
+            this.toReports();
+        }
     },
     retornaRota () {
       this.$router.go(-1)
+    },
+    toReports () {
+      this.$router.push("/reports");
     },
     onChangeFileUpload () {
       this.file = this.$refs.file.files[0]

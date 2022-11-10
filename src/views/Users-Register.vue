@@ -72,6 +72,8 @@
                     <v-col cols="12">
                         <v-combobox
                           v-model="select"
+                          item-text="value"
+                          item-value="value"
                           :items="items"
                           label="Acessos Relatórios"
                           @change="onChangeSelectAcess"
@@ -132,15 +134,15 @@ export default {
     },
     maxHeight:530,
     select: [],
-    items: [
-      'Rel. Nota Fiscal',
-      'Rel. Nota Fiscal por ICMS',
-      'Rel. Nota Fiscal por ICMS ST',
-      'Rel. Nota Fiscal por UF',
-      'Rel. Nota Fiscal por Qtd',
-      'Rel. Nota Fiscal por Qtd/UF',
-      'Rel. Cupom Fiscais',
-      'Rel. Totalizadores Cupom Fiscal'
+    items:[
+        { value: 'Rel. Nota Fiscal' },
+        { value: 'Rel. Nota Fiscal por ICMS' },
+        { value: 'Rel. Nota Fiscal por ICMS ST' },
+        { value: 'Rel. Nota Fiscal por UF' },
+        { value: 'Rel. Nota Fiscal por Qtd' },
+        { value: 'Rel. Nota Fiscal por Qtd/UF' },
+        { value: 'Rel. Cupom Fiscais' },
+        { value: 'Rel. Totalizadores Cupom Fiscal' }
     ],
     loginRules: [
       v => v.length >= 4 || 'Min. 4 Caracteres',
@@ -159,6 +161,7 @@ export default {
   created () {
     this.id = this.$route.params.id
     this.title = 'Inserir Usuário'
+    this.maxHeight = 440;
     if (this.id > 0) {
       this.title = 'Alterar Usuário'
       this.editing = true
@@ -185,7 +188,15 @@ export default {
     },
     async onSave () {
       if (this.validacao() == true) {
-        const encryptedPassword = await md5(this.formData.Password);
+        
+        const regexExp = /^[a-f0-9]{32}$/gi;
+        const str = this.formData.Password;
+        if(regexExp.test(str) == false) 
+        {
+          this.formData.Password  = await md5(this.formData.Password);
+        } 
+        //const encryptedPassword = await md5(this.formData.Password);
+
         this.formData.RelNF = 0;
         this.formData.RelNFICMS =0;
         this.formData.RelNFICMSST = 0;
@@ -196,18 +207,17 @@ export default {
         this.formData.RelCFTOT = 0;
         if(this.select != null && this.select != undefined)
         {
-            this.formData.RelNF = this.select.indexOf('Rel. Nota Fiscal') >=0 ? 1 : 0;
-            this.formData.RelNFICMS = this.select.indexOf('Rel. Nota Fiscal por ICMS') >=0 ? 1 : 0;
-            this.formData.RelNFICMSST = this.select.indexOf('Rel. Nota Fiscal por ICMS ST') >=0 ? 1 : 0;
-            this.formData.RelNFUF = this.select.indexOf('Rel. Nota Fiscal por UF') >=0 ? 1 : 0;
-            this.formData.RelNFQTD = this.select.indexOf('Rel. Nota Fiscal por Qtd') >=0 ? 1 : 0;
-            this.formData.RelNFQTDUF = this.select.indexOf('Rel. Nota Fiscal por Qtd/UF') >=0 ? 1 : 0;
-            this.formData.RelCF = this.select.indexOf('Rel. Cupom Fiscais') >=0 ? 1 : 0;
-            this.formData.RelCFTOT = this.select.indexOf('Rel. Totalizadores Cupom Fiscal') >=0 ? 1 : 0;
+            this.formData.RelNF = this.select.find(x=> x.value == 'Rel. Nota Fiscal') != undefined ? 1 : 0;
+            this.formData.RelNFICMS = this.select.find(x=> x.value == 'Rel. Nota Fiscal por ICMS') != undefined ? 1 : 0;
+            this.formData.RelNFICMSST = this.select.find(x=> x.value == 'Rel. Nota Fiscal por ICMS ST') != undefined ? 1 : 0;
+            this.formData.RelNFUF = this.select.find(x=> x.value == 'Rel. Nota Fiscal por UF') != undefined ? 1 : 0;
+            this.formData.RelNFQTD = this.select.find(x=> x.value == 'Rel. Nota Fiscal por Qtd') != undefined ? 1 : 0;
+            this.formData.RelNFQTDUF = this.select.find(x=> x.value == 'Rel. Nota Fiscal por Qtd/UF') >= undefined ? 1 : 0;
+            this.formData.RelCF = this.select.find(x=> x.value == 'Rel. Cupom Fiscais') != undefined ? 1 : 0;
+            this.formData.RelCFTOT = this.select.find(x=> x.value == 'Rel. Totalizadores Cupom Fiscal') != undefined ? 1 : 0;
         }
         const dataObject = {
-          ...this.formData,
-          Password: encryptedPassword,
+          ...this.formData
         };
         if (this.editing == true) {
           await api.put(`/Users/${this.id}`, dataObject)
@@ -242,12 +252,13 @@ export default {
       }
     },
     async getUser () {
+      let cont = 0;
       await api.get('/Users/' + this.id)
         .then((response) => {
           this.formData.Id = response.data.Id
           this.formData.Login = response.data.Login
-          this.formData.Password = ""
-          this.ConfirmPass = ""
+          this.formData.Password = response.data.Password
+          this.ConfirmPass = response.data.Password
           this.formData.Email = response.data.Email
           this.formData.Nivel = response.data.Nivel
           this.formData.RelNF = response.data.RelNF
@@ -259,52 +270,52 @@ export default {
           this.formData.RelCF = response.data.RelCF
           this.formData.RelCFTOT = response.data.RelCFTOT
 
-          let cont = 0;
           if(this.formData.Nivel == 1 || this.formData.RelNF == 1 )
           {
-              this.select.push([ 'Rel. Nota Fiscal' ])
+              this.select.push({value: 'Rel. Nota Fiscal' })
               cont+=1;
           }
           if(this.formData.Nivel == 1 || this.formData.RelNFICMS == 1 )
           {
-              this.select.push([ 'Rel. Nota Fiscal por ICMS' ])
+              this.select.push({value: 'Rel. Nota Fiscal por ICMS' })
               cont+=1;
           }
           if(this.formData.Nivel == 1 || this.formData.RelNFICMSST == 1 )
           {
-              this.select.push([ 'Rel. Nota Fiscal por ICMS ST' ])
+              this.select.push({value: 'Rel. Nota Fiscal por ICMS ST' })
               cont+=1;
           }
           if(this.formData.Nivel == 1 || this.formData.RelNFUF == 1 )
           {
-              this.select.push([ 'Rel. Nota Fiscal por UF' ])
+              this.select.push({value: 'Rel. Nota Fiscal por UF' })
               cont+=1;
           }
           if(this.formData.Nivel == 1 || this.formData.RelNFQTD == 1 )
           {
-              this.select.push([ 'Rel. Nota Fiscal por Qtd' ])
+              this.select.push({value: 'Rel. Nota Fiscal por Qtd' })
               cont+=1;
           }
           if(this.formData.Nivel == 1 || this.formData.RelNFQTDUF == 1 )
           {
-              this.select.push([ 'Rel. Nota Fiscal por Qtd/UF' ])
+              this.select.push({value: 'Rel. Nota Fiscal por Qtd/UF' })
               cont+=1;
           }
           if(this.formData.Nivel == 1 || this.formData.RelCF == 1 )
           {
-              this.select.push([ 'Rel. Cupom Fiscais' ])
+              this.select.push({value: 'Rel. Cupom Fiscais' })
               cont+=1;
           }
           if(this.formData.Nivel == 1 || this.formData.RelCFTOT == 1 )
           {
-              this.select.push([ 'Rel. Totalizadores Cupom Fiscal' ])
+              this.select.push({value: 'Rel. Totalizadores Cupom Fiscal' })
               cont+=1;
           }
-          this.maxHeight = 440 + (cont*10);
         })
         .catch((error) => {
           console.log(error.response)
         })
+
+        this.maxHeight = 440 + (cont*10);
     }
   }
 }
