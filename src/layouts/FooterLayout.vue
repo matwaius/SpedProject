@@ -12,7 +12,7 @@
         <v-divider></v-divider>
 
         <v-card-text class="white--text">
-          {{ new Date().getFullYear() }} — <strong>SPED</strong> — <v-btn class="ma-2" text icon color="black" href="https://github.com/matwaius/Projeto/tree/master" target="_blank"><v-icon>mdi-github</v-icon></v-btn>
+          {{ new Date().getFullYear() }} — <strong>Soft SPED</strong> — <v-btn class="ma-2" text icon color="black" href="https://github.com/matwaius/Projeto/tree/master" target="_blank"><v-icon>mdi-github</v-icon></v-btn>
         </v-card-text>
       </v-card>
     </v-footer>

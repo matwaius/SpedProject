@@ -29,19 +29,17 @@
       @colunaGraficoBar="getNotas" 
       @colunaGraficoPie="getItemsABC"
 
-      @color="changeColor"
-      >
+      @color="changeColor">
   </Dashboard>
 </div>
 </template>
 
 <script>
-import Dashboard from '@/components/Dashboard.vue'
 import api from '@/services/api.ts';
 import validation from '../services/validation.ts';
 
 export default {
-  name: 'ReportCFDay',
+  name: 'ReportCFFDay',
   data: vm => ({
       dateInicial: "",
       loading: false,
@@ -81,7 +79,7 @@ export default {
       }
   }),
   components: {
-      Dashboard
+      Dashboard :() => import('@/components/Dashboard.vue')
   },
   methods: { 
     async getRel () {

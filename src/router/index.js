@@ -69,7 +69,7 @@ const routes = [
   },
   {
     path: '/ReportCFDay',
-    name: 'ReportCFDay',
+    name: 'ReportCFFDay',
     meta:{
       middleware: [EnsureIsAuthenticated]
     },
