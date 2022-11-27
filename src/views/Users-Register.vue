@@ -212,7 +212,7 @@ export default {
             this.formData.RelNFICMSST = this.select.find(x=> x.value == 'Rel. Nota Fiscal por ICMS ST') != undefined ? 1 : 0;
             this.formData.RelNFUF = this.select.find(x=> x.value == 'Rel. Nota Fiscal por UF') != undefined ? 1 : 0;
             this.formData.RelNFQTD = this.select.find(x=> x.value == 'Rel. Nota Fiscal por Qtd') != undefined ? 1 : 0;
-            this.formData.RelNFQTDUF = this.select.find(x=> x.value == 'Rel. Nota Fiscal por Qtd/UF') >= undefined ? 1 : 0;
+            this.formData.RelNFQTDUF = this.select.find(x=> x.value == 'Rel. Nota Fiscal por Qtd/UF') != undefined ? 1 : 0;
             this.formData.RelCF = this.select.find(x=> x.value == 'Rel. Cupom Fiscais') != undefined ? 1 : 0;
             this.formData.RelCFTOT = this.select.find(x=> x.value == 'Rel. Totalizadores Cupom Fiscal') != undefined ? 1 : 0;
         }

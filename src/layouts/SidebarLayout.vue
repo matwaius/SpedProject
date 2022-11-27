@@ -5,7 +5,7 @@
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="text-h6">
-              Soft SPED
+              SSPED
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -36,7 +36,7 @@
     <v-app-bar app class="menu">
         <v-app-bar-nav-icon color="#fff" @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Soft SPED</v-toolbar-title>
+        <v-toolbar-title>SSPED</v-toolbar-title>
         <v-col class="text-right">
           <div class="my-2">
             <v-icon left color="error" @click="Disconnect">

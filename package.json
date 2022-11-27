@@ -1,5 +1,5 @@
 {
-  "name": "SPED",
+  "name": "SSPED",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
     "axios": "^0.27.2",
     "chart.js": "^3.9.1",
     "core-js": "^3.8.3",
+    "md5": "^2.3.0",
     "moment": "^2.29.4",
     "vue": "^2.7.10",
     "vue-chartjs": "^4.1.1",
