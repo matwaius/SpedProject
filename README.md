@@ -1,4 +1,4 @@
-# projetov2
+# Project made for import and read a txt file, with format SPED and generate reports.
 
 ## Project setup
 ```
